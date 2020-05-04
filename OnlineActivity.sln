@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineActivity", "OnlineActivity\OnlineActivity.csproj", "{42A23E81-A7B3-41A6-A472-457E1CD34FBC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactOnlineActivity", "ReactOnlineActivity\ReactOnlineActivity.csproj", "{9AC5A3C5-F966-4343-AD28-0C4AAD4FC903}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{42A23E81-A7B3-41A6-A472-457E1CD34FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42A23E81-A7B3-41A6-A472-457E1CD34FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42A23E81-A7B3-41A6-A472-457E1CD34FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42A23E81-A7B3-41A6-A472-457E1CD34FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AC5A3C5-F966-4343-AD28-0C4AAD4FC903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AC5A3C5-F966-4343-AD28-0C4AAD4FC903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AC5A3C5-F966-4343-AD28-0C4AAD4FC903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AC5A3C5-F966-4343-AD28-0C4AAD4FC903}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
