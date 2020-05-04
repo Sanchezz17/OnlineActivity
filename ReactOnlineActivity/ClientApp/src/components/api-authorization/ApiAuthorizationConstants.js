@@ -1,4 +1,4 @@
-export const ApplicationName = 'OnlineActivity';
+export const ApplicationName = 'ReactOnlineActivity';
 
 export const QueryParameterNames = {
   ReturnUrl: 'returnUrl',
