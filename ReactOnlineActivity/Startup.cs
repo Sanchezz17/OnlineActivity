@@ -32,13 +32,17 @@ namespace ReactOnlineActivity
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
             services.AddAuthentication().AddGoogle("Google", options =>
             {
                 options.ClientId = Configuration["Authentication:Google:ClientId"];
                 options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+            });
+            services.AddAuthentication().AddVkontakte(options =>
+            {
+                options.ClientId = Configuration["Authentication:Vk:ClientId"];
+                options.ClientSecret = Configuration["Authentication:Vk:ClientSecret"];
             });
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -47,7 +51,10 @@ namespace ReactOnlineActivity
             services.AddRazorPages();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +77,6 @@ namespace ReactOnlineActivity
             app.UseSpaStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
