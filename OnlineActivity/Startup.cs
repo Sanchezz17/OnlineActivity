@@ -45,7 +45,7 @@ namespace OnlineActivity
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/online-activity/build";
+                configuration.RootPath = "ClientApp/build";
             });
         }
 
@@ -83,7 +83,7 @@ namespace OnlineActivity
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp/online-activity";
+                spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
                 {
