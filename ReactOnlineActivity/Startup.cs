@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,6 +51,22 @@ namespace ReactOnlineActivity
             {
                 options.ClientId = Configuration["Authentication:Vk:ClientId"];
                 options.ClientSecret = Configuration["Authentication:Vk:ClientSecret"];
+                
+                options.Scope.Add("email");
+                options.Scope.Add("photos");
+
+                // Add fields https://vk.com/dev/objects/user
+                options.Fields.Add("uid");
+                options.Fields.Add("first_name");
+                options.Fields.Add("last_name");
+
+                // In this case email will return in OAuthTokenResponse, 
+                // but all scope values will be merged with user response
+                // so we can claim it as field
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "uid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "first_name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "last_name");
             });
 
             services.AddAuthentication()

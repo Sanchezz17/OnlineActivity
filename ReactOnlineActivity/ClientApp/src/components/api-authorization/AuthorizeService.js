@@ -158,7 +158,7 @@ export class AuthorizeService {
         }
     }
 
-    createArguments(state) {
+    createArguments( state) {
         return { useReplaceToNavigate: true, data: state };
     }
 
