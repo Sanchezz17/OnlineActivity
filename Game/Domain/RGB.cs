@@ -1,12 +1,12 @@
-﻿namespace ReactOnlineActivity.Services
+﻿namespace Game.Domain
 {
-    public class RGB
+    public class Rgb
     {
         public byte R { get; }
         public byte G { get; }
         public byte B { get; }
 
-        public RGB(byte r = 0, byte g = 0, byte b = 0)
+        public Rgb(byte r = 0, byte g = 0, byte b = 0)
         {
             R = r;
             G = g;

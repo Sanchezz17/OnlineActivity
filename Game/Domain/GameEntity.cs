@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Timer = System.Timers.Timer;
 
-namespace ReactOnlineActivity.Services
+namespace Game.Domain
 {
-    public class Game
+    public class GameEntity
     {
         private const int CanvasWidth = 100;
         private const int CanvasHeight = 100;
-        private const int MaxRoundTime = 5 * 60 * 1000;
+        private const int MaxRoundTimeInMinutes = 5;
+        private const int SecondsInMinutes = 60;
+        private const int PointsForCorrectAnswer = 50;
         
         private readonly string[] _hiddenWords;
         private readonly Random _random;
@@ -19,27 +21,34 @@ namespace ReactOnlineActivity.Services
         public bool GameIsOver { get; private set; }
         public Player ExplainingPlayer { get; private set; }
         public Canvas Canvas { get; }
-        public Player[] Players { get; }
-        public Timer Timer { get; }
-        
-        public Game(string[] hiddenWords, IEnumerable<Player> players)
+        public List<Player> Players { get; }
+        public DateTime TimeStartGame { get; }
+        public TimeSpan TimeInGame => DateTime.Now - TimeStartGame;
+        public Guid Id { get; }
+
+        public GameEntity(Guid id, string[] hiddenWords, IEnumerable<Player> players)
         {
             _hiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
             _maxRound = _hiddenWords.Length;
             _random = new Random();
             
             Canvas = new Canvas(CanvasWidth, CanvasHeight);
-            Players = players.ToArray();
-            Timer = new Timer(MaxRoundTime);
-            Timer.Elapsed += (_, __) =>
-            {
+            Players = players.ToList();
+            TimeStartGame = DateTime.Now;
+            Id = id;
+        }
+        
+        public GameEntity(string[] hiddenWords, IEnumerable<Player> players) : this(Guid.Empty, hiddenWords, players) {}
+
+        private void CheckTime()
+        {
+            if (TimeInGame > TimeSpan.FromMinutes(MaxRoundTimeInMinutes))
                 GameIsOver = true;
-                Timer.Close();
-            };
         }
 
         public bool CheckWord(string wordFromPlayer)
         {
+            CheckTime();
             if (GameIsOver)
                 return false;
             return wordFromPlayer.Trim() == _hiddenWords[RoundNumber];
@@ -47,13 +56,16 @@ namespace ReactOnlineActivity.Services
 
         public void Paint(IEnumerable<Pixel> pixels)
         {
+            CheckTime();
             if (!GameIsOver)
                 Canvas.PaintOverPixels(pixels);  
         } 
 
         public void CompleteRound(Player guessingPlayer)
         {
-            // TODO: увеличивать счет у игроков - после добавления сущности лидерборда
+            guessingPlayer.Score += PointsForCorrectAnswer;
+            ExplainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
+            
             if (RoundNumber >= _maxRound)
                 GameIsOver = true;
             if (!GameIsOver)

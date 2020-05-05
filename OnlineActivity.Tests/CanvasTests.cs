@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using ReactOnlineActivity.Services;
+using Game.Domain;
 
 namespace OnlineActivity.Tests
 {
@@ -12,13 +12,13 @@ namespace OnlineActivity.Tests
     public class CanvasTests
     {
         private Canvas _canvas;
-        
+
         [SetUp]
         public void SetUp()
         {
             _canvas = new Canvas(20, 20);
         }
-        
+
         [TestCase(10, 10, TestName = "WhenSizesSameAndPositive")]
         [TestCase(10, 15, TestName = "WhenSizeDifferentAndPositive")]
         public void Constructor_DoesNotThrow(int x, int y)
@@ -32,40 +32,40 @@ namespace OnlineActivity.Tests
         public void Constructor_ShouldThrowArgumentException(int x, int y)
         {
             Action action = () => new Canvas(x, y);
-            action.Should().Throw<ArgumentException>(); 
+            action.Should().Throw<ArgumentException>();
         }
 
         [TestCase(0, 0, 1, 2, 3, 4, 5)]
         public void PaintOverPixels_ShouldPaint(int x, params int[] coordinatesY)
         {
-            var color = new RGB(255, 255, 255);
+            var color = new Rgb(255, 255, 255);
             var pixels = coordinatesY
                 .Select(y => new Pixel(
-                    color, 
+                    color,
                     new Point(x, y)
-                    ));
-            
-            
+                ));
+
+
             _canvas.PaintOverPixels(pixels);
 
 
             foreach (var y in coordinatesY)
                 _canvas.Pixels[x, y].Should().Be(color);
         }
-        
+
         [TestCase(0, 0, 1, 2, 3, 4, 5)]
         public void PaintOverPixels_ShouldNotPaintUnnecessary(int x, params int[] coordinatesY)
         {
             var pixels = coordinatesY
                 .Select(y => new Pixel(
-                    new RGB(255, 255, 255), 
+                    new Rgb(255, 255, 255),
                     new Point(x, y)
                 ));
             var previousCount = CountPainted(_canvas);
 
 
             _canvas.PaintOverPixels(pixels);
-            
+
             CountPainted(_canvas).Should().Be(previousCount + pixels.Count());
         }
 
@@ -81,11 +81,11 @@ namespace OnlineActivity.Tests
         {
             return Range2D(0, canvas.Size.Width, 0, canvas.Size.Height)
                 .Count(tuple =>
-            {
-                var (x, y) = tuple;
-                var rgb = canvas.Pixels[x, y];
-                return rgb.R == 255 && rgb.G == 255 && rgb.B == 255;
-            });
+                {
+                    var (x, y) = tuple;
+                    var rgb = canvas.Pixels[x, y];
+                    return rgb.R == 255 && rgb.G == 255 && rgb.B == 255;
+                });
         }
     }
 }
