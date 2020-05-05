@@ -9,7 +9,7 @@ namespace ReactOnlineActivity.Services
     {
         private const int CanvasWidth = 100;
         private const int CanvasHeight = 100;
-        private const int MaxRoundTime = 5000;
+        private const int MaxRoundTime = 5 * 60 * 1000;
         
         private readonly string[] _hiddenWords;
         private readonly Random _random;
