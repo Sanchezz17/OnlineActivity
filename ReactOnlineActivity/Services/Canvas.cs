@@ -20,7 +20,7 @@ namespace ReactOnlineActivity.Services
                     Pixels[x, y] = new RGB();
         }
 
-        public Canvas(int x, int y) : this(new Size(x, y)) {}
+        public Canvas(int width, int height) : this(new Size(width, height)) {}
 
         public void PaintOverPixels(IEnumerable<Pixel> newPixels)
         {
