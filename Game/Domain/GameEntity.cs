@@ -75,7 +75,7 @@ namespace Game.Domain
         private void StartNewRound()
         {
             RoundNumber++;
-            ExplainingPlayer = Players[_random.Next(Players.Length - 1)];
+            ExplainingPlayer = Players[_random.Next(Players.Count - 1)];
         }
     }
 }

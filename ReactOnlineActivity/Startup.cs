@@ -1,6 +1,11 @@
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +38,11 @@ namespace ReactOnlineActivity
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.User.AllowedUserNameCharacters += " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+                    options.SignIn.RequireConfirmedAccount = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddPasswordValidator<UsernameAsPasswordValidator<ApplicationUser>>()
                 .AddErrorDescriber<RussianIdentityErrorDescriber>();
@@ -56,14 +65,14 @@ namespace ReactOnlineActivity
                 options.Scope.Add("photos");
 
                 // Add fields https://vk.com/dev/objects/user
-                options.Fields.Add("uid");
+                options.Fields.Add("id");
                 options.Fields.Add("first_name");
                 options.Fields.Add("last_name");
 
                 // In this case email will return in OAuthTokenResponse, 
                 // but all scope values will be merged with user response
                 // so we can claim it as field
-                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "uid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
                 options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                 options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "first_name");
                 options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "last_name");
@@ -71,6 +80,7 @@ namespace ReactOnlineActivity
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+            
 
             services.AddControllersWithViews();
             services.AddRazorPages();
