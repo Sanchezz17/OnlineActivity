@@ -2,6 +2,6 @@
 {
     public static class CustomClaimTypes
     {
-        public const string PhotoUrl = "photo";
+        public const string PhotoUrl = "photoUrl";
     }
 }

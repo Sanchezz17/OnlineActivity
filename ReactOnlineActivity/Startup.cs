@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -75,6 +76,7 @@ namespace ReactOnlineActivity
             services.AddAuthentication()
                 .AddIdentityServerJwt();
             
+            services.AddScoped<IProfileService, ProfileService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

@@ -1,5 +1,7 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
 @using ReactOnlineActivity.Models;
+@using ReactOnlineActivity.Services.Constants
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -10,6 +12,7 @@
     {
         returnUrl = query["returnUrl"];
     }
+    var user = await UserManager.FindByNameAsync(User.Identity.Name);
 }
 
 <ul class="navbar-nav">
@@ -17,6 +20,10 @@
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name</a>
+        </li>
+        <li class="nav-item">
+            <img src="@user.PhotoUrl"
+                 style="border-radius: 50%;  width: 40px; height: 40px;" alt="@User.Identity.Name"/>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
