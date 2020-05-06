@@ -12,7 +12,11 @@
     {
         returnUrl = query["returnUrl"];
     }
-    var user = await UserManager.FindByNameAsync(User.Identity.Name);
+    ApplicationUser user = null;
+    if (SignInManager.IsSignedIn(User))
+    {
+        user = await UserManager.FindByNameAsync(User.Identity.Name);
+    }
 }
 
 <ul class="navbar-nav">
@@ -21,10 +25,13 @@
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name</a>
         </li>
-        <li class="nav-item">
-            <img src="@user.PhotoUrl"
-                 style="border-radius: 50%;  width: 40px; height: 40px;" alt="@User.Identity.Name"/>
-        </li>
+        @if (user.PhotoUrl != null)
+        {
+            <li class="nav-item">
+                <img src="@user.PhotoUrl"
+                     style="border-radius: 50%;  width: 40px; height: 40px;" alt="@User.Identity.Name"/>
+            </li>
+        }
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>

@@ -52,9 +52,9 @@ export class LoginMenu extends Component {
             <NavItem>
                 <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {userName}</NavLink>
             </NavItem>
-            <NavItem>
+            {userPhotoUrl && <NavItem>
                 <img src={userPhotoUrl} alt={userName} className={styles.image}/>
-            </NavItem>
+            </NavItem>}
             <NavItem>
                 <NavLink tag={Link} className="text-dark" to={logoutPath}>Logout</NavLink>
             </NavItem>
