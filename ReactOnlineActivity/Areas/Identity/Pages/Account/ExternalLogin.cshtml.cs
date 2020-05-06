@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReactOnlineActivity.Models;
-using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
 
 namespace ReactOnlineActivity.Areas.Identity.Pages.Account
@@ -59,7 +58,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
             
-            public string ImageUrl { get; set; }
+            public string PhotoUrl { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -121,7 +120,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
                 if (info.Principal.HasClaim(c => c.Type == CustomClaimTypes.PhotoUrl))
                 {
-                    
+                    Input.PhotoUrl = info.Principal.FindFirstValue(CustomClaimTypes.PhotoUrl);
                 }
             }
             return Page();
@@ -140,7 +139,12 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.UserName, 
+                    Email = Input.Email,
+                    PhotoUrl = Input.PhotoUrl
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
