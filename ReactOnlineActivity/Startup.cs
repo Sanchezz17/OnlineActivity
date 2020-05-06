@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PhotosApp.Services;
 using ReactOnlineActivity.Services;
+using ReactOnlineActivity.Services.Constants;
 
 namespace ReactOnlineActivity
 {
@@ -61,21 +62,23 @@ namespace ReactOnlineActivity
                 options.ClientId = Configuration["Authentication:Vk:ClientId"];
                 options.ClientSecret = Configuration["Authentication:Vk:ClientSecret"];
                 
-                options.Scope.Add("email");
-                options.Scope.Add("photos");
+                options.Scope.Add(VkScopes.Email);
+                options.Scope.Add(VkScopes.Photos);
 
                 // Add fields https://vk.com/dev/objects/user
-                options.Fields.Add("id");
-                options.Fields.Add("first_name");
-                options.Fields.Add("last_name");
+                options.Fields.Add(VkUserFields.Id);
+                options.Fields.Add(VkUserFields.FirstName);
+                options.Fields.Add(VkUserFields.LastName);
+                options.Fields.Add(VkUserFields.Photo200);
 
                 // In this case email will return in OAuthTokenResponse, 
                 // but all scope values will be merged with user response
                 // so we can claim it as field
-                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "first_name");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "last_name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, VkUserFields.Id);
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, VkUserFields.Email);
+                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, VkUserFields.FirstName);
+                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, VkUserFields.LastName);
+                options.ClaimActions.MapJsonKey(CustomClaimTypes.PhotoUrl, VkUserFields.Photo200);
             });
 
             services.AddAuthentication()

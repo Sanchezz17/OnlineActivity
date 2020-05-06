@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReactOnlineActivity.Models;
+using ReactOnlineActivity.Services;
+using ReactOnlineActivity.Services.Constants;
 
 namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 {
@@ -56,6 +58,8 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            
+            public string ImageUrl { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -97,27 +101,30 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Lockout");
             }
-            else
+
+            // If the user does not have an account, then ask the user to create an account.
+            ReturnUrl = returnUrl;
+            LoginProvider = info.LoginProvider;
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                LoginProvider = info.LoginProvider;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                Input = new InputModel
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
-                    if (info.Principal.HasClaim(c => c.Type == ClaimTypes.GivenName)
-                        && info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
-                    {
-                        var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
-                        var secondName = info.Principal.FindFirstValue(ClaimTypes.Surname);
-                        Input.UserName = $"{firstName} {secondName}";
-                    }
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                };
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.GivenName)
+                    && info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
+                {
+                    var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+                    var secondName = info.Principal.FindFirstValue(ClaimTypes.Surname);
+                    Input.UserName = $"{firstName} {secondName}";
                 }
-                return Page();
+
+                if (info.Principal.HasClaim(c => c.Type == CustomClaimTypes.PhotoUrl))
+                {
+                    
+                }
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
