@@ -1,5 +1,5 @@
-heroku container:login
-heroku container:push web
-heroku container:release web
-heroku open
-heroku logs --tail
+call heroku container:login
+call heroku container:push web
+call heroku container:release web
+call heroku open
+call heroku logs --tail

@@ -1,9 +1,9 @@
 FROM node:13 AS buildNode
-WORKDIR /source/ClientApp
-COPY ReactOnlineActivity/ClientApp/pаckаge.jsоn ./
-COPY ReactOnlineActivity/ClientApp/pаckаge-lоck.jsоn ./
-RUN npm instаll
-COPY ReactOnlineActivity/ClientApp/ ./
+WORKDIR /ClientApp
+COPY ReactOnlineActivity/ClientApp/package.json ./
+COPY ReactOnlineActivity/ClientApp/package-lock.json ./
+RUN npm install
+COPY ReactOnlineActivity/ClientApp/. ./
 RUN npm run build
 
 # https://hub.docker.com/_/microsoft-dotnet-core
