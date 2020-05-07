@@ -43,16 +43,18 @@ namespace ReactOnlineActivity
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
+            DotNetEnv.Env.Load();
+            
             services.AddAuthentication().AddGoogle("Google", options =>
             {
-                options.ClientId = Configuration["Authentication:Google:ClientId"];
-                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                options.ClientId = System.Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENT_ID");
+                options.ClientSecret = System.Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENT_SECRET");
             });
 
             services.AddAuthentication().AddVkontakte(options =>
             {
-                options.ClientId = Configuration["Authentication:Vk:ClientId"];
-                options.ClientSecret = Configuration["Authentication:Vk:ClientSecret"];
+                options.ClientId = System.Environment.GetEnvironmentVariable("AUTHENTICATION_VK_CLIENT_ID");
+                options.ClientSecret = System.Environment.GetEnvironmentVariable("AUTHENTICATION_VK_CLIENT_SECRET");
                 
                 options.Scope.Add(VkScopes.Email);
                 options.Scope.Add(VkScopes.Photos);
