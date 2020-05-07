@@ -1,3 +1,11 @@
+FROM nоde:13
+WORKDIR /source/ClientApp
+COPY ReactOnlineActivity/Clientаpp/pаckаge.jsоn /
+COPY ReactOnlineActivity/Clientаpp/pаckаge-lоck.jsоn /
+RUN npm instаll
+COPY ReactOnlineActivity/Clientаpp/ /
+RUN npm run build
+
 # https://hub.docker.com/_/microsoft-dotnet-core
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /source
