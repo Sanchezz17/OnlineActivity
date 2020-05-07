@@ -5,10 +5,14 @@ WORKDIR /source
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY ReactOnlineActivity/*.csproj ./ReactOnlineActivity/
+COPY OnlineActivity.Tests/*.csproj ./OnlineActivity.Tests/
+COPY Game/*.csproj ./Game/
 RUN dotnet restore
 
 # copy everything else and build app
 COPY ReactOnlineActivity/. ./ReactOnlineActivity/
+COPY OnlineActivity.Tests/. ./OnlineActivity.Tests/
+COPY Game/. ./Game/
 WORKDIR /source/ReactOnlineActivity
 RUN dotnet publish -c release -o /app --no-restore
 
