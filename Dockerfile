@@ -1,4 +1,4 @@
-FROM nоde:13
+FROM node:13 AS buildNode
 WORKDIR /source/ClientApp
 COPY ReactOnlineActivity/Clientаpp/pаckаge.jsоn /
 COPY ReactOnlineActivity/Clientаpp/pаckаge-lоck.jsоn /
@@ -7,7 +7,7 @@ COPY ReactOnlineActivity/Clientаpp/ /
 RUN npm run build
 
 # https://hub.docker.com/_/microsoft-dotnet-core
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS buildNet
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
