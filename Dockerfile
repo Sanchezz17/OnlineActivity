@@ -24,8 +24,16 @@ COPY Game/. ./Game/
 WORKDIR /source/ReactOnlineActivity
 RUN dotnet publish -c release -o /app --no-restore
 
+WORKDIR /app
+COPY ReactOnlineActivity/.env ./
+RUN dotnet dev-certs https
+
 # final stage/image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 COPY --from=buildNet /app ./
-ENTRYPOINT ["dotnet", "ReactOnlineActivity.dll"]
+COPY --from=buildNode /ClientApp/build ./ClientApp/build
+
+ENV PORT=5000
+EXPOSE 5000
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet ReactOnlineActivity.dll
