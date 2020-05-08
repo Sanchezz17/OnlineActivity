@@ -44,7 +44,7 @@ namespace ReactOnlineActivity
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             DotNetEnv.Env.Load();
-
+            
             services.AddAuthentication().AddGoogle("Google", options =>
             {
                 options.ClientId = System.Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENT_ID");
