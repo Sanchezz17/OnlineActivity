@@ -43,16 +43,16 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Необходимо указать имя пользователя")]
+            [Required(ErrorMessage = "Необходимо указать имя пользователя.")]
             [Display(Name = "Имя пользователя")]
             public string UserName { get; set; }
             
-            [Required(ErrorMessage = "Необходимо указать адрес электронной почты")]
+            [Required(ErrorMessage = "Необходимо указать адрес электронной почты.")]
             [Display(Name = "Адрес электронной почты")]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required(ErrorMessage = "Необходимо указать пароль")]
+            [Required(ErrorMessage = "Необходимо указать пароль.")]
             [Display(Name = "Пароль")]
             [DataType(DataType.Password)]
             public string Password { get; set; }

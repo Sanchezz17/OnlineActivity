@@ -1,7 +1,5 @@
-﻿@using System.Security.Claims
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using ReactOnlineActivity.Models;
-@using ReactOnlineActivity.Services.Constants
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -23,7 +21,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Привет, @User.Identity.Name</a>
         </li>
         @if (user.PhotoUrl != null)
         {
@@ -41,10 +39,10 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Register</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Зарегистрироваться</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"asp-route-returnUrl="@returnUrl">Login</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"asp-route-returnUrl="@returnUrl">Войти</a>
         </li>
     }
 </ul>

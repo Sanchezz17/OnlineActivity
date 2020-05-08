@@ -50,13 +50,13 @@ export class LoginMenu extends Component {
     authenticatedView(userName, userPhotoUrl, profilePath, logoutPath) {
         return (<Fragment>
             <NavItem>
-                <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {userName}</NavLink>
+                <NavLink tag={Link} className="text-dark" to={profilePath}>Привет, {userName}</NavLink>
             </NavItem>
             {userPhotoUrl && <NavItem>
                 <img src={userPhotoUrl} alt={userName} className={styles.image}/>
             </NavItem>}
             <NavItem>
-                <NavLink tag={Link} className="text-dark" to={logoutPath}>Logout</NavLink>
+                <NavLink tag={Link} className="text-dark" to={logoutPath}>Выйти</NavLink>
             </NavItem>
         </Fragment>);
     }
@@ -64,10 +64,10 @@ export class LoginMenu extends Component {
     anonymousView(registerPath, loginPath) {
         return (<Fragment>
             <NavItem>
-                <NavLink tag={Link} className="text-dark" to={registerPath}>Register</NavLink>
+                <NavLink tag={Link} className="text-dark" to={registerPath}>Зарегистрироваться</NavLink>
             </NavItem>
             <NavItem>
-                <NavLink tag={Link} className="text-dark" to={loginPath}>Login</NavLink>
+                <NavLink tag={Link} className="text-dark" to={loginPath}>Войти</NavLink>
             </NavItem>
         </Fragment>);
     }
