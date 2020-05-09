@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -50,14 +47,16 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [Display(Name = "Username")]
+            [Required(ErrorMessage = "Необходимо указать имя пользователя.")]
+            [Display(Name = "Имя пользователя")]
             public string UserName { get; set; }
             
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Необходимо указать адрес электронной почты.")]
+            [EmailAddress(ErrorMessage = "Проверьте правильность адреса электронной почты.")]
+            [Display(Name = "Адрес электронной почты")]
             public string Email { get; set; }
             
+            [Display(Name = "Ссылка на фотографию профиля")]
             public string PhotoUrl { get; set; }
         }
 
@@ -76,7 +75,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -128,7 +127,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -162,8 +161,8 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await _emailSender.SendEmailAsync(Input.Email, "Подтвердите свой адрес электронной почты",
+                            $"Пожалуйста, подтвердите свой аккаунт, перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)

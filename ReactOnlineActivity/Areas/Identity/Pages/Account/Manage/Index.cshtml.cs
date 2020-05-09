@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReactOnlineActivity.Models;
-using ReactOnlineActivity.Services.Constants;
 
 namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
 {
@@ -22,7 +20,8 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        
+        [Display(Name = "Имя пользователя")]
         public string Username { get; set; }
 
         [TempData]
@@ -33,10 +32,11 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
+            [Phone(ErrorMessage = "Проверьте правильность номера телефона.")]
+            [Display(Name = "Номер телефона")]
             public string PhoneNumber { get; set; }
             
+            [Display(Name = "Ссылка на фотографию профиля")]
             public string PhotoUrl { get; set; }
         }
 
@@ -98,7 +98,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Ваш профиль был обновлен";
             return RedirectToPage();
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -62,8 +61,9 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
+            [Required(ErrorMessage = "Необходимо подтвердить пароль.")]
             [Display(Name = "Подтвердите пароль")]
-            [Compare("Password", ErrorMessage = "Пароль не совпадает")]
+            [Compare("Password", ErrorMessage = "Пароли не совпадают")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -75,7 +75,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Подтвердите свой адрес электронной почти",
+                    await _emailSender.SendEmailAsync(Input.Email, "Подтвердите свой адрес электронной почты",
                         $"Пожалуйста, подтвердите свой аккаунт, перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
