@@ -93,7 +93,8 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Подтвердите свой адрес электронной почты",
+                    await _emailSender.SendEmailAsync(Input.Email, 
+                        "Подтвердите свой адрес электронной почты",
                         $"Пожалуйста, подтвердите свой аккаунт, перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

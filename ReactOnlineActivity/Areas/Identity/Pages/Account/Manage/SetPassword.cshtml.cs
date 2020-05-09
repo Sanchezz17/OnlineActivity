@@ -36,7 +36,7 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
 
             [DataType(DataType.Password)] 
             [Display(Name = "Подтвердите пароль")]
-            [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+            [Compare("NewPassword", ErrorMessage = "Пароли не совпадают")]
             public string ConfirmPassword { get; set; }
         }
 

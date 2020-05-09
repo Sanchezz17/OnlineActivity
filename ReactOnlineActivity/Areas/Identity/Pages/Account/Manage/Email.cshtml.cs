@@ -97,10 +97,10 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Подтвердите ваш адрес электронной почты",
+                    $"Пожалуйста, подтвердите свой аккаунт, перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Ссылка на подтверждение изменения адреса электронной почты отправлена. Пожалуйста, проверьте свою почту.";
                 return RedirectToPage();
             }
 

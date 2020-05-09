@@ -3,6 +3,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using ReactOnlineActivity.Data;
@@ -10,6 +11,7 @@ using ReactOnlineActivity.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PhotosApp.Services;
 using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
@@ -85,6 +87,17 @@ namespace ReactOnlineActivity
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            
+            services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
+                new SimpleEmailSender(
+                    serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
+                    serviceProvider.GetRequiredService<IWebHostEnvironment>(),
+                    Configuration["SimpleEmailSender:Host"],
+                    Configuration.GetValue<int>("SimpleEmailSender:Port"),
+                    Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
+                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
+                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
+                ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

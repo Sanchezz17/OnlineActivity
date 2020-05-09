@@ -61,12 +61,14 @@ namespace ReactOnlineActivity.Services
                     Credentials = new NetworkCredential(userName, password),
                     EnableSsl = enableSSL
                 };
+                logger.LogInformation("StartSendEmail");
                 await client.SendMailAsync(
                     new MailMessage(userName, email, subject, htmlMessage)
                     {
                         IsBodyHtml = true
                     }
                 );
+                logger.LogInformation("Mail successfully sent");
             }
         }
     }
