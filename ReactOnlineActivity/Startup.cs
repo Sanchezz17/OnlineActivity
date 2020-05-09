@@ -46,18 +46,26 @@ namespace ReactOnlineActivity
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             DotNetEnv.Env.Load();
-            
+
             services.AddAuthentication().AddGoogle("Google", options =>
             {
                 options.ClientId = System.Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENT_ID");
                 options.ClientSecret = System.Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENT_SECRET");
+
+                options.Scope.Add("profile");
+
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+                options.ClaimActions.MapJsonKey(CustomClaimTypes.PhotoUrl, "picture");
             });
 
             services.AddAuthentication().AddVkontakte(options =>
             {
                 options.ClientId = System.Environment.GetEnvironmentVariable("AUTHENTICATION_VK_CLIENT_ID");
                 options.ClientSecret = System.Environment.GetEnvironmentVariable("AUTHENTICATION_VK_CLIENT_SECRET");
-                
+
                 options.Scope.Add(VkScopes.Email);
                 options.Scope.Add(VkScopes.Photos);
 
@@ -79,7 +87,7 @@ namespace ReactOnlineActivity
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            
+
             services.AddScoped<IProfileService, ProfileService>();
 
             services.AddControllersWithViews();
@@ -87,7 +95,7 @@ namespace ReactOnlineActivity
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
-            
+
             services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
                 new SimpleEmailSender(
                     serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
