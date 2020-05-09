@@ -133,8 +133,8 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                "Подтвердите ваш адрес электронной почты",
+                $"Пожалуйста, подтвердите свой аккаунт, перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");
 
             StatusMessage = "Письмо-подтверждение отправлено. Проверьте вашу электронную почту";
             return RedirectToPage();
