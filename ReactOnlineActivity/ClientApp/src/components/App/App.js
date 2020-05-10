@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from '../Layout/Layout';
 import { Home } from '../Home/Home';
-import { FetchData } from '../FetchData';
-import { Counter } from '../Counter';
 import AuthorizeRoute from '../api-authorization/AuthorizeRoute';
 import ApiAuthorizationRoutes from '../api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from '../api-authorization/ApiAuthorizationConstants';
@@ -16,7 +14,7 @@ export default class App extends Component {
   render () {
     return (
       <Layout>
-        <Route exact path='/' component={Home} />
+        <AuthorizeRoute exact path='/' component={Home} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>
     );
