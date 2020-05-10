@@ -20,9 +20,6 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        
-        [Display(Name = "Имя пользователя")]
-        public string Username { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -32,6 +29,10 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Display(Name = "Имя пользователя")]
+            [Required(ErrorMessage = "Необходимо указать имя пользователя.")]
+            public string Username { get; set; }
+            
             [Phone(ErrorMessage = "Проверьте правильность номера телефона.")]
             [Display(Name = "Номер телефона")]
             public string PhoneNumber { get; set; }
@@ -45,10 +46,9 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
-
             Input = new InputModel
             {
+                Username = userName,
                 PhoneNumber = phoneNumber,
                 PhotoUrl = user.PhotoUrl ?? ""
             };
@@ -80,6 +80,17 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            var userName = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != userName)
+            {
+                var setUserNameResult = _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUserNameResult.IsCompletedSuccessfully)
+                {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    throw new InvalidOperationException($"Unexpected error occurred setting user name for user with ID '{userId}'."); 
+                }
+            }
+
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -94,7 +105,12 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             if (Input.PhotoUrl != user.PhotoUrl)
             {
                 user.PhotoUrl = Input.PhotoUrl;
-                await _userManager.UpdateAsync(user);
+                var updatingResult = await _userManager.UpdateAsync(user);
+                if (!updatingResult.Succeeded)
+                {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    throw new InvalidOperationException($"Unexpected error occurred setting photo URL for user with ID '{userId}'.");
+                }
             }
 
             await _signInManager.RefreshSignInAsync(user);
