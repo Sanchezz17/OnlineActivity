@@ -11,8 +11,8 @@ using ReactOnlineActivity.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PhotosApp.Services;
+using ReactOnlineActivity.Hubs;
 using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
 
@@ -37,13 +37,15 @@ namespace ReactOnlineActivity
                 {
                     options.User.AllowedUserNameCharacters += " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
                     options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedEmail = false;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddPasswordValidator<UsernameAsPasswordValidator<ApplicationUser>>()
                 .AddErrorDescriber<RussianIdentityErrorDescriber>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddProfileService<ProfileService>();
 
             DotNetEnv.Env.Load();
 
@@ -88,24 +90,24 @@ namespace ReactOnlineActivity
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-            services.AddScoped<IProfileService, ProfileService>();
-
             services.AddControllersWithViews();
             services.AddRazorPages();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
-            services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
-                new SimpleEmailSender(
-                    serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
-                    serviceProvider.GetRequiredService<IWebHostEnvironment>(),
-                    Configuration["SimpleEmailSender:Host"],
-                    Configuration.GetValue<int>("SimpleEmailSender:Port"),
-                    Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
-                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
-                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
-                ));
+            // services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
+            //     new SimpleEmailSender(
+            //         serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
+            //         serviceProvider.GetRequiredService<IWebHostEnvironment>(),
+            //         Configuration["SimpleEmailSender:Host"],
+            //         Configuration.GetValue<int>("SimpleEmailSender:Port"),
+            //         Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
+            //         System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
+            //         System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
+            //     ));
+            
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,6 +139,7 @@ namespace ReactOnlineActivity
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chat");
             });
 
             app.UseSpa(spa =>

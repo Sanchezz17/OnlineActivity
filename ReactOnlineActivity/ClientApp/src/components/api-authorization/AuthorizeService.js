@@ -31,6 +31,15 @@ export class AuthorizeService {
         const user = await this.userManager.getUser();
         return user && user.access_token;
     }
+    
+    async signInSilent() {
+        if (!(await this.isAuthenticated()))
+            return
+        
+        await this.ensureUserManagerInitialized();
+        const silentUser = await this.userManager.signinSilent(this.createArguments());
+        this.updateState(silentUser);
+    }
 
     // We try to authenticate the user in three different ways:
     // 1) We try to see if we can authenticate the user silently. This happens
@@ -203,6 +212,8 @@ export class AuthorizeService {
 }
 
 const authService = new AuthorizeService();
+
+authService.signInSilent()
 
 export default authService;
 

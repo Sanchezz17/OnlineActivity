@@ -1,4 +1,3 @@
-call heroku login
 call heroku container:login
 call heroku container:push web
 call heroku container:release web
