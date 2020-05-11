@@ -124,12 +124,16 @@ export default class Field extends Component {
             <section className={styles.field}>
                 {this.state.isActiveUser ?
                     <section className={'drawerTools'}>
-                        <button className={styles.field__endButton}>Завершить</button>
-                        <button className={styles.field__clearButton}
+                        <button className={`btn btn-outline-primary btn-sm ${styles.end}`}>Завершить</button>
+                        <button className={`btn btn-outline-warning btn-sm ${styles.clear}`}
                                 onClick={this.clearField}>Очистить</button>
                     </section>: ''
                 }
-                {this.state.loadingField ? <p>Loading...</p> :
+                {this.state.loadingField 
+                    ? <div className={styles.loading}>
+                        <p>Загрузка...</p>
+                    </div>
+                    :
                     <Stage
                         width={window.innerWidth}
                         height={window.innerHeight}

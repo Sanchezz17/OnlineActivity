@@ -1,5 +1,4 @@
-.field
-{
+.field {
     position: relative;
     background: white;
     border: 2px solid black;
@@ -11,19 +10,16 @@
     grid-row: 1 / 3;
 }
 
-.field__clearButton
-{
+.clear {
     right: 20px;
 }
 
-.field__endButton
-{
+.end {
     right: 120px;
 }
 
-.field__endButton,
-.field__clearButton
-{
+.end,
+.clear {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,4 +37,12 @@
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
     color: white;
+}
+
+.loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

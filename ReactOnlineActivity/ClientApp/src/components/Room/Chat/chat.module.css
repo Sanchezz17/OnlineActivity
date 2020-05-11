@@ -1,5 +1,4 @@
-.chat
-{
+.chat {
     background: white;
     position: relative;
     border: 2px solid black;
@@ -14,8 +13,7 @@
     grid-row: 3 / 4;
 }
 
-.chat__title
-{
+.title {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,14 +33,12 @@
     color: white;
 }
 
-.messages
-{
+.messages {
     height: 60%;
     overflow: scroll;
 }
 
-.message
-{
+.message {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -51,26 +47,21 @@
     margin: 0;
 }
 
-.message__from
-{
+.message-from {
     font-weight: bold;
-    margin: 0;
-    margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
-.message__text
-{
+.message-text {
     margin: 0;
 }
 
-.form
-{
+.form {
     height: 15%;
 }
 
 .form,
-.messages
-{
+.messages {
     width: 90%;
     margin: auto;
     border: 1px solid gray;
@@ -78,9 +69,12 @@
     box-sizing: border-box;
 }
 
-.chat__button
-{
+.send {
     border-radius: 10px;
     width: 50%;
     margin: auto;
+}
+
+.loading {
+    text-align: center;
 }

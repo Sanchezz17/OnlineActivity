@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import styles from './chat.module.css';
 
@@ -35,7 +35,7 @@ export default class Chat extends Component {
     };
 
     onChangeInput = (event) => {
-        const { value } = event.target;
+        const {value} = event.target;
 
         this.setState({
             ...this.state,
@@ -53,22 +53,32 @@ export default class Chat extends Component {
     render() {
         return (
             <section className={styles.chat}>
-                <header className={styles.chat__title}>Чат</header>
+                <header className={styles.title}>Чат</header>
                 {
-                    this.state.loadingMessage ?
-                        <p>Loading...</p> :
-                        <section className={`chat__messages ${styles.messages}`}>
+                    this.state.loadingMessage
+                        ? <div className={styles.loading}>
+                            <p>Загрузка чата...</p>
+                        </div>
+                        : <section className={styles.messages}>
                             {this.state.messages.map(message =>
-                                <p className={`messages__item ${styles.message}`}>
-                                    <p className={styles.message__from}>{`${message.from}:`}</p>
-                                    <p className={styles.message__text}>{message.text}</p>
+                                <p className={styles.message}>
+                                    <p className={styles.messageFrom}>{`${message.from}:`}</p>
+                                    <p className={styles.messageText}>{message.text}</p>
                                 </p>
                             )}
                         </section>
                 }
-                <input className={`chat__sendForm ${styles.form}`}
-                       type='text' onChange={this.onChangeInput} onBlur={this.onBlurInput}/>
-                <button className={styles.chat__button} onClick={this.onClickEnter}>Отправить</button>
+                <input 
+                    className={styles.form}
+                    type='text' 
+                    onChange={this.onChangeInput}
+                    onBlur={this.onBlurInput}
+                />
+                <button 
+                    className={`btn btn-outline-success ${styles.send}`}
+                    onClick={this.onClickEnter}>
+                    Отправить
+                </button>
             </section>
         )
     }
