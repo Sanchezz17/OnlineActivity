@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import styles from './leaderboard.module.css';
 
-export default class Board extends Component {
+export default class Leaderboard extends Component {
     state = {
         users: [],
         loadingUsers: false
@@ -32,12 +32,12 @@ export default class Board extends Component {
 
     render() {
         if (this.state.loadingUsers) {
-            return <p>Loading...</p>
+            return <p>Загрузка...</p>
         }
 
         return (
             <section className={styles.board}>
-                {this.state.users.map(user => <p>{user.username}</p>)}
+                {this.state.users.map(user => <p>{user.name}</p>)}
             </section>
         );
     }

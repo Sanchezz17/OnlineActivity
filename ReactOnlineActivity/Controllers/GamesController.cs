@@ -29,12 +29,6 @@ namespace ReactOnlineActivity.Controllers
             
             var user = dbContext.Users.First(u => u.UserName == decodedUserName);
 
-            var player = new PlayerDto()
-            {
-                Name = user.UserName,
-                Score = 0
-            };
-
             var suitableRoom = dbContext.Rooms
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
@@ -55,9 +49,21 @@ namespace ReactOnlineActivity.Controllers
                 };
 
                 dbContext.Rooms.Add(suitableRoom);
-            } 
-            
-            suitableRoom.Game.Players.Add(player);
+            }
+
+            var player = suitableRoom.Game.Players.FirstOrDefault(p => p.Name == userName);
+
+            if (player == null)
+            {
+                player = new PlayerDto
+                {
+                    Name = user.UserName,
+                    Score = 0
+                };
+                
+                suitableRoom.Game.Players.Add(player);
+            }
+
 
             dbContext.SaveChanges();
 

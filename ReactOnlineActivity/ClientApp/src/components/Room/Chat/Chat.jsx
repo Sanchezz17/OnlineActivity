@@ -40,7 +40,7 @@ export default class Chat extends Component {
         this.setState({
             ...this.state,
             currentMessage: {
-                from: this.props.user.username,
+                from: this.props.user.name,
                 text: value
             }
         });

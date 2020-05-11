@@ -16,12 +16,7 @@ export default class App extends Component {
         return (
             <Layout>
                 <AuthorizeRoute exact path='/' component={Home}/>
-                <AuthorizeRoute 
-                    path='/rooms/:roomId' 
-                    render={(props) => {
-                        const roomId = props.match.params.roomId;
-                        return <Room key={roomId} roomId={roomId} {...props} />;
-                    }}/>
+                <AuthorizeRoute path='/rooms/:roomId' component={Room}/>
                 <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes}/>
             </Layout>
         );

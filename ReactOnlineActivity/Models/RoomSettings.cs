@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using Game.Domain;
 
-namespace Game.Domain
+namespace ReactOnlineActivity.Models
 {
     public class RoomSettings
     {

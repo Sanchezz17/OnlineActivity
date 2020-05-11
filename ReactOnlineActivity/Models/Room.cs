@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using ReactOnlineActivity.Models;
-
-namespace Game.Domain
+﻿namespace ReactOnlineActivity.Models
 {
     public class Room
     {
