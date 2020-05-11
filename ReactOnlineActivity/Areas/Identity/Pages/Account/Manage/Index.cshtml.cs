@@ -83,6 +83,12 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             if (Input.Username != userName)
             {
+                if (await _userManager.FindByNameAsync(Input.Username) != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Пользователь с таким именем уже существует.");
+                    return Page();
+                }
+                
                 var setUserNameResult = _userManager.SetUserNameAsync(user, Input.Username);
                 if (!setUserNameResult.IsCompletedSuccessfully)
                 {
