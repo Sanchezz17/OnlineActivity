@@ -5,6 +5,8 @@ export class Home extends Component {
     static displayName = Home.name;
 
     render() {
+        const { user } = this.props;
+        
         return (
             <div>
                 <h1>Игра «Онлайн-Активити»</h1>
@@ -18,7 +20,7 @@ export class Home extends Component {
                     </li>
                 </ul>
                 <div className={styles.buttons}>
-                    <a className={`btn btn-success btn-lg ${styles.button}`} href="#">
+                    <a className={`btn btn-success btn-lg ${styles.button}`} href={`/api/play?userName=${user.name}`}>
                         Начать игру
                     </a>
                     <a className={`btn btn-warning btn-lg ${styles.button}`} href="#">

@@ -12,11 +12,10 @@ namespace Game.Domain
         private const int MaxRoundTimeInMinutes = 5;
         private const int SecondsInMinutes = 60;
         private const int PointsForCorrectAnswer = 50;
-        
-        private readonly string[] _hiddenWords;
         private readonly Random _random;
         private readonly int _maxRound;
 
+        public string[] HiddenWords { get; private set; }
         public int RoundNumber { get; private set; }
         public bool GameIsOver { get; private set; }
         public Player ExplainingPlayer { get; private set; }
@@ -28,8 +27,8 @@ namespace Game.Domain
 
         public GameEntity(Guid id, string[] hiddenWords, IEnumerable<Player> players)
         {
-            _hiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
-            _maxRound = _hiddenWords.Length;
+            HiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
+            _maxRound = HiddenWords.Length;
             _random = new Random();
             
             Canvas = new Canvas(CanvasWidth, CanvasHeight);
@@ -51,7 +50,7 @@ namespace Game.Domain
             CheckTime();
             if (GameIsOver)
                 return false;
-            return wordFromPlayer.Trim() == _hiddenWords[RoundNumber];
+            return wordFromPlayer.Trim() == HiddenWords[RoundNumber];
         }
 
         public void Paint(IEnumerable<Pixel> pixels)

@@ -16,6 +16,99 @@ namespace ReactOnlineActivity.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
 
+            modelBuilder.Entity("Game.Domain.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SettingsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("SettingsId");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("Game.Domain.RoomSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPrivateRoom")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPlayerCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PointsToWin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoundTime")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoomSettings");
+                });
+
+            modelBuilder.Entity("Game.Domain.Theme", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RoomSettingsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomSettingsId");
+
+                    b.ToTable("Theme");
+                });
+
+            modelBuilder.Entity("Game.Domain.Word", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GameDtoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ThemeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameDtoId");
+
+                    b.HasIndex("ThemeId");
+
+                    b.ToTable("Word");
+                });
+
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
                     b.Property<string>("UserCode")
@@ -297,6 +390,98 @@ namespace ReactOnlineActivity.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ReactOnlineActivity.Models.CanvasDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CanvasDto");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.GameDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CanvasId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ExplainingPlayerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("GameIsOver")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoundNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("TimeStartGame")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CanvasId");
+
+                    b.HasIndex("ExplainingPlayerId");
+
+                    b.ToTable("GameDto");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.PlayerDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GameDtoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameDtoId");
+
+                    b.ToTable("PlayerDto");
+                });
+
+            modelBuilder.Entity("Game.Domain.Room", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.GameDto", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId");
+
+                    b.HasOne("Game.Domain.RoomSettings", "Settings")
+                        .WithMany()
+                        .HasForeignKey("SettingsId");
+                });
+
+            modelBuilder.Entity("Game.Domain.Theme", b =>
+                {
+                    b.HasOne("Game.Domain.RoomSettings", null)
+                        .WithMany("Themes")
+                        .HasForeignKey("RoomSettingsId");
+                });
+
+            modelBuilder.Entity("Game.Domain.Word", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.GameDto", null)
+                        .WithMany("HiddenWords")
+                        .HasForeignKey("GameDtoId");
+
+                    b.HasOne("Game.Domain.Theme", null)
+                        .WithMany("Words")
+                        .HasForeignKey("ThemeId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -346,6 +531,24 @@ namespace ReactOnlineActivity.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.GameDto", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.CanvasDto", "Canvas")
+                        .WithMany()
+                        .HasForeignKey("CanvasId");
+
+                    b.HasOne("ReactOnlineActivity.Models.PlayerDto", "ExplainingPlayer")
+                        .WithMany()
+                        .HasForeignKey("ExplainingPlayerId");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.PlayerDto", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.GameDto", null)
+                        .WithMany("Players")
+                        .HasForeignKey("GameDtoId");
                 });
 #pragma warning restore 612, 618
         }

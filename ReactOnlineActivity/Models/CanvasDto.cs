@@ -2,6 +2,6 @@
 {
     public class CanvasDto
     {
-        
+        public int Id { get; set; }
     }
 }

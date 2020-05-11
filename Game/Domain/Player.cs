@@ -4,13 +4,13 @@ namespace Game.Domain
 {
     public class Player
     {
-        public Guid UserId { get; }
+        public string Id { get; }
         public string Name { get; }
         public int Score { get; set; }
         
-        public Player(Guid userId, string name)
+        public Player(string userId, string name)
         {
-            UserId = userId;
+            Id = userId;
             Name = name;
         }
     }
