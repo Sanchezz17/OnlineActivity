@@ -23,7 +23,7 @@
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Привет, @User.Identity.Name</a>
         </li>
-        @if (user.PhotoUrl != null)
+        @if (user != null && user.PhotoUrl != null)
         {
             <li class="nav-item">
                 <img src="@user.PhotoUrl"

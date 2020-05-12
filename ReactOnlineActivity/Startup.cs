@@ -11,6 +11,7 @@ using ReactOnlineActivity.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PhotosApp.Services;
 using ReactOnlineActivity.Hubs;
 using ReactOnlineActivity.Services;
@@ -96,16 +97,16 @@ namespace ReactOnlineActivity
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
-            // services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
-            //     new SimpleEmailSender(
-            //         serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
-            //         serviceProvider.GetRequiredService<IWebHostEnvironment>(),
-            //         Configuration["SimpleEmailSender:Host"],
-            //         Configuration.GetValue<int>("SimpleEmailSender:Port"),
-            //         Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
-            //         System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
-            //         System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
-            //     ));
+            services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
+                new SimpleEmailSender(
+                    serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
+                    serviceProvider.GetRequiredService<IWebHostEnvironment>(),
+                    Configuration["SimpleEmailSender:Host"],
+                    Configuration.GetValue<int>("SimpleEmailSender:Port"),
+                    Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
+                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
+                    System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
+                ));
             
             services.AddSignalR();
         }

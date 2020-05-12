@@ -88,12 +88,18 @@ namespace ReactOnlineActivity.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
             {
+                if (await _userManager.FindByEmailAsync(Input.NewEmail) != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Адрес электронной почты занят другим пользователем.");
+                    return Page();
+                }
+                
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmailChange",
                     pageHandler: null,
-                    values: new { userId = userId, email = Input.NewEmail, code = code },
+                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
