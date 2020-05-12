@@ -213,8 +213,6 @@ export class AuthorizeService {
 
 const authService = new AuthorizeService();
 
-authService.signInSilent()
-
 export default authService;
 
 export const AuthenticationResultStatus = {

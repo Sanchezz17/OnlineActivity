@@ -15,7 +15,8 @@ export default class AuthorizeRoute extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await authService.signInSilent();
         this._subscription = authService.subscribe(() => this.authenticationChanged());
         this.populateAuthenticationState();
     }
@@ -48,7 +49,7 @@ export default class AuthorizeRoute extends Component {
     async populateAuthenticationState() {
         const authenticated = await authService.isAuthenticated();
         if (authenticated) {
-            const user = await authService.getUser();
+            const user = await authService.getUser()
             this.setState({user});
         }
         this.setState({ ready: true, authenticated });
