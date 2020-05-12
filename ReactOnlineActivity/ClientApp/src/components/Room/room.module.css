@@ -1,8 +1,19 @@
-﻿.room {
+﻿html {
+    overflow: hidden;
+}
+
+.room {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 150px);
-    margin: 50px;
-    min-height: 100vh;
+    grid-template-rows: repeat(7, 1fr);
+    margin: 30px;
+    height: 100vh;
+}
+
+@media screen and (max-width: 640px) {
+    .room {
+        margin: 0;
+        grid-gap: 10px;
+    }
 }

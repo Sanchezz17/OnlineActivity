@@ -2,9 +2,12 @@ import React, {Component} from 'react';
 import styles from './leaderboard.module.css';
 
 export default class Leaderboard extends Component {
-    state = {
-        users: [],
-        loadingUsers: false
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: [],
+            loadingUsers: false
+        }
     }
 
     componentDidMount() {

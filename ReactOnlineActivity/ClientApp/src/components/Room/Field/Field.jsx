@@ -1,17 +1,20 @@
-import React, { Component } from 'react';
-import { Stage, Layer, Line } from 'react-konva';
+import React, {Component} from 'react';
+import {Stage, Layer, Line} from 'react-konva';
 import styles from './field.module.css';
 
 export default class Field extends Component {
-    state = {
-        lines: [],
-        loadingField: true,
-        drawing: false,
-        stageRef: undefined,
-        isActiveUser: true,
-        activeUser: undefined,
-        users: []
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            lines: [],
+            loadingField: true,
+            drawing: false,
+            stageRef: undefined,
+            isActiveUser: true,
+            activeUser: undefined,
+            users: []
+        };
+    }
 
     componentDidMount() {
         setInterval(this.fetchLines, 500);
@@ -101,7 +104,7 @@ export default class Field extends Component {
         }
         const stage = this.state.stageRef.getStage();
         const point = stage.getPointerPosition();
-        const { lines } = this.state;
+        const {lines} = this.state;
         let lastLine = lines[lines.length - 1];
         lastLine = lastLine.concat([point.x, point.y]);
         lines.splice(lines.length - 1, 1, lastLine);
@@ -124,28 +127,35 @@ export default class Field extends Component {
             <section className={styles.field}>
                 {this.state.isActiveUser ?
                     <section className={'drawerTools'}>
-                        <button className={`btn btn-outline-primary btn-sm ${styles.end}`}>Завершить</button>
-                        <button className={`btn btn-outline-warning btn-sm ${styles.clear}`}
-                                onClick={this.clearField}>Очистить</button>
-                    </section>: ''
+                        <button
+                            className={`btn btn-outline-warning btn-sm ${styles.clear}`}
+                            onClick={this.clearField}
+                        >
+                            Очистить
+                        </button>
+                        <button
+                            className={`btn btn-outline-primary btn-sm ${styles.end}`}
+                        >
+                            Завершить
+                        </button>
+                    </section> : ''
                 }
-                {this.state.loadingField 
+                {this.state.loadingField
                     ? <div className={styles.loading}>
                         <p>Загрузка...</p>
                     </div>
-                    :
-                    <Stage
+                    : <Stage
                         width={window.innerWidth}
                         height={window.innerHeight}
-                        onContentMousedown={this.state.isActiveUser ? this.handleMouseDown: () => {} }
-                        onContentMousemove={this.state.isActiveUser ? this.handleMouseMove: () => {} }
-                        onContentMouseup={this.state.isActiveUser ? this.handleMouseUp: () => {} }
+                        onContentMousedown={this.state.isActiveUser ? this.handleMouseDown : () => {}}
+                        onContentMousemove={this.state.isActiveUser ? this.handleMouseMove : () => {}}
+                        onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {}}
                         ref={node => {
                             this.state.stageRef = node;
                         }}>
                         <Layer>
                             {this.state.lines.map((line, i) => (
-                                <Line key={i} points={line} stroke="blue" />
+                                <Line key={i} points={line} stroke="blue"/>
                             ))}
                         </Layer>
                     </Stage>

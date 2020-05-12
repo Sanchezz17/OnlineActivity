@@ -7,34 +7,32 @@
     margin: 0;
 
     grid-column: 2 / 4;
-    grid-row: 1 / 3;
+    grid-row: 1 / 5;
 }
 
 .clear {
-    right: 20px;
+    right: 120px;
 }
 
 .end {
-    right: 120px;
+    right: 20px;
 }
 
 .end,
 .clear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
 
+    z-index: 10;
+    width: 90px;
+    height: 30px;
+    font-size: 15px;
     position: absolute;
 
-    width: 80px;
-    height: 30px;
     margin-top: -15px;
     border-radius: 5px;
 
     background: darkblue;
     text-align: center;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'nunitoblack', sans-serif;
     font-weight: bold;
     color: white;
 }
@@ -45,4 +43,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media screen and (max-width: 640px) {
+    .field {
+        grid-column: 1 / 4;
+    }
 }

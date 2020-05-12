@@ -51,7 +51,7 @@ namespace ReactOnlineActivity.Controllers
                 dbContext.Rooms.Add(suitableRoom);
             }
 
-            var player = suitableRoom.Game.Players.FirstOrDefault(p => p.Name == userName);
+            var player = suitableRoom.Game.Players.FirstOrDefault(p => p.Name == decodedUserName);
 
             if (player == null)
             {
