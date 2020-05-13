@@ -140,7 +140,7 @@ namespace ReactOnlineActivity
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<RoomHub>("/room");
             });
 
             app.UseSpa(spa =>

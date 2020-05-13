@@ -1,52 +1,33 @@
 import React, {Component} from 'react';
-import * as signalR from '@aspnet/signalr';
+import {RoomHubEvents} from '../RoomConstants';
 import styles from './chat.module.css';
 
 export default class Chat extends Component {
-    SEND = 'send';
-    NEW_MESSAGE = 'newMessage';
-    JOIN_ROOM_CHAT = 'joinRoomChat';
-    NOTIFY = 'notify';
-    
     constructor(props) {
         super(props);
         this.state = {
             messages: [],
-            currentMessage: '',
-            hubConnection: null
+            currentMessage: ''
         };
     }
 
-    componentDidMount() {
-        const hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/chat")
-            .build();
-
-        this.setState({ hubConnection: hubConnection }, async () => {
-            await this.state.hubConnection.start()
-                .then(() => console.log('Connection started!'))
-                .catch(err => console.log('Error while establishing connection :('));
-            
-            this.state.hubConnection.on(this.NEW_MESSAGE, (from, text) => {
-                this.setState({
-                    messages: [{from, text}, ...this.state.messages]
-                })
-            });
-
-            this.state.hubConnection.on(this.NOTIFY, (notification) => {
-                this.setState({
-                    messages: [{from: notification, text: ''}, ...this.state.messages]
-                })
-            });
-            
-            await this.state.hubConnection.invoke(this.JOIN_ROOM_CHAT, this.props.roomId, this.props.user.name);
+    async componentDidMount() {
+        await this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
+            this.setState({
+                messages: [{from, text}, ...this.state.messages]
+            })
         });
 
+        this.props.hubConnection.on(RoomHubEvents.NOTIFY, (notification) => {
+            this.setState({
+                messages: [{from: notification, text: ''}, ...this.state.messages]
+            })
+        });
     }
 
     onPostMessage = (event) => {
         event.preventDefault();
-        this.state.hubConnection.invoke(this.SEND, this.props.roomId, this.props.user.name, this.state.currentMessage);
+        this.props.hubConnection.invoke(RoomHubEvents.SEND, this.props.roomId, this.props.user.name, this.state.currentMessage);
         this.setState({currentMessage: ''})
     };
 

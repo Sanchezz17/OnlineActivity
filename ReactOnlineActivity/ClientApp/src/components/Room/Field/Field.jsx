@@ -9,9 +9,9 @@ export default class Field extends Component {
             lines: [],
             loadingField: true,
             drawing: false,
-            stageRef: undefined,
+            stageRef: null,
             isActiveUser: true,
-            activeUser: undefined,
+            activeUser: null,
             users: []
         };
     }
