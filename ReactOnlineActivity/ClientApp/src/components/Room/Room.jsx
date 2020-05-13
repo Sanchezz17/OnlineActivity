@@ -30,7 +30,7 @@ export default class Room extends Component {
     componentWillUnmount() {
         const { user } = this.props;
         this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
-        fetch(`/api/leave?roomId=${this.props.roomId}&playerName=${user.name}`)
+        fetch(`/api/leave?roomId=${this.roomId}&playerName=${user.name}`)
     }
 
     render() {
