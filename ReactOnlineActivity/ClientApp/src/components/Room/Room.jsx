@@ -6,36 +6,46 @@ import Chat from './Chat/Chat';
 import {RoomHubEvents} from './RoomConstants';
 import styles from './room.module.css';
 
-
 export default class Room extends Component {
     constructor(props) {
         super(props);
-        this.roomId =  this.props.match.params.roomId;
+        this.roomId = this.props.match.params.roomId;
+        this.hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/room")
+            .build();
+
+        this.state = {
+            loading: true
+        }
+    }
+
+    async componentDidMount() {
+        await this.hubConnection.start()
+        this.setState({loading: false})
+        const {user} = this.props;
+        this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name, user.photoUrl);
+
     }
 
     componentWillUnmount() {
-        this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, this.props.user.name);
+        const { user } = this.props;
+        this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
+        fetch(`/api/leave?roomId=${this.props.roomId}&playerName=${user.name}`)
     }
 
     render() {
         const {user} = this.props;
 
-        this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/room")
-            .build();
-        this.hubConnection.start()
-            .then(() => {
-                console.log('Connection started!');
-                this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name);
-            })
-            .catch(err => console.log('Error while establishing connection :('));
-
         return (
-            <section className={styles.room}>
-                <Leaderboard roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-                <Field roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-                <Chat roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-            </section>
+            this.state.loading
+                ? <div className={styles.loading}>
+                    <p>Загрузка игры...</p>
+                </div>
+                : <section className={styles.room}>
+                    <Leaderboard roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                    <Field roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                    <Chat roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                </section>
         );
     }
 }

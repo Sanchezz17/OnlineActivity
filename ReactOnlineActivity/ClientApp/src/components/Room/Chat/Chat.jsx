@@ -11,8 +11,8 @@ export default class Chat extends Component {
         };
     }
 
-    async componentDidMount() {
-        await this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
+    componentDidMount() {
+        this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
             this.setState({
                 messages: [{from, text}, ...this.state.messages]
             })

@@ -1,7 +1,8 @@
 ﻿export const RoomHubEvents = {
-    JOIN_ROOM: "joinRoom",
-    LEAVE_ROOM: "leaveRoom",
+    JOIN_ROOM: "join",
+    LEAVE_ROOM: "leave",
     SEND: 'send',
     NEW_MESSAGE: 'newMessage',
-    NOTIFY: 'notify'
+    NOTIFY: 'notify',
+    NEW_PLAYER: 'newPlayer'
 }

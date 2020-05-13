@@ -21,12 +21,12 @@ namespace ReactOnlineActivity.Controllers
         {
             this.dbContext = dbContext;
         }
-        
+
         [HttpGet("play")]
         public RedirectResult Play([FromQuery] string userName)
         {
             var decodedUserName = HttpUtility.UrlDecode(userName);
-            
+
             var user = dbContext.Users.First(u => u.UserName == decodedUserName);
 
             var suitableRoom = dbContext.Rooms
@@ -41,7 +41,7 @@ namespace ReactOnlineActivity.Controllers
                 {
                     Game = new GameDto
                     {
-                        HiddenWords = new List<Word> { new Word {Value = "kek"}, new Word {Value ="lol"} },
+                        HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
                         Players = new List<PlayerDto>(),
                         TimeStartGame = DateTime.Now.ToEpochTime()
                     },
@@ -58,9 +58,10 @@ namespace ReactOnlineActivity.Controllers
                 player = new PlayerDto
                 {
                     Name = user.UserName,
+                    PhotoUrl = user.PhotoUrl,
                     Score = 0
                 };
-                
+
                 suitableRoom.Game.Players.Add(player);
             }
 
@@ -68,6 +69,33 @@ namespace ReactOnlineActivity.Controllers
             dbContext.SaveChanges();
 
             return Redirect($"/rooms/{suitableRoom.Id}");
-        } 
+        }
+
+        [HttpGet("players")]
+        public IEnumerable<PlayerDto> GetPlayers([FromQuery] int roomId)
+        {
+            var room = dbContext.Rooms
+                .Include(r => r.Game)
+                .Include(r => r.Game.Players)
+                .SingleOrDefault(r => r.Id == roomId);
+
+            return room?.Game.Players;
+        }
+
+        [HttpGet("leave")]
+        public void LeaveGame([FromQuery] int roomId, [FromQuery] string playerName)
+        {
+            var room = dbContext.Rooms
+                .Include(r => r.Game)
+                .Include(r => r.Game.Players)
+                .SingleOrDefault(r => r.Id == roomId);
+
+            var player = room?.Game.Players.SingleOrDefault(p => p.Name == playerName);
+            if (player != null)
+            {
+                room.Game.Players.Remove(player);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }
