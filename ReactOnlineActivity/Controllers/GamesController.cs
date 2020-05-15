@@ -5,9 +5,9 @@ using System.Web;
 using Game.Domain;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
+using ReactOnlineActivity.Repositories;
 
 namespace ReactOnlineActivity.Controllers
 {
@@ -15,44 +15,38 @@ namespace ReactOnlineActivity.Controllers
     [Route("api")]
     public class GamesController : Controller
     {
-        private ApplicationDbContext dbContext;
+        private readonly UserRepository userRepository;
+        private readonly RoomRepository roomRepository;
+        private readonly PlayerRepository playerRepository;
 
-        public GamesController(ApplicationDbContext dbContext)
+        public GamesController(UserRepository userRepository,
+            RoomRepository roomRepository,
+            PlayerRepository playerRepository,
+            IMapper mapper)
         {
-            this.dbContext = dbContext;
+            this.userRepository = userRepository;
+            this.roomRepository = roomRepository;
+            this.playerRepository = playerRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet("play")]
         public RedirectResult Play([FromQuery] string userName)
         {
             var decodedUserName = HttpUtility.UrlDecode(userName);
+            var user = userRepository.FindByName(decodedUserName);
 
-            var user = dbContext.Users.First(u => u.UserName == decodedUserName);
-
-            var suitableRoom = dbContext.Rooms
-                .Include(r => r.Game)
-                .Include(r => r.Game.Players)
-                .Include(r => r.Settings)
-                .FirstOrDefault(room => room.Game.Players.Count < room.Settings.MaxPlayerCount);
-
+            var suitableRoom = roomRepository.FindSuitable();
             if (suitableRoom == null)
             {
-                suitableRoom = new Room
-                {
-                    Game = new GameDto
-                    {
-                        HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
-                        Players = new List<PlayerDto>(),
-                        TimeStartGame = DateTime.Now.ToEpochTime()
-                    },
-                    Settings = new RoomSettings()
-                };
-
-                dbContext.Rooms.Add(suitableRoom);
+                suitableRoom = CreateTestRoom();
+                roomRepository.Insert(suitableRoom);
             }
 
-            var player = suitableRoom.Game.Players.FirstOrDefault(p => p.Name == decodedUserName);
-
+            var player = suitableRoom
+                .Game
+                .Players
+                .FirstOrDefault(p => p.Name == decodedUserName);
             if (player == null)
             {
                 player = new PlayerDto
@@ -61,41 +55,39 @@ namespace ReactOnlineActivity.Controllers
                     PhotoUrl = user.PhotoUrl,
                     Score = 0
                 };
-
-                suitableRoom.Game.Players.Add(player);
+                roomRepository.InsertPlayerIntoRoom(suitableRoom.Id, player);
             }
-
-
-            dbContext.SaveChanges();
 
             return Redirect($"/rooms/{suitableRoom.Id}");
         }
 
         [HttpGet("players")]
-        public IEnumerable<PlayerDto> GetPlayers([FromQuery] int roomId)
-        {
-            var room = dbContext.Rooms
-                .Include(r => r.Game)
-                .Include(r => r.Game.Players)
-                .SingleOrDefault(r => r.Id == roomId);
-
-            return room?.Game.Players;
-        }
+        public IEnumerable<PlayerDto> GetPlayers([FromQuery] int roomId) => playerRepository.SelectAllFromRoom(roomId);
 
         [HttpGet("leave")]
         public void LeaveGame([FromQuery] int roomId, [FromQuery] string playerName)
         {
-            var room = dbContext.Rooms
-                .Include(r => r.Game)
-                .Include(r => r.Game.Players)
-                .SingleOrDefault(r => r.Id == roomId);
+            playerRepository.DeletePlayerFromRoom(roomId, playerName);
+        }
 
-            var player = room?.Game.Players.SingleOrDefault(p => p.Name == playerName);
-            if (player != null)
+        [HttpGet("rooms/{roomId}")]
+        public Room GetRoom([FromRoute] int roomId)
+        {
+            return roomRepository.Find(roomId);
+        }
+
+        private Room CreateTestRoom()
+        {
+            return new Room
             {
-                room.Game.Players.Remove(player);
-                dbContext.SaveChanges();
-            }
+                Game = new GameDto
+                {
+                    HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
+                    Players = new List<PlayerDto>(),
+                    TimeStartGame = DateTime.Now.ToEpochTime()
+                },
+                Settings = new RoomSettings()
+            };
         }
     }
 }
