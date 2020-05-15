@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using AutoMapper;
+using Game.Domain;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotosApp.Services;
 using ReactOnlineActivity.Hubs;
+using ReactOnlineActivity.Repositories;
 using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
 
@@ -109,6 +112,16 @@ namespace ReactOnlineActivity
                 ));
             
             services.AddSignalR();
+
+            services.AddScoped<RoomRepository>();
+            services.AddScoped<PlayerRepository>();
+            services.AddScoped<UserRepository>();
+
+            services.AddAutoMapper(cfg =>
+                {
+                    cfg.CreateMap<GameDto, GameEntity>();
+                }
+                , new System.Reflection.Assembly[0]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using AutoMapper;
 using Game.Domain;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace ReactOnlineActivity.Controllers
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
+        private readonly IMapper mapper;
 
         public GamesController(UserRepository userRepository,
             RoomRepository roomRepository,
