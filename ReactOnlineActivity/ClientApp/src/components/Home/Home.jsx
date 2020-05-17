@@ -19,11 +19,11 @@ export class Home extends Component {
                         <strong>Создайте комнату</strong> и настройте её под себя для игры с друзьями!
                     </li>
                 </ul>
-                <div className={styles.buttons}>
-                    <a className={`btn btn-success btn-lg ${styles.button}`} href={`/api/play?userName=${user.name}`}>
+                <div className={styles.links}>
+                    <a className={`btn btn-success btn-lg ${styles.link}`} href={`/api/play?userName=${user.name}`}>
                         Начать игру
                     </a>
-                    <a className={`btn btn-warning btn-lg ${styles.button}`} href="#">
+                    <a className={`btn btn-warning btn-lg ${styles.link}`} href="/create">
                         Создать комнату
                     </a>
                 </div>

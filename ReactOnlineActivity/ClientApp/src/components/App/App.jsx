@@ -8,6 +8,7 @@ import {ApplicationPaths} from '../api-authorization/ApiAuthorizationConstants';
 import Room from "../Room/Room";
 
 import './app.module.css'
+import CreateRoom from "../CreateRoom/CreateRoom";
 
 export default class App extends Component {
     static displayName = App.name;
@@ -17,6 +18,7 @@ export default class App extends Component {
             <Layout>
                 <AuthorizeRoute exact path='/' component={Home}/>
                 <AuthorizeRoute path='/rooms/:roomId' component={Room}/>
+                <AuthorizeRoute path='/create' component={CreateRoom}/>
                 <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes}/>
             </Layout>
         );
