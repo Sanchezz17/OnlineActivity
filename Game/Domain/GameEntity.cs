@@ -7,19 +7,17 @@ namespace Game.Domain
 {
     public class GameEntity
     {
-        private const int CanvasWidth = 100;
-        private const int CanvasHeight = 100;
         private const int MaxRoundTimeInMinutes = 5;
         private const int SecondsInMinutes = 60;
         private const int PointsForCorrectAnswer = 50;
         private readonly Random _random;
         private readonly int _maxRound;
 
-        public string[] HiddenWords { get; private set; }
+        public string[] HiddenWords { get; }
         public int RoundNumber { get; private set; }
         public bool GameIsOver { get; private set; }
         public Player ExplainingPlayer { get; private set; }
-        public Canvas Canvas { get; }
+        public List<Line> Canvas { get; }
         public List<Player> Players { get; }
         public DateTime TimeStartGame { get; }
         public TimeSpan TimeInGame => DateTime.Now - TimeStartGame;
@@ -31,7 +29,7 @@ namespace Game.Domain
             _maxRound = HiddenWords.Length;
             _random = new Random();
             
-            Canvas = new Canvas(CanvasWidth, CanvasHeight);
+            Canvas = new List<Line>();
             Players = players.ToList();
             TimeStartGame = DateTime.Now;
             Id = id;
@@ -56,8 +54,8 @@ namespace Game.Domain
         public void Paint(IEnumerable<Pixel> pixels)
         {
             CheckTime();
-            if (!GameIsOver)
-                Canvas.PaintOverPixels(pixels);  
+            //if (!GameIsOver)
+              //  Canvas.PaintOverPixels(pixels);  
         } 
 
         public void CompleteRound(Player guessingPlayer)

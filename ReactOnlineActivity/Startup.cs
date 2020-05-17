@@ -120,6 +120,7 @@ namespace ReactOnlineActivity
             services.AddAutoMapper(cfg =>
                 {
                     cfg.CreateMap<GameDto, GameEntity>();
+                    cfg.CreateMap<GameEntity, GameDto>();
                 }
                 , new System.Reflection.Assembly[0]);
         }
