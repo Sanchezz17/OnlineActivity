@@ -1,7 +1,8 @@
 ﻿import React, {Component} from 'react';
+import {Redirect, withRouter} from 'react-router';
 import styles from './createRoom.module.css';
 
-export default class CreateRoom extends Component {
+class CreateRoom extends Component {
     constructor(props) {
         super(props);
 
@@ -37,16 +38,17 @@ export default class CreateRoom extends Component {
     }
 
     handleSubmit = async (event) => {
+        event.preventDefault();
         const response = await fetch('/api/rooms', {
             method: 'POST',
-            redirect: 'follow',
+            redirect: 'manual',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(this.state.settings)
-        }).then(response => console.log(response));
-        //toDO redirect не работает
-        event.preventDefault();
+        });
+        const newRoomId = await response.json();
+        this.props.history.push(`/rooms/${newRoomId}`);
     }
 
     render() {
@@ -57,7 +59,6 @@ export default class CreateRoom extends Component {
                 </div>
                 : <form 
                     className={styles.container}
-                    onSubmit={this.handleSubmit}
                 >
                     <div className={styles.settings}>
                         <h2 className={styles.header}>Настройки</h2>
@@ -140,13 +141,16 @@ export default class CreateRoom extends Component {
                         </ul>
                     </div>
                     <div className={styles.submit}>
-                        <input
-                            type="submit"
-                            value="Создать комнату"
+                        <button
+                            onClick={this.handleSubmit}
                             className={`btn btn-success btn-lg ${styles.submit__button}`}
-                        />
+                        >
+                            Создать комнату
+                        </button>
                     </div>
                 </form>
         )
     }
 }
+
+export default withRouter(CreateRoom)

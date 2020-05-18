@@ -101,7 +101,7 @@ namespace ReactOnlineActivity.Controllers
         }
 
         [HttpPost("rooms")]
-        public RedirectResult CreateRoom([FromBody] RoomSettings roomSettings)
+        public string CreateRoom([FromBody] RoomSettings roomSettings)
         {
             var newRoom = new Room()
             {
@@ -111,7 +111,7 @@ namespace ReactOnlineActivity.Controllers
             
             roomRepository.Insert(newRoom);
 
-            return Redirect($"/rooms/{newRoom.Id}");
+            return newRoom.Id.ToString();
         }
 
         private Room CreateTestRoom()
