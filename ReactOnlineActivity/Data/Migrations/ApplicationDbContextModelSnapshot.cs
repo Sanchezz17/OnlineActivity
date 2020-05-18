@@ -340,24 +340,10 @@ namespace ReactOnlineActivity.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ReactOnlineActivity.Models.CanvasDto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CanvasDto");
-                });
-
             modelBuilder.Entity("ReactOnlineActivity.Models.GameDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CanvasId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ExplainingPlayerId")
@@ -374,11 +360,25 @@ namespace ReactOnlineActivity.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CanvasId");
-
                     b.HasIndex("ExplainingPlayerId");
 
                     b.ToTable("GameDto");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.LineDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GameDtoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameDtoId");
+
+                    b.ToTable("LineDto");
                 });
 
             modelBuilder.Entity("ReactOnlineActivity.Models.PlayerDto", b =>
@@ -404,6 +404,31 @@ namespace ReactOnlineActivity.Data.Migrations
                     b.HasIndex("GameDtoId");
 
                     b.ToTable("PlayerDto");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.RgbDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("B")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("G")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("LineDtoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("R")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LineDtoId");
+
+                    b.ToTable("RgbDto");
                 });
 
             modelBuilder.Entity("ReactOnlineActivity.Models.Room", b =>
@@ -527,13 +552,16 @@ namespace ReactOnlineActivity.Data.Migrations
 
             modelBuilder.Entity("ReactOnlineActivity.Models.GameDto", b =>
                 {
-                    b.HasOne("ReactOnlineActivity.Models.CanvasDto", "Canvas")
-                        .WithMany()
-                        .HasForeignKey("CanvasId");
-
                     b.HasOne("ReactOnlineActivity.Models.PlayerDto", "ExplainingPlayer")
                         .WithMany()
                         .HasForeignKey("ExplainingPlayerId");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.LineDto", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.GameDto", null)
+                        .WithMany("Canvas")
+                        .HasForeignKey("GameDtoId");
                 });
 
             modelBuilder.Entity("ReactOnlineActivity.Models.PlayerDto", b =>
@@ -541,6 +569,13 @@ namespace ReactOnlineActivity.Data.Migrations
                     b.HasOne("ReactOnlineActivity.Models.GameDto", null)
                         .WithMany("Players")
                         .HasForeignKey("GameDtoId");
+                });
+
+            modelBuilder.Entity("ReactOnlineActivity.Models.RgbDto", b =>
+                {
+                    b.HasOne("ReactOnlineActivity.Models.LineDto", null)
+                        .WithMany("Value")
+                        .HasForeignKey("LineDtoId");
                 });
 
             modelBuilder.Entity("ReactOnlineActivity.Models.Room", b =>
