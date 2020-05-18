@@ -20,14 +20,14 @@ namespace ReactOnlineActivity.Repositories
 
         public IEnumerable<PlayerDto> SelectAllFromRoom(int roomId)
         {
-            return roomRepository.Find(roomId)
+            return roomRepository.FindById(roomId)
                 ?.Game
                 .Players;
         }
 
         public void DeletePlayerFromRoom(int roomId, string playerName)
         {
-            var room = roomRepository.Find(roomId);
+            var room = roomRepository.FindById(roomId);
             var player = room?
                 .Game
                 .Players

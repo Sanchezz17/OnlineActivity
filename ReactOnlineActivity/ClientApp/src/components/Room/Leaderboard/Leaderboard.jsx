@@ -24,8 +24,7 @@ export default class Leaderboard extends Component {
             });
         });
 
-        await this.fetchPlayers()
-        await this.addPlayer();
+        await this.fetchPlayers();
     }
 
     fetchPlayers = async () => {
@@ -35,11 +34,6 @@ export default class Leaderboard extends Component {
             loadingPlayers: false,
             players
         });
-    };
-
-    addPlayer = async () => {
-        const newPlayer = this.state.players.find(p => p.name === this.props.user.name);
-        await this.props.hubConnection.invoke(RoomHubEvents.NEW_PLAYER, this.props.roomId, newPlayer);
     };
 
     renderPlayers = () => {

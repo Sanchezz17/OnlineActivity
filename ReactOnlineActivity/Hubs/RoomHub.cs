@@ -6,10 +6,11 @@ namespace ReactOnlineActivity.Hubs
 {
     public class RoomHub : Hub
     {
-        public async Task Join(string roomId, string userName, string userPhotoUrl)
+        public async Task Join(string roomId, string userName, bool alreadyInRoom)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await Clients.Group(roomId).SendAsync("notify", $"{userName} вошел в игру");
+            if (!alreadyInRoom)
+                await Clients.Group(roomId).SendAsync("notify", $"{userName} вошел в игру");
         }
 
         public async Task NewPlayer(string roomId, PlayerDto player)

@@ -36,15 +36,17 @@ export default class CreateRoom extends Component {
         });
     }
 
-    handleSubmit = (event) => {
-        // fetch('/api/rooms', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json;charset=utf-8'
-        //     },
-        //     body: JSON.stringify(this.state.settings)
-        // });
-        event.preventDefault()
+    handleSubmit = async (event) => {
+        const response = await fetch('/api/rooms', {
+            method: 'POST',
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(this.state.settings)
+        }).then(response => console.log(response));
+        //toDO redirect не работает
+        event.preventDefault();
     }
 
     render() {

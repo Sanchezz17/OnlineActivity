@@ -9,7 +9,7 @@ namespace ReactOnlineActivity.Repositories
     public class RoomRepository
     {
         private readonly ApplicationDbContext dbContext;
-        
+
         public RoomRepository(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
@@ -21,10 +21,11 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
-                .FirstOrDefault(room => room.Game.Players.Count < room.Settings.MaxPlayerCount);
+                .FirstOrDefault(room =>
+                    !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
         }
 
-        public Room Find(int roomId)
+        public Room FindById(int roomId)
         {
             return dbContext.Rooms
                 .Include(r => r.Game)
@@ -40,13 +41,11 @@ namespace ReactOnlineActivity.Repositories
 
         public void InsertPlayerIntoRoom(int roomId, PlayerDto player)
         {
-            var room = Find(roomId);
+            var room = FindById(roomId);
             if (room == null)
                 throw new Exception(); //todo: более осмысленное исключение сделать
             room.Game.Players.Add(player);
             dbContext.SaveChanges();
-        } 
-        
-        
+        }
     }
 }

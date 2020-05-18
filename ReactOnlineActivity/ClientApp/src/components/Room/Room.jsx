@@ -4,6 +4,7 @@ import Leaderboard from './Leaderboard/Leaderboard';
 import Field from './Field/Field';
 import Chat from './Chat/Chat';
 import {RoomHubEvents} from './RoomConstants';
+import {CopyToClipboard} from "react-copy-to-clipboard";
 import styles from './room.module.css';
 
 export default class Room extends Component {
@@ -21,15 +22,21 @@ export default class Room extends Component {
 
     async componentDidMount() {
         await this.hubConnection.start()
-        this.setState({loading: false})
         const {user} = this.props;
-        this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name, user.photoUrl);
-
+        const response = await fetch(`/api/rooms/${this.roomId}/join?userName=${user.name}`);
+        const joinRoomDto = await response.json();
+        console.log(joinRoomDto)
+        this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name, joinRoomDto.alreadyInRoom);
+        if (!joinRoomDto.alreadyInRoom) {
+            this.hubConnection.invoke(RoomHubEvents.NEW_PLAYER, this.roomId, joinRoomDto.player);
+        }
+        this.setState({loading: false})
     }
 
     componentWillUnmount() {
         const { user } = this.props;
         this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
+        console.log("leave room")
         fetch(`/api/leave?roomId=${this.roomId}&playerName=${user.name}`)
     }
 
@@ -41,11 +48,16 @@ export default class Room extends Component {
                 ? <div className={styles.loading}>
                     <p>Загрузка игры...</p>
                 </div>
-                : <section className={styles.room}>
-                    <Leaderboard roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-                    <Field roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-                    <Chat roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
-                </section>
+                :  <div>
+                    <CopyToClipboard text={`${window.location.host}/rooms/${this.roomId}`}>
+                        <p className={styles.copy}>Скопировать ссылку на комнату</p>
+                    </CopyToClipboard>
+                    <section className={styles.room}>
+                        <Leaderboard roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                        <Field roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                        <Chat roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
+                    </section>
+                </div>
         );
     }
 }

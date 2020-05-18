@@ -14,5 +14,7 @@ namespace ReactOnlineActivity.Repositories
         }
 
         public ApplicationUser FindByName(string userName) => dbContext.Users.First(u => u.UserName == userName);
+
+        public ApplicationUser FindById(string id) => dbContext.Users.First(u => u.Id == id);
     }
 }

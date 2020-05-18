@@ -13,6 +13,8 @@ namespace ReactOnlineActivity.Models
         public int PointsToWin { get; set; }
         public bool IsPrivateRoom { get; set; }
         public List<Theme> Themes { get; set; }
+        
+        public RoomSettings() {}
 
         public RoomSettings(
             string name = "", 
