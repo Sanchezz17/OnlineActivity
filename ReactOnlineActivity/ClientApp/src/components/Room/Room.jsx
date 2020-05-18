@@ -30,6 +30,8 @@ export default class Room extends Component {
         if (!joinRoomDto.alreadyInRoom) {
             this.hubConnection.invoke(RoomHubEvents.NEW_PLAYER, this.roomId, joinRoomDto.player);
         }
+        const roomResponse = await fetch(`/api/rooms/${this.roomId}`)
+        this.room = await roomResponse.json();
         this.setState({loading: false})
     }
 
@@ -49,9 +51,13 @@ export default class Room extends Component {
                     <p>Загрузка игры...</p>
                 </div>
                 :  <div>
-                    <CopyToClipboard text={`${window.location.host}/rooms/${this.roomId}`}>
-                        <p className={styles.copy}>Скопировать ссылку на комнату</p>
-                    </CopyToClipboard>
+                    <div className={styles.nameContainer}>
+                        <span className={styles.name}>{this.room.settings.name}</span>
+                        <CopyToClipboard text={`${window.location.host}/rooms/${this.roomId}`}>
+                            <span className={styles.copy}>Скопировать ссылку на комнату</span>
+                        </CopyToClipboard>
+                    </div>
+                    <p>{this.room.settings.description}</p>
                     <section className={styles.room}>
                         <Leaderboard roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>
                         <Field roomId={this.roomId} user={user} hubConnection={this.hubConnection}/>

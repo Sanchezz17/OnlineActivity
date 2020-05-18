@@ -31,6 +31,7 @@ namespace ReactOnlineActivity.Repositories
             return dbContext.Rooms
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
+                .Include(r => r.Settings)
                 .SingleOrDefault(r => r.Id == roomId);
         }
 

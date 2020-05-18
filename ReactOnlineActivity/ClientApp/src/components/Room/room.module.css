@@ -8,7 +8,7 @@
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(7, 1fr);
     margin: 30px;
-    height: 95vh;
+    height: 93vh;
 }
 
 .loading {
@@ -19,9 +19,17 @@
     align-items: center;
 }
 
-.copy {
+.nameContainer {
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.name {
+    font-size: 25px;
+}
+
+.copy {
     color: deepskyblue;
 }
 
