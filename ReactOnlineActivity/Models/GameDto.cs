@@ -11,7 +11,7 @@ namespace ReactOnlineActivity.Models
         public bool GameIsOver { get; set; }
         public int RoundNumber { get; set; }
         public PlayerDto ExplainingPlayer { get; set; }
-        public CanvasDto Canvas { get; set; } // TODO: написать реализацию CanvasDto
+        public List<LineDto> Canvas { get; set; } // TODO: написать реализацию CanvasDto
         public long TimeStartGame { get; set; } // TODO: проверить как обработается DateTime
     }
 }

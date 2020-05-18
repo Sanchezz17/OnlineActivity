@@ -129,7 +129,8 @@ namespace ReactOnlineActivity.Controllers
             {
                 HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
                 Players = new List<PlayerDto>(),
-                TimeStartGame = DateTime.Now.ToEpochTime()
+                TimeStartGame = DateTime.Now.ToEpochTime(),
+                Canvas = new List<LineDto>()
             };
         }
     }

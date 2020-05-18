@@ -21,6 +21,7 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
+                .Include(r => r.Game.Canvas)
                 .FirstOrDefault(room =>
                     !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
         }
