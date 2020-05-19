@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
 using Game.Domain;
@@ -121,6 +122,11 @@ namespace ReactOnlineActivity
                 {
                     cfg.CreateMap<GameDto, GameEntity>();
                     cfg.CreateMap<GameEntity, GameDto>();
+                    cfg.CreateMap<Line, LineDto>();
+                    cfg.CreateMap<LineDto, Line>();
+                    cfg.CreateMap<PlayerDto, Player>();
+                    cfg.CreateMap<Player, PlayerDto>();
+                    cfg.CreateMap<Coordinate, CoordinateDto>();
                 }
                 , new System.Reflection.Assembly[0]);
         }

@@ -17,11 +17,11 @@ export default class Field extends Component {
     }
 
     componentDidMount() {
-        setInterval(this.fetchLines, 500);
+        setInterval(this.fetchLines, 1500);
     }
 
     getActiveClient = () => {
-        fetch(`/api/roomActive/${this.props.roomId}`)
+        fetch(`/api/rooms/${this.props.roomId}`)
             .then(response => response.json())
             .then(activeClient => this.setState({
                 ...this.state,
@@ -41,7 +41,7 @@ export default class Field extends Component {
     }
 
     setActiveClient = () => {
-        fetch(`/api/roomActive/${this.props.roomId}`, {
+        fetch(`/api/rooms/${this.props.roomId}`, {
             body: JSON.stringify({activeClient: this.state.activeUser}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -69,17 +69,18 @@ export default class Field extends Component {
     };
 
     fetchLines = () => {
-        fetch(`/api/field/${this.props.roomId}`)
+        fetch(`/api/fields/${this.props.roomId}`)
             .then(response => response.json())
+            .then(r => console.log(`рив ${r}`))
             .then(lines => this.setState({
                 ...this.state,
                 loadingField: false,
-                lines
+                lines: lines || []
             }))
     }
 
     addLines = () => {
-        fetch(`/api/field/${this.props.roomId}`, {
+        fetch(`/api/fields/${this.props.roomId}`, {
             body: JSON.stringify(this.state.lines),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -91,27 +92,28 @@ export default class Field extends Component {
         this.setState({
             lines: [...this.state.lines, []]
         });
-        this.addLines();
+        // this.addLines();
     };
 
     handleMouseUp = () => {
         this.state.drawing = false;
+        this.addLines();
     };
 
-    handleMouseMove = e => {
+    handleMouseMove = () => {
         if (!this.state.drawing) {
             return;
         }
         const stage = this.state.stageRef.getStage();
         const point = stage.getPointerPosition();
         const {lines} = this.state;
-        let lastLine = lines[lines.length - 1];
-        lastLine = lastLine.concat([point.x, point.y]);
+        let lastLine = lines[lines.length - 1] || [];
+        lastLine = lastLine.concat([point.x, point.y]) || [];
         lines.splice(lines.length - 1, 1, lastLine);
         this.setState({
-            lines: lines.concat()
+            lines: lines.concat() 
         });
-        this.addLines();
+        // this.addLines();
     };
 
     clearField = () => {
@@ -154,7 +156,7 @@ export default class Field extends Component {
                             this.state.stageRef = node;
                         }}>
                         <Layer>
-                            {this.state.lines.map((line, i) => (
+                            {/*this.state.lines.value &&*/this.state.lines.map((line, i) => (
                                 <Line key={i} points={line} stroke="blue"/>
                             ))}
                         </Layer>

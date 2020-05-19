@@ -17,13 +17,13 @@ namespace Game.Domain
         public int RoundNumber { get; private set; }
         public bool GameIsOver { get; private set; }
         public Player ExplainingPlayer { get; private set; }
-        public List<Line> Canvas { get; }
+        public List<Line> Canvas { get; set; }
         public List<Player> Players { get; }
-        public DateTime TimeStartGame { get; }
-        public TimeSpan TimeInGame => DateTime.Now - TimeStartGame;
-        public Guid Id { get; }
+        public long TimeStartGame { get; }
+        // public TimeSpan TimeInGame => DateTime.Now - TimeStartGame;
+        public int Id { get; }
 
-        public GameEntity(Guid id, string[] hiddenWords, IEnumerable<Player> players)
+        public GameEntity(int id, string[] hiddenWords, IEnumerable<Player> players)
         {
             HiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
             _maxRound = HiddenWords.Length;
@@ -31,16 +31,16 @@ namespace Game.Domain
             
             Canvas = new List<Line>();
             Players = players.ToList();
-            TimeStartGame = DateTime.Now;
+            //TimeStartGame = DateTime.Now;
             Id = id;
         }
         
-        public GameEntity(string[] hiddenWords, IEnumerable<Player> players) : this(Guid.Empty, hiddenWords, players) {}
+        public GameEntity(string[] hiddenWords, IEnumerable<Player> players) : this(0, hiddenWords, players) {}
 
         private void CheckTime()
         {
-            if (TimeInGame > TimeSpan.FromMinutes(MaxRoundTimeInMinutes))
-                GameIsOver = true;
+            //if (TimeInGame > TimeSpan.FromMinutes(MaxRoundTimeInMinutes))
+               // GameIsOver = true;
         }
 
         public bool CheckWord(string wordFromPlayer)
@@ -49,6 +49,11 @@ namespace Game.Domain
             if (GameIsOver)
                 return false;
             return wordFromPlayer.Trim() == HiddenWords[RoundNumber];
+        }
+
+        public void AddLine(Line line)
+        {
+            Canvas.Add(line);
         }
 
         public void Paint(IEnumerable<Pixel> pixels)
@@ -61,7 +66,7 @@ namespace Game.Domain
         public void CompleteRound(Player guessingPlayer)
         {
             guessingPlayer.Score += PointsForCorrectAnswer;
-            ExplainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
+            // ExplainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
             
             if (RoundNumber >= _maxRound)
                 GameIsOver = true;

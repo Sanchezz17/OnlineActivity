@@ -103,7 +103,7 @@ namespace ReactOnlineActivity.Controllers
         [HttpPost("rooms")]
         public string CreateRoom([FromBody] RoomSettings roomSettings)
         {
-            var newRoom = new Room()
+            var newRoom = new Room
             {
                 Game = CreateTestGame(),
                 Settings = roomSettings
@@ -112,6 +112,29 @@ namespace ReactOnlineActivity.Controllers
             roomRepository.Insert(newRoom);
 
             return newRoom.Id.ToString();
+        }
+
+        [HttpGet("fields/{roomId}")]
+        public double[][] GetField([FromRoute] int roomId)
+        {
+            var room = roomRepository.FindById(roomId);
+            var canvas = room.Game.Canvas;
+            return canvas.Select(line => line.Value.Select(c => c.Value).ToArray()).ToArray();
+        }
+
+        [HttpPost("fields/{roomId}")]
+        public OkResult AddLine([FromBody] double[][] lineDto, [FromRoute] int roomId)
+        {
+            var newCanvas = new List<LineDto>();
+            foreach (var line in lineDto)
+            {
+                var newLine = new LineDto {Value = new List<CoordinateDto>()};
+                foreach (var coordinate in line)
+                    newLine.Value.Add(new CoordinateDto {Value = coordinate});
+                newCanvas.Add(newLine);
+            }
+            roomRepository.UpdateFieldIntoRoom(roomId, newCanvas);
+            return Ok();
         }
 
         private Room CreateTestRoom()
