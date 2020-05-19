@@ -18,20 +18,17 @@ namespace ReactOnlineActivity.Controllers
     [Route("api")]
     public class GamesController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
         private readonly IMapper mapper;
 
         public GamesController(
-            UserManager<ApplicationUser> userManager,
             UserRepository userRepository,
             RoomRepository roomRepository,
             PlayerRepository playerRepository,
             IMapper mapper)
         {
-            this.userManager = userManager;
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
@@ -120,21 +117,6 @@ namespace ReactOnlineActivity.Controllers
             var room = roomRepository.FindById(roomId);
             var canvas = room.Game.Canvas;
             return canvas.Select(line => line.Value.Select(c => c.Value).ToArray()).ToArray();
-        }
-
-        [HttpPost("fields/{roomId}")]
-        public OkResult AddLine([FromBody] double[][] lineDto, [FromRoute] int roomId)
-        {
-            var newCanvas = new List<LineDto>();
-            foreach (var line in lineDto)
-            {
-                var newLine = new LineDto {Value = new List<CoordinateDto>()};
-                foreach (var coordinate in line)
-                    newLine.Value.Add(new CoordinateDto {Value = coordinate});
-                newCanvas.Add(newLine);
-            }
-            roomRepository.UpdateFieldIntoRoom(roomId, newCanvas);
-            return Ok();
         }
 
         private Room CreateTestRoom()
