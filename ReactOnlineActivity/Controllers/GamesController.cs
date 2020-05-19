@@ -130,22 +130,6 @@ namespace ReactOnlineActivity.Controllers
             return canvas.Select(line => line.Value.Select(c => c.Value).ToArray()).ToArray();
         }
 
-        [HttpPost("fields/{roomId}")]
-        public OkResult AddLine([FromBody] double[][] lineDto, [FromRoute] int roomId)
-        {
-            var newCanvas = new List<LineDto>();
-            foreach (var line in lineDto)
-            {
-                var newLine = new LineDto {Value = new List<CoordinateDto>()};
-                foreach (var coordinate in line)
-                    newLine.Value.Add(new CoordinateDto {Value = coordinate});
-                newCanvas.Add(newLine);
-            }
-
-            roomRepository.UpdateFieldIntoRoom(roomId, newCanvas);
-            return Ok();
-        }
-
         private Room CreateTestRoom()
         {
             return new Room
