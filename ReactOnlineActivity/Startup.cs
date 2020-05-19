@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using Game.Domain;
@@ -40,7 +41,8 @@ namespace ReactOnlineActivity
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
-                    options.User.AllowedUserNameCharacters += " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+                    options.User.AllowedUserNameCharacters +=
+                        " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
                     options.SignIn.RequireConfirmedAccount = false;
                     options.SignIn.RequireConfirmedEmail = false;
                 })
@@ -111,12 +113,16 @@ namespace ReactOnlineActivity
                     System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_USER_NAME"),
                     System.Environment.GetEnvironmentVariable("SIMPLE_EMAIL_SENDER_PASSWORD")
                 ));
-            
+
             services.AddSignalR();
 
             services.AddScoped<RoomRepository>();
             services.AddScoped<PlayerRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<ThemeRepository>();
+
+            var sp = services.BuildServiceProvider();
+            var themeRepository = sp.GetService<ThemeRepository>();
 
             services.AddAutoMapper(cfg =>
                 {
@@ -127,6 +133,9 @@ namespace ReactOnlineActivity
                     cfg.CreateMap<PlayerDto, Player>();
                     cfg.CreateMap<Player, PlayerDto>();
                     cfg.CreateMap<Coordinate, CoordinateDto>();
+                    cfg.CreateMap<RoomSettingsDto, RoomSettings>().ForMember(dest => dest.Themes, opt =>
+                        opt.MapFrom(src => src.ThemesIds.Select(
+                            id => themeRepository.FindById(id))));
                 }
                 , new System.Reflection.Assembly[0]);
         }

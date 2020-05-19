@@ -65,21 +65,21 @@ namespace ReactOnlineActivity.Controllers
         {
             return roomRepository.FindById(roomId);
         }
-        
+
         [HttpGet("rooms/{roomId}/join")]
         public JoinRoomDto JoinRoom([FromRoute] int roomId, [FromQuery] string userName)
         {
             var room = roomRepository.FindById(roomId);
-            
+
             var user = userRepository.FindByName(userName);
-            
+
             var player = room
                 .Game
                 .Players
                 .FirstOrDefault(p => p.Name == user.UserName);
-            
+
             var joinRoomDto = new JoinRoomDto();
-            
+
             if (player == null)
             {
                 player = new PlayerDto
@@ -101,18 +101,26 @@ namespace ReactOnlineActivity.Controllers
         }
 
         [HttpPost("rooms")]
-        public string CreateRoom([FromBody] RoomSettings roomSettings)
+        public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
         {
+
             var newRoom = new Room
             {
                 Game = CreateTestGame(),
-                Settings = roomSettings
+                Settings = mapper.Map<RoomSettings>(roomSettings)
             };
-            
+
             roomRepository.Insert(newRoom);
 
             return newRoom.Id.ToString();
         }
+
+        private List<Theme> GetThemesByIds(List<int> themeIds)
+        {
+            var result = new List<Theme>();
+            return result;
+        }
+
 
         [HttpGet("fields/{roomId}")]
         public double[][] GetField([FromRoute] int roomId)
@@ -133,6 +141,7 @@ namespace ReactOnlineActivity.Controllers
                     newLine.Value.Add(new CoordinateDto {Value = coordinate});
                 newCanvas.Add(newLine);
             }
+
             roomRepository.UpdateFieldIntoRoom(roomId, newCanvas);
             return Ok();
         }

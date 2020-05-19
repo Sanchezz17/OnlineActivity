@@ -15,7 +15,7 @@ class CreateRoom extends Component {
                 maxPlayerCount: 5,
                 pointsToWin: 100,
                 isPrivateRoom: false,
-                themes: []
+                themes : [],
             }
         }
     }
@@ -50,6 +50,19 @@ class CreateRoom extends Component {
         const newRoomId = await response.json();
         this.props.history.push(`/rooms/${newRoomId}`);
     }
+
+    getRoomSettingsDto(settings) {
+        return {
+            name: settings.name,
+            description: settings.description,
+            roundTime: settings.roundTime,
+            maxPlayerCount: settings.maxPlayerCount,
+            pointsToWin: settings.pointsToWin,
+            isPrivateRoom: settings.isPrivateRoom,
+            themesIds: settings.themes.map(t=>t.id)
+        }
+    }
+
 
     render() {
         return (

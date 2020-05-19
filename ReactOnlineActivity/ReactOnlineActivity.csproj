@@ -129,6 +129,9 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="Themes.json">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </Content>
     <Content Remove="ClientApp\build\**" />
   </ItemGroup>
   <ItemGroup>
