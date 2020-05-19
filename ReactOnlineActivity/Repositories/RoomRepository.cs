@@ -54,12 +54,21 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public void UpdateFieldIntoRoom(int roomId, List<LineDto> canvas)
+        public void AddLineToFieldIntoRoom(int roomId, LineDto newLine)
         {
             var room = FindById(roomId);
             if (room == null)
                 throw new Exception(); //todo: более осмысленное исключение сделать
-            room.Game.Canvas = canvas;
+            room.Game.Canvas.Add(newLine);
+            dbContext.SaveChanges();
+        }
+
+        public void ClearField(int roomId)
+        {
+            var room = FindById(roomId);
+            if (room == null)
+                throw new Exception(); //todo: более осмысленное исключение сделать]
+            room.Game.Canvas = new List<LineDto>();
             dbContext.SaveChanges();
         }
     }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Stage, Layer, Line} from 'react-konva';
 import styles from './field.module.css';
+import {RoomHubEvents} from "../RoomConstants";
 
 export default class Field extends Component {
     constructor(props) {
@@ -16,8 +17,20 @@ export default class Field extends Component {
         };
     }
 
-    componentDidMount() {
-        setInterval(this.fetchLines, 1500);
+    async componentDidMount() {
+        this.props.hubConnection.on(RoomHubEvents.NEW_LINE, (line) => {
+            this.setState({
+                lines: [...this.state.lines, line]
+            });
+        });
+
+        this.props.hubConnection.on(RoomHubEvents.CLEAR_FIELD, () => {
+            this.setState({
+                lines: []
+            });
+        });
+        
+        await this.fetchLines();
     }
 
     getActiveClient = () => {
@@ -71,20 +84,15 @@ export default class Field extends Component {
     fetchLines = () => {
         fetch(`/api/fields/${this.props.roomId}`)
             .then(response => response.json())
-            .then(r => console.log(`рив ${r}`))
             .then(lines => this.setState({
-                ...this.state,
                 loadingField: false,
                 lines: lines || []
             }))
     }
 
-    addLines = () => {
-        fetch(`/api/fields/${this.props.roomId}`, {
-            body: JSON.stringify(this.state.lines),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        })
+    addLine = () => {
+        this.props.hubConnection.invoke(RoomHubEvents.NEW_LINE, 
+            this.props.roomId, this.state.lines[this.state.lines.length - 1]);
     };
 
     handleMouseDown = () => {
@@ -92,12 +100,11 @@ export default class Field extends Component {
         this.setState({
             lines: [...this.state.lines, []]
         });
-        // this.addLines();
     };
 
     handleMouseUp = () => {
         this.state.drawing = false;
-        this.addLines();
+        this.addLine();
     };
 
     handleMouseMove = () => {
@@ -111,13 +118,13 @@ export default class Field extends Component {
         lastLine = lastLine.concat([point.x, point.y]) || [];
         lines.splice(lines.length - 1, 1, lastLine);
         this.setState({
-            lines: lines.concat() 
+            lines: lines.concat()
         });
-        // this.addLines();
     };
 
     clearField = () => {
-        this.setState({...this.state, lines: []}, this.addLines);
+        this.setState({lines: []});
+        this.props.hubConnection.invoke(RoomHubEvents.CLEAR_FIELD, this.props.roomId);
     }
 
     render() {
@@ -152,9 +159,7 @@ export default class Field extends Component {
                         onContentMousedown={this.state.isActiveUser ? this.handleMouseDown : () => {}}
                         onContentMousemove={this.state.isActiveUser ? this.handleMouseMove : () => {}}
                         onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {}}
-                        ref={node => {
-                            this.state.stageRef = node;
-                        }}>
+                        ref={node => {this.state.stageRef = node}}>
                         <Layer>
                             {/*this.state.lines.value &&*/this.state.lines.map((line, i) => (
                                 <Line key={i} points={line} stroke="blue"/>
