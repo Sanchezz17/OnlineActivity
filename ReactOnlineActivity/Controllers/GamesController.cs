@@ -127,7 +127,11 @@ namespace ReactOnlineActivity.Controllers
         {
             var room = roomRepository.FindById(roomId);
             var canvas = room.Game.Canvas;
-            return canvas.Select(line => line.Value.Select(c => c.Value).ToArray()).ToArray();
+            return canvas.Select(line => line.Value
+                                            .OrderBy(c => c.SerialNumber)
+                                            .Select(c => c.Value)
+                                            .ToArray())
+                        .ToArray();
         }
 
         private Room CreateTestRoom()

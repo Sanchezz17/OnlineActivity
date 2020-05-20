@@ -37,8 +37,8 @@ namespace ReactOnlineActivity.Hubs
         public async Task NewLine(string roomId, double[] line)
         {
             var newLine = new LineDto {Value = new List<CoordinateDto>()};
-            foreach (var coordinate in line)
-                newLine.Value.Add(new CoordinateDto {Value = coordinate});
+            for(var i = 0; i < line.Length; i++)
+                newLine.Value.Add(new CoordinateDto {Value = line[i], SerialNumber = i});
             roomRepository.AddLineToFieldIntoRoom(int.Parse(roomId), newLine);
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("newLine", line);
