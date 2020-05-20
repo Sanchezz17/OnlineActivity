@@ -20,6 +20,28 @@ class CreateRoom extends Component {
         }
     }
 
+    async componentDidMount() {
+        await this.fetchThemes();
+    }
+
+
+    async fetchThemes() {
+        const response = await fetch('/api/themes');
+        const themes = await response.json();
+        this.setState({
+            loading: false,
+            settings: {
+                name: '',
+                description: '',
+                roundTime: 60,
+                maxPlayerCount: 5,
+                pointsToWin: 100,
+                isPrivateRoom: false,
+                themes: themes || []
+            }
+        });
+    }
+
     renderTheme = (theme) => {
         return (
             <li className={styles.themes__theme}>
@@ -27,7 +49,7 @@ class CreateRoom extends Component {
             </li>
         );
     }
-    
+
     handleSettingsChange = (fieldName, newValue) => {
         this.setState({
             settings: {
@@ -59,7 +81,7 @@ class CreateRoom extends Component {
             maxPlayerCount: settings.maxPlayerCount,
             pointsToWin: settings.pointsToWin,
             isPrivateRoom: settings.isPrivateRoom,
-            themesIds: settings.themes.map(t=>t.id)
+            themesIds: settings.themes.map(t => t.id)
         }
     }
 
@@ -70,79 +92,79 @@ class CreateRoom extends Component {
                 ? <div className={styles.loading}>
                     <p>Загрузка...</p>
                 </div>
-                : <form 
+                : <form
                     className={styles.container}
                 >
                     <div className={styles.settings}>
                         <h2 className={styles.header}>Настройки</h2>
-                            <div className="form-group">
-                                <label>Название</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={this.state.settings.name}
-                                    onChange={(event) => 
-                                        this.handleSettingsChange("name", event.target.value)}
-                                    required={true}/>
-                            </div>
-                            <div className="form-group">
-                                <label>Описание</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={this.state.settings.description}
-                                    onChange={(event) => 
-                                        this.handleSettingsChange("description", event.target.value)}   
-                                    required={true}/>
-                            </div>
-                            <div className={`form-group ${styles.settings__item}`}>
-                                <label>Количество игроков</label>
-                                <select
-                                    value={this.state.settings.maxPlayerCount}
-                                    onChange={(event) => 
-                                        this.handleSettingsChange("maxPlayerCount", Number(event.target.value))}
-                                >
-                                    <option selected value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                </select>
-                            </div>
-                            <div className={`form-group ${styles.settings__item}`}>
-                                <label>Количество очков для победы</label>
-                                <select
-                                    value={this.state.settings.pointsToWin}
-                                    onChange={(event) => 
-                                        this.handleSettingsChange("pointsToWin", Number(event.target.value))}
-                                >
-                                    <option selected value="100">100</option>
-                                    <option value="120">120</option>
-                                    <option value="150">150</option>
-                                    <option value="200">200</option>
-                                </select>
-                            </div>
-                            <div className={`form-group ${styles.settings__item}`}>
-                                <label>Время раунда</label>
-                                <select
-                                    value={this.state.settings.roundTime}
-                                    onChange={(event) => 
-                                        this.handleSettingsChange("roundTime", Number(event.target.value))}
-                                >
-                                    <option selected value="30">30 секунд</option>
-                                    <option value="60">60 секунд</option>
-                                    <option value="90">90 секунд</option>
-                                    <option value="120">120 секунд</option>
-                                </select>
-                            </div>
-                            <div className={`form-group ${styles.settings__item}`}>
-                                <label>Приватная</label>
-                                <input
-                                    type="checkbox"
-                                    checked={this.state.settings.isPrivateRoom}
-                                    onChange={(event) =>
-                                        this.handleSettingsChange("isPrivateRoom", event.target.checked)}
-                                />
-                            </div>
+                        <div className="form-group">
+                            <label>Название</label>
+                            <input
+                                className="form-control"
+                                type="text"
+                                value={this.state.settings.name}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("name", event.target.value)}
+                                required={true}/>
+                        </div>
+                        <div className="form-group">
+                            <label>Описание</label>
+                            <input
+                                className="form-control"
+                                type="text"
+                                value={this.state.settings.description}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("description", event.target.value)}
+                                required={true}/>
+                        </div>
+                        <div className={`form-group ${styles.settings__item}`}>
+                            <label>Количество игроков</label>
+                            <select
+                                value={this.state.settings.maxPlayerCount}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("maxPlayerCount", Number(event.target.value))}
+                            >
+                                <option selected value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                        <div className={`form-group ${styles.settings__item}`}>
+                            <label>Количество очков для победы</label>
+                            <select
+                                value={this.state.settings.pointsToWin}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("pointsToWin", Number(event.target.value))}
+                            >
+                                <option selected value="100">100</option>
+                                <option value="120">120</option>
+                                <option value="150">150</option>
+                                <option value="200">200</option>
+                            </select>
+                        </div>
+                        <div className={`form-group ${styles.settings__item}`}>
+                            <label>Время раунда</label>
+                            <select
+                                value={this.state.settings.roundTime}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("roundTime", Number(event.target.value))}
+                            >
+                                <option selected value="30">30 секунд</option>
+                                <option value="60">60 секунд</option>
+                                <option value="90">90 секунд</option>
+                                <option value="120">120 секунд</option>
+                            </select>
+                        </div>
+                        <div className={`form-group ${styles.settings__item}`}>
+                            <label>Приватная</label>
+                            <input
+                                type="checkbox"
+                                checked={this.state.settings.isPrivateRoom}
+                                onChange={(event) =>
+                                    this.handleSettingsChange("isPrivateRoom", event.target.checked)}
+                            />
+                        </div>
                     </div>
                     <div className={styles.themes}>
                         <h2 className={styles.header}>Темы</h2>
