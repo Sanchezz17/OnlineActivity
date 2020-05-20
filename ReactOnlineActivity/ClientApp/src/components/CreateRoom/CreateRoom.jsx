@@ -21,6 +21,28 @@ class CreateRoom extends Component {
         }
     }
 
+    async componentDidMount() {
+        await this.fetchThemes();
+    }
+
+
+    async fetchThemes() {
+        const response = await fetch('/api/themes');
+        const themes = await response.json();
+        this.setState({
+            loading: false,
+            settings: {
+                name: '',
+                description: '',
+                roundTime: 60,
+                maxPlayerCount: 5,
+                pointsToWin: 100,
+                isPrivateRoom: false,
+                themes: themes || []
+            }
+        });
+    }
+
     renderTheme = (theme) => {
         return (
             <li className={styles.themes__theme}>

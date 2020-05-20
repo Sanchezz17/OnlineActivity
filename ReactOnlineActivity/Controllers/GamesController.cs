@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using AutoMapper;
 using Game.Domain;
 using IdentityModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
 
@@ -18,10 +15,10 @@ namespace ReactOnlineActivity.Controllers
     [Route("api")]
     public class GamesController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
+        private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
 
         public GamesController(
@@ -29,12 +26,13 @@ namespace ReactOnlineActivity.Controllers
             UserRepository userRepository,
             RoomRepository roomRepository,
             PlayerRepository playerRepository,
+            ThemeRepository themeRepository,
             IMapper mapper)
         {
-            this.userManager = userManager;
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
+            this.themeRepository = themeRepository;
             this.mapper = mapper;
         }
 
@@ -109,11 +107,6 @@ namespace ReactOnlineActivity.Controllers
             return newRoom.Id.ToString();
         }
 
-        private List<Theme> GetThemesByIds(List<int> themeIds)
-        {
-            var result = new List<Theme>();
-            return result;
-        }
 
 
         [HttpGet("fields/{roomId}")]
@@ -126,6 +119,18 @@ namespace ReactOnlineActivity.Controllers
                                             .Select(c => c.Value)
                                             .ToArray())
                         .ToArray();
+        }
+
+        [HttpGet("themes")]
+        public List<Theme> GetThemes()
+        {
+            return themeRepository.GetAllThemes().ToList();
+        }
+
+        [HttpPost("themes")]
+        public void AddTheme([FromBody] Theme theme)
+        {
+            themeRepository.Insert(theme);
         }
 
         private Room CreateTestRoom()
