@@ -18,13 +18,14 @@ namespace ReactOnlineActivity.Repositories
 
         public Room FindSuitable()
         {
-            return dbContext.Rooms
+            var rooms = dbContext.Rooms
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
                 .Include(r => r.Game.Canvas)
-                    .ThenInclude(l => l.Value)
-                .FirstOrDefault(room =>
+                .ThenInclude(l => l.Value);
+                
+            return rooms.FirstOrDefault(room =>
                     !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
         }
 

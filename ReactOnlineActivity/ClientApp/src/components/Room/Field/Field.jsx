@@ -81,13 +81,14 @@ export default class Field extends Component {
             }, setStateCallback))
     };
 
-    fetchLines = () => {
-        fetch(`/api/fields/${this.props.roomId}`)
-            .then(response => response.json())
-            .then(lines => this.setState({
-                loadingField: false,
-                lines: lines || []
-            }))
+    fetchLines = async () => {
+        const response = await fetch(`/api/fields/${this.props.roomId}`);
+        const lines = await response.json();
+        console.log(lines);
+        this.setState({
+            loadingField: false,
+            lines: lines || []
+        });
     }
 
     addLine = () => {

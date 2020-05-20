@@ -57,6 +57,7 @@ namespace ReactOnlineActivity.Hubs
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("leave", userName);
             await Clients.Group(roomId).SendAsync("notify", $"{userName} покинул игру");
+            playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
         }
 
         public async Task Send(string roomId, string from, string text)

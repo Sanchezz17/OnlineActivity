@@ -15,7 +15,7 @@ class CreateRoom extends Component {
                 maxPlayerCount: 5,
                 pointsToWin: 100,
                 isPrivateRoom: false,
-                themes : [],
+                themes: [],
             }
         }
     }

@@ -54,12 +54,6 @@ namespace ReactOnlineActivity.Controllers
         [HttpGet("players")]
         public IEnumerable<PlayerDto> GetPlayers([FromQuery] int roomId) => playerRepository.SelectAllFromRoom(roomId);
 
-        [HttpGet("leave")]
-        public void LeaveGame([FromQuery] int roomId, [FromQuery] string playerName)
-        {
-            playerRepository.DeletePlayerFromRoom(roomId, playerName);
-        }
-
         [HttpGet("rooms/{roomId}")]
         public Room GetRoom([FromRoute] int roomId)
         {
