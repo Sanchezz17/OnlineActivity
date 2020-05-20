@@ -135,10 +135,12 @@ namespace ReactOnlineActivity.Controllers
 
         private Room CreateTestRoom()
         {
+            var roomSettings = new RoomSettings();
+            roomSettings.Themes = themeRepository.GetAllThemes();
             return new Room
             {
                 Game = CreateTestGame(),
-                Settings = new RoomSettings()
+                Settings = roomSettings
             };
         }
 

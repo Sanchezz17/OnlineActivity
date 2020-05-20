@@ -23,7 +23,10 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
                 .Include(r => r.Game.Canvas)
-                .ThenInclude(l => l.Value);
+                    .ThenInclude(l => l.Value)
+                .Include(r => r.Settings)
+                .Include(r => r.Settings.Themes)
+                    .ThenInclude(t => t.Words);
                 
             return rooms.FirstOrDefault(room =>
                     !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
@@ -37,6 +40,8 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game.Canvas)
                     .ThenInclude(l => l.Value)
                 .Include(r => r.Settings)
+                .Include(r => r.Settings.Themes)
+                .ThenInclude(t => t.Words)
                 .SingleOrDefault(r => r.Id == roomId);
         }
 

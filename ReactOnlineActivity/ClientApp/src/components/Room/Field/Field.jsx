@@ -39,7 +39,7 @@ export default class Field extends Component {
         });
 
         this.props.hubConnection.on(RoomHubEvents.NEW_HIDDEN_WORD, (hiddenWord) => {
-            this.setState({ hiddenWord })
+            this.setState({ hiddenWord: hiddenWord })
         });
         
         await this.fetchLines();

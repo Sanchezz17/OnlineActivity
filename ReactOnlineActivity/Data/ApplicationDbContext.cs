@@ -11,6 +11,7 @@ namespace ReactOnlineActivity.Data
     {
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Theme> Themes { get; set; }
+
         public ApplicationDbContext(
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
