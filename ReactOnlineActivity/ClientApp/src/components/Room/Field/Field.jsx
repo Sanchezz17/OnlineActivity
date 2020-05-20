@@ -11,9 +11,9 @@ export default class Field extends Component {
             loadingField: true,
             drawing: false,
             stageRef: null,
-            isActiveUser: true,
+            isActiveUser: false,
             activeUser: null,
-            users: []
+            hiddenWord: null
         };
     }
 
@@ -29,57 +29,21 @@ export default class Field extends Component {
                 lines: []
             });
         });
+
+        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayer) => {
+            if (explainingPlayer.name === this.props.user.name) {
+                this.setState({ isActiveUser: true });
+            }
+            
+            this.props.hubConnection.invoke(RoomHubEvents.REQUEST_WORD, this.props.roomId);
+        });
+
+        this.props.hubConnection.on(RoomHubEvents.NEW_HIDDEN_WORD, (hiddenWord) => {
+            this.setState({ hiddenWord })
+        });
         
         await this.fetchLines();
     }
-
-    getActiveClient = () => {
-        fetch(`/api/rooms/${this.props.roomId}`)
-            .then(response => response.json())
-            .then(activeClient => this.setState({
-                ...this.state,
-                activeUser: activeClient.user
-            }, () => {
-                if (!this.state.activeUser) {
-                    this.fetchUsers();
-                } else {
-                    if (this.state.activeUser.username === this.props.user.username) {
-                        this.setState({
-                            ...this.state,
-                            isActiveUser: true
-                        })
-                    }
-                }
-            }));
-    }
-
-    setActiveClient = () => {
-        fetch(`/api/rooms/${this.props.roomId}`, {
-            body: JSON.stringify({activeClient: this.state.activeUser}),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        }).then(this.getActiveClient);
-    }
-
-    fetchUsers = () => {
-        const setStateCallback = () => {
-            const randomUser = this.state.users[Math.floor(Math.random() * this.state.users.length)]
-            if (randomUser.username === this.props.user.username) {
-                this.setState({
-                    ...this.state,
-                    isActiveUser: true,
-                    activeUser: randomUser
-                }, this.setActiveClient)
-            }
-        }
-
-        fetch(`/api/users/${this.props.roomId}`)
-            .then(response => response.json())
-            .then(users => this.setState({
-                ...this.state,
-                users
-            }, setStateCallback))
-    };
 
     fetchLines = async () => {
         const response = await fetch(`/api/fields/${this.props.roomId}`);
@@ -136,7 +100,12 @@ export default class Field extends Component {
         return (
             <section className={styles.field}>
                 {this.state.isActiveUser ?
-                    <section className={'drawerTools'}>
+                    <section>
+                        <span
+                            className={`btn btn-outline-warning btn-sm ${styles.word}`}
+                        >
+                            {this.state.hiddenWord}
+                        </span>
                         <button
                             className={`btn btn-outline-warning btn-sm ${styles.clear}`}
                             onClick={this.clearField}

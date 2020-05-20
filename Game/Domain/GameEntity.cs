@@ -13,13 +13,13 @@ namespace Game.Domain
         private readonly Random _random;
         private readonly int _maxRound;
 
-        public string[] HiddenWords { get; }
+        public string[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
-        public bool GameIsOver { get; private set; }
+        public GameState GameState { get; private set; }
         public Player ExplainingPlayer { get; private set; }
         public List<Line> Canvas { get; set; }
         public List<Player> Players { get; }
-        public long TimeStartGame { get; }
+        public long CurrentRoundStartTime { get; private set; }
         // public TimeSpan TimeInGame => DateTime.Now - TimeStartGame;
         public int Id { get; }
 
@@ -31,11 +31,22 @@ namespace Game.Domain
             
             Canvas = new List<Line>();
             Players = players.ToList();
-            //TimeStartGame = DateTime.Now;
             Id = id;
         }
         
         public GameEntity(string[] hiddenWords, IEnumerable<Player> players) : this(0, hiddenWords, players) {}
+
+        public void Start()
+        {
+            RoundNumber = -1;
+            GameState = GameState.Started;
+            StartNewRound();
+        }
+
+        public string GetCurrentHiddenWord()
+        {
+            return HiddenWords[RoundNumber];
+        }
 
         private void CheckTime()
         {
@@ -46,7 +57,7 @@ namespace Game.Domain
         public bool CheckWord(string wordFromPlayer)
         {
             CheckTime();
-            if (GameIsOver)
+            if (GameState == GameState.Finished)
                 return false;
             return wordFromPlayer.Trim() == HiddenWords[RoundNumber];
         }
@@ -69,15 +80,17 @@ namespace Game.Domain
             // ExplainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
             
             if (RoundNumber >= _maxRound)
-                GameIsOver = true;
-            if (!GameIsOver)
+                GameState = GameState.Finished;
+            if (GameState == GameState.Started)
                 StartNewRound();
         }
 
         private void StartNewRound()
         {
+            CurrentRoundStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             RoundNumber++;
             ExplainingPlayer = Players[_random.Next(Players.Count - 1)];
         }
+        
     }
 }

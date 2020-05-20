@@ -72,5 +72,18 @@ namespace ReactOnlineActivity.Repositories
             room.Game.Canvas = new List<LineDto>();
             dbContext.SaveChanges();
         }
+
+        public void UpdateGame(int roomId, GameDto game)
+        {
+            var room = FindById(roomId);
+            if (room == null)
+                throw new Exception(); //todo: более осмысленное исключение сделать]
+            room.Game.GameState = game.GameState;
+            room.Game.RoundNumber = game.RoundNumber;
+            room.Game.ExplainingPlayer = game.ExplainingPlayer;
+            room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
+           
+            dbContext.SaveChanges();
+        }
     }
 }

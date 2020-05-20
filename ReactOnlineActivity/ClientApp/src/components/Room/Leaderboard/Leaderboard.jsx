@@ -7,6 +7,7 @@ export default class Leaderboard extends Component {
         super(props);
         this.state = {
             players: [],
+            explainingPlayer: null,
             loadingPlayers: true
         };
     }
@@ -22,6 +23,16 @@ export default class Leaderboard extends Component {
             this.setState({
                 players: this.state.players.filter(p => p.name !== name)
             });
+        });
+
+        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayer) => {
+            this.setState({
+                explainingPlayer: explainingPlayer
+            });
+            
+            if (explainingPlayer.name === this.props.user.name) {
+                // toDo что если объясняющий это я?
+            }
         });
 
         await this.fetchPlayers();

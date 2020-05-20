@@ -8,10 +8,10 @@ namespace ReactOnlineActivity.Models
         public int Id { get; set; }
         public List<PlayerDto> Players { get; set; }
         public List<Word> HiddenWords { get; set; }
-        public bool GameIsOver { get; set; }
+        public GameState GameState { get; set; }
         public int RoundNumber { get; set; }
         public PlayerDto ExplainingPlayer { get; set; }
         public List<LineDto> Canvas { get; set; } // TODO: написать реализацию CanvasDto
-        public long TimeStartGame { get; set; } // TODO: проверить как обработается DateTime
+        public long CurrentRoundStartTime { get; set; } // TODO: проверить как обработается DateTime
     }
 }
