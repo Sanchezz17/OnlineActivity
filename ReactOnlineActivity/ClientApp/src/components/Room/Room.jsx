@@ -6,6 +6,7 @@ import Chat from './Chat/Chat';
 import {RoomHubEvents} from './RoomConstants';
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import styles from './room.module.css';
+import {HubConnectionState} from "@aspnet/signalr";
 
 export default class Room extends Component {
     constructor(props) {
@@ -39,7 +40,8 @@ export default class Room extends Component {
     
     beforeUnload = async () => {
         const { user } = this.props;
-        await this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
+        if (this.hubConnection.state === HubConnectionState.Connected)
+            await this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
     }
 
     async componentWillUnmount() {

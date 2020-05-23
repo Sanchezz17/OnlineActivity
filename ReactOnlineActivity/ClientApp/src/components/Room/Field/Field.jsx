@@ -30,8 +30,8 @@ export default class Field extends Component {
             });
         });
 
-        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayer) => {
-            if (explainingPlayer.name === this.props.user.name) {
+        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayerName) => {
+            if (explainingPlayerName === this.props.user.name) {
                 this.setState({ isActiveUser: true });
             }
             
@@ -102,18 +102,18 @@ export default class Field extends Component {
                 {this.state.isActiveUser ?
                     <section>
                         <span
-                            className={`btn btn-outline-warning btn-sm ${styles.word}`}
+                            className={`btn btn-warning btn-sm ${styles.word}`}
                         >
                             {this.state.hiddenWord}
                         </span>
                         <button
-                            className={`btn btn-outline-warning btn-sm ${styles.clear}`}
+                            className={`btn btn-warning btn-sm ${styles.clear}`}
                             onClick={this.clearField}
                         >
                             Очистить
                         </button>
                         <button
-                            className={`btn btn-outline-primary btn-sm ${styles.end}`}
+                            className={`btn btn-primary btn-sm ${styles.end}`}
                         >
                             Завершить
                         </button>

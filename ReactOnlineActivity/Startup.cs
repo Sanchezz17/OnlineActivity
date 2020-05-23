@@ -133,6 +133,7 @@ namespace ReactOnlineActivity
                     cfg.CreateMap<PlayerDto, Player>();
                     cfg.CreateMap<Player, PlayerDto>();
                     cfg.CreateMap<Coordinate, CoordinateDto>();
+                    cfg.CreateMap<CoordinateDto, Coordinate>();
                     cfg.CreateMap<RoomSettingsDto, RoomSettings>().ForMember(dest => dest.Themes,
                         opt =>
                             opt.MapFrom(src => src.ThemesIds.Select(

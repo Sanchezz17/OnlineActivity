@@ -85,7 +85,7 @@ namespace ReactOnlineActivity.Repositories
                 throw new Exception(); //todo: более осмысленное исключение сделать]
             room.Game.GameState = game.GameState;
             room.Game.RoundNumber = game.RoundNumber;
-            room.Game.ExplainingPlayer = game.ExplainingPlayer;
+            room.Game.ExplainingPlayerName = game.ExplainingPlayerName;
             room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
            
             dbContext.SaveChanges();

@@ -46,7 +46,7 @@ namespace ReactOnlineActivity.Hubs
 
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
                 
-                await Clients.Group(roomId).SendAsync("newRound", newGameDto.ExplainingPlayer);
+                await Clients.Group(roomId).SendAsync("newRound", newGameDto.ExplainingPlayerName);
             }
         }
 

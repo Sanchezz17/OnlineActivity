@@ -16,7 +16,7 @@ namespace Game.Domain
         public string[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
         public GameState GameState { get; private set; }
-        public Player ExplainingPlayer { get; private set; }
+        public string ExplainingPlayerName { get; private set; }
         public List<Line> Canvas { get; set; }
         public List<Player> Players { get; }
         public long CurrentRoundStartTime { get; private set; }
@@ -77,7 +77,7 @@ namespace Game.Domain
         public void CompleteRound(Player guessingPlayer)
         {
             guessingPlayer.Score += PointsForCorrectAnswer;
-            // ExplainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
+            // Players.First(p => p.Name == ExplainingPlayerName).Score += MaxRoundTimeInMinutes * SecondsInMinutes - TimeInGame.Seconds;
             
             if (RoundNumber >= _maxRound)
                 GameState = GameState.Finished;
@@ -89,7 +89,7 @@ namespace Game.Domain
         {
             CurrentRoundStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             RoundNumber++;
-            ExplainingPlayer = Players[_random.Next(Players.Count - 1)];
+            ExplainingPlayerName = Players[_random.Next(Players.Count - 1)].Name;
         }
         
     }
