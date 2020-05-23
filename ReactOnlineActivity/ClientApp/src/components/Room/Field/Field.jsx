@@ -32,16 +32,16 @@ export default class Field extends Component {
 
         this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayerName) => {
             if (explainingPlayerName === this.props.user.name) {
-                this.setState({ isActiveUser: true });
+                this.setState({isActiveUser: true});
             }
-            
+
             this.props.hubConnection.invoke(RoomHubEvents.REQUEST_WORD, this.props.roomId);
         });
 
         this.props.hubConnection.on(RoomHubEvents.NEW_HIDDEN_WORD, (hiddenWord) => {
-            this.setState({ hiddenWord: hiddenWord })
+            this.setState({hiddenWord: hiddenWord})
         });
-        
+
         await this.fetchLines();
     }
 
@@ -56,7 +56,7 @@ export default class Field extends Component {
     }
 
     addLine = () => {
-        this.props.hubConnection.invoke(RoomHubEvents.NEW_LINE, 
+        this.props.hubConnection.invoke(RoomHubEvents.NEW_LINE,
             this.props.roomId, this.state.lines[this.state.lines.length - 1]);
     };
 
@@ -100,24 +100,28 @@ export default class Field extends Component {
         return (
             <section className={styles.field}>
                 {this.state.isActiveUser ?
-                    <section>
-                        <span
-                            className={`btn btn-warning btn-sm ${styles.word}`}
-                        >
-                            {this.state.hiddenWord}
-                        </span>
-                        <button
-                            className={`btn btn-warning btn-sm ${styles.clear}`}
-                            onClick={this.clearField}
-                        >
-                            Очистить
-                        </button>
-                        <button
-                            className={`btn btn-primary btn-sm ${styles.end}`}
-                        >
-                            Завершить
-                        </button>
-                    </section> : ''
+                    <>
+                        <section>
+                            <button
+                                className={`btn btn-dark btn-sm ${styles.clear}`}
+                                onClick={this.clearField}
+                            >
+                                Очистить
+                            </button>
+                            <button
+                                className={`btn btn-primary btn-sm ${styles.end}`}
+                            >
+                                Завершить
+                            </button>
+                        </section>
+                        <div className={styles.wordContainer}>
+                            <span
+                                className={`btn btn-warning btn-sm ${styles.word}`}
+                            >
+                                {`Загаданное слово: ${this.state.hiddenWord}`}
+                            </span>
+                        </div>
+                    </> : ''
                 }
                 {this.state.loadingField
                     ? <div className={styles.loading}>
@@ -126,10 +130,15 @@ export default class Field extends Component {
                     : <Stage
                         width={window.innerWidth}
                         height={window.innerHeight}
-                        onContentMousedown={this.state.isActiveUser ? this.handleMouseDown : () => {}}
-                        onContentMousemove={this.state.isActiveUser ? this.handleMouseMove : () => {}}
-                        onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {}}
-                        ref={node => {this.state.stageRef = node}}>
+                        onContentMousedown={this.state.isActiveUser ? this.handleMouseDown : () => {
+                        }}
+                        onContentMousemove={this.state.isActiveUser ? this.handleMouseMove : () => {
+                        }}
+                        onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {
+                        }}
+                        ref={node => {
+                            this.state.stageRef = node
+                        }}>
                         <Layer>
                             {/*this.state.lines.value &&*/this.state.lines.map((line, i) => (
                                 <Line key={i} points={line} stroke="blue"/>

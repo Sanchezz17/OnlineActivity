@@ -92,6 +92,26 @@ namespace ReactOnlineActivity.Hubs
                 .SendAsync("leave", userName);
             await Clients.Group(roomId).SendAsync("notify", $"{userName} покинул игру");
             playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
+            
+            var room = roomRepository.FindById(int.Parse(roomId));
+            var playersCount = room.Game.Players.Count;
+
+            var gameEntity = mapper.Map<GameEntity>(room.Game);
+
+            if (playersCount < room.Settings.MinPlayerCount)
+            {
+                gameEntity.GameState = GameState.WaitingForStart;
+            }
+            
+            if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started)
+            {
+                gameEntity.StartNewRound();
+                await Clients.Group(roomId).SendAsync("newRound", gameEntity.ExplainingPlayerName);
+            }
+            
+            var newGameDto = mapper.Map<GameDto>(gameEntity);
+
+            roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
         }
 
         public async Task Send(string roomId, string from, string text)
