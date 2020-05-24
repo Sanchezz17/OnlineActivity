@@ -126,8 +126,8 @@ export default class Field extends Component {
             return [];
         }
         const drawingLines = [];
-        for (const line of this.state.lines) {
-            for (const [colorName, colorLines] of Object.entries(line)) {
+        for (const lineInfo of this.state.lines) {
+            for (const [colorName, colorLines] of Object.entries(lineInfo)) {
                 for (const line of colorLines) {
                     drawingLines.push({
                         color: colorName,
