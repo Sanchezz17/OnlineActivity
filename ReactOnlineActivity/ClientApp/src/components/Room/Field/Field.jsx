@@ -1,19 +1,25 @@
 import React, {Component} from 'react';
 import {Stage, Layer, Line} from 'react-konva';
-import styles from './field.module.css';
 import {RoomHubEvents} from "../RoomConstants";
+import Pallet from '../pallet/pallet';
+import styles from './field.module.css';
+
 
 export default class Field extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lines: [],
-            loadingField: true,
-            drawing: false,
+            lines: [{
+                '#000': []
+            }],
+            isLoadingField: true,
+            isDrawing: false,
             stageRef: null,
             isActiveUser: false,
             activeUser: null,
-            hiddenWord: null
+            hiddenWord: null,
+            color: '#000',
+            isPalletShow: false
         };
     }
 
@@ -50,7 +56,7 @@ export default class Field extends Component {
         const lines = await response.json();
         console.log(lines);
         this.setState({
-            loadingField: false,
+            isLoadingField: false,
             lines: lines || []
         });
     }
@@ -61,35 +67,87 @@ export default class Field extends Component {
     };
 
     handleMouseDown = () => {
-        this.state.drawing = true;
+        this.state.isDrawing = true;
+        const lastLines = this.state.lines[this.state.lines.length - 1][this.state.color];
+        const lastObj = {[this.state.color]: [...lastLines, []]};
         this.setState({
-            lines: [...this.state.lines, []]
+            lines: [
+                ...this.state.lines.slice(0, this.state.lines.length - 1),
+                lastObj
+            ]
         });
     };
 
     handleMouseUp = () => {
-        this.state.drawing = false;
+        this.state.isDrawing = false;
         this.addLine();
     };
 
     handleMouseMove = () => {
-        if (!this.state.drawing) {
+        if (!this.state.isDrawing) {
             return;
         }
         const stage = this.state.stageRef.getStage();
         const point = stage.getPointerPosition();
-        const {lines} = this.state;
+        const lines = this.state.lines[this.state.lines.length - 1][this.state.color];
         let lastLine = lines[lines.length - 1] || [];
         lastLine = lastLine.concat([point.x, point.y]) || [];
         lines.splice(lines.length - 1, 1, lastLine);
+        const lastObj = {[this.state.color]: lines.concat()};
         this.setState({
-            lines: lines.concat()
+            lines: [
+                ...this.state.lines.slice(0, this.state.lines.length - 1),
+                lastObj
+            ]
         });
     };
 
     clearField = () => {
-        this.setState({lines: []});
+        this.setState({
+            lines: [
+                { [this.state.color]: [] }
+            ]
+        });
         this.props.hubConnection.invoke(RoomHubEvents.CLEAR_FIELD, this.props.roomId);
+    }
+
+    changeColor = (color) => {
+        this.setState({
+            lines: [
+                ...this.state.lines,
+                { [color]: [] }
+            ],
+            color
+        })
+    }
+
+    getDrawingLines = () => {
+        if (!this.state.lines.length) {
+            return [];
+        }
+        const drawingLines = [];
+        for (const line of this.state.lines) {
+            for (const [colorName, colorLines] of Object.entries(line)) {
+                for (const line of colorLines) {
+                    drawingLines.push({
+                        color: colorName,
+                        line: line,
+                        strokeWidth: colorName === '#fff' ? 15 : 3
+                    })  
+                }
+            }
+        }
+        return drawingLines;
+    }
+
+    onEraserClick = () => {
+        this.setState({
+            color: '#fff',
+            lines: [
+                ...this.state.lines,
+                {'#fff': []}
+            ]
+        })
     }
 
     render() {
@@ -98,10 +156,13 @@ export default class Field extends Component {
         }
 
         return (
-            <section className={styles.field}>
+            <section className={styles.field} id='field'>
                 {this.state.isActiveUser ?
                     <>
-                        <section>
+                        <section className={styles.drawerTools}>
+                            <Pallet changeColor={this.changeColor}/>
+                            <button className={styles.eraser}
+                                    onClick={this.onEraserClick} />
                             <button
                                 className={`btn btn-dark btn-sm ${styles.clear}`}
                                 onClick={this.clearField}
@@ -123,13 +184,15 @@ export default class Field extends Component {
                         </div>
                     </> : ''
                 }
-                {this.state.loadingField
+                {this.state.isLoadingField
                     ? <div className={styles.loading}>
                         <p>Загрузка...</p>
                     </div>
                     : <Stage
-                        width={window.innerWidth}
-                        height={window.innerHeight}
+                        width={document.getElementById('field').offsetWidth}
+                        height=
+                            {document.getElementById('field').offsetHeight -
+                            (this.state.isActiveUser ? 30 : 0)}
                         onContentMousedown={this.state.isActiveUser ? this.handleMouseDown : () => {
                         }}
                         onContentMousemove={this.state.isActiveUser ? this.handleMouseMove : () => {
@@ -140,8 +203,11 @@ export default class Field extends Component {
                             this.state.stageRef = node
                         }}>
                         <Layer>
-                            {/*this.state.lines.value &&*/this.state.lines.map((line, i) => (
-                                <Line key={i} points={line} stroke="blue"/>
+                            {this.getDrawingLines().map((drawingObj, i) => (
+                                <Line key={i} points={drawingObj.line}
+                                      stroke={drawingObj.color}
+                                      strokeWidth={drawingObj.strokeWidth}
+                                />
                             ))}
                         </Layer>
                     </Stage>
