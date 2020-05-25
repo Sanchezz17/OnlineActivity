@@ -34,7 +34,7 @@ export default class Field extends Component {
             });
         });
 
-        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayerName) => {
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
             if (explainingPlayerName === this.props.user.name) {
                 this.setState({isActiveUser: true});
             }
@@ -68,9 +68,7 @@ export default class Field extends Component {
             color: this.state.drawingColor,
             coordinates: []
         }
-    } 
-
-
+    }
 
     handleMouseDown = () => {
         this.state.isDrawing = true;

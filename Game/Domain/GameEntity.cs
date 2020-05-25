@@ -16,7 +16,7 @@ namespace Game.Domain
         public string[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
         public GameState GameState { get; set; }
-        public string ExplainingPlayerName { get; private set; }
+        public string ExplainingPlayerName { get; set; }
         public List<Line> Canvas { get; set; }
         public List<Player> Players { get; }
         public long CurrentRoundStartTime { get; private set; }

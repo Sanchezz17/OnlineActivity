@@ -48,7 +48,7 @@ namespace ReactOnlineActivity.Hubs
 
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
                 
-                await Clients.Group(roomId).SendAsync("newRound", newGameDto.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("round", newGameDto.ExplainingPlayerName);
             }
         }
 
@@ -69,7 +69,13 @@ namespace ReactOnlineActivity.Hubs
 
             await Clients.Caller.SendAsync("newHiddenWord", hiddenWord);
         }
-        
+
+        public async Task RequestRound(string roomId)
+        {
+            var room = roomRepository.FindById(int.Parse(roomId));
+            await Clients.Group(roomId).SendAsync("round", room.Game.ExplainingPlayerName);
+        }
+
         public async Task NewLine(string roomId, LineDto line)
         {
             if (line == null)
@@ -105,12 +111,14 @@ namespace ReactOnlineActivity.Hubs
             if (playersCount < room.Settings.MinPlayerCount)
             {
                 gameEntity.GameState = GameState.WaitingForStart;
+                gameEntity.ExplainingPlayerName = null;
+                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             
             if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started)
             {
                 gameEntity.StartNewRound();
-                await Clients.Group(roomId).SendAsync("newRound", gameEntity.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             
             var newGameDto = mapper.Map<GameDto>(gameEntity);

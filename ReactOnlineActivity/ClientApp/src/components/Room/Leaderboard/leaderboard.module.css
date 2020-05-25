@@ -11,7 +11,7 @@
 }
 
 .players {
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-top: 5px;
     width: 97%;
     height: 97%;
@@ -41,6 +41,10 @@
 .player__name {
     margin-right: 20px;
     margin-left: 10px;
+}
+
+.explaining {
+    color: gold;
 }
 
 .player__score {

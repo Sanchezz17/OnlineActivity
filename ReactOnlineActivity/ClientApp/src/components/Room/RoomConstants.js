@@ -7,7 +7,8 @@
     NEW_PLAYER: 'newPlayer',
     NEW_LINE: 'newLine',
     CLEAR_FIELD: 'clearField',
-    NEW_ROUND: 'newRound',
+    ROUND_INFO: 'round',
+    REQUEST_ROUND: 'requestRound',
     REQUEST_WORD: 'requestWord',
     NEW_HIDDEN_WORD: 'newHiddenWord'
 }

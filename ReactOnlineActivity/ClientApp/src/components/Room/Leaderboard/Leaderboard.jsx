@@ -7,7 +7,7 @@ export default class Leaderboard extends Component {
         super(props);
         this.state = {
             players: [],
-            explainingPlayer: null,
+            explainingPlayerName: null,
             loadingPlayers: true
         };
     }
@@ -25,17 +25,15 @@ export default class Leaderboard extends Component {
             });
         });
 
-        this.props.hubConnection.on(RoomHubEvents.NEW_ROUND, (explainingPlayer) => {
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
             this.setState({
-                explainingPlayer: explainingPlayer
+                explainingPlayerName
             });
-            
-            if (explainingPlayer.name === this.props.user.name) {
-                // toDo что если объясняющий это я?
-            }
         });
-
+        
         await this.fetchPlayers();
+
+        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId)
     }
 
     fetchPlayers = async () => {
@@ -52,7 +50,11 @@ export default class Leaderboard extends Component {
             .map(player =>
                 <div className={styles.player} key={player.name}>
                     {player.photoUrl && <img className={styles.player__image} src={player.photoUrl} alt={player.name}/>}
-                    <span className={styles.player__name}>{player.name}</span>
+                    <span 
+                        className={`${styles.player__name} ${this.state.explainingPlayerName === player.name ? styles.explaining : ''}`}
+                    >
+                        {player.name}
+                    </span>
                     <span className={styles.player__score}>{player.score}</span>
                 </div>
             )
