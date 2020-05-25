@@ -97,13 +97,16 @@ namespace ReactOnlineActivity.Hubs
 
         public async Task Leave(string roomId, string userName)
         {
+            var room = roomRepository.FindById(int.Parse(roomId));
+            if (room.Game.Players.All(p => p.Name != userName))
+                return;
+            
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("leave", userName);
             await Clients.Group(roomId).SendAsync("notify", $"{userName} покинул игру");
             playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
             
-            var room = roomRepository.FindById(int.Parse(roomId));
             var playersCount = room.Game.Players.Count;
 
             var gameEntity = mapper.Map<GameEntity>(room.Game);
@@ -112,6 +115,7 @@ namespace ReactOnlineActivity.Hubs
             {
                 gameEntity.GameState = GameState.WaitingForStart;
                 gameEntity.ExplainingPlayerName = null;
+                gameEntity.Canvas = new List<Game.Domain.Line>();
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             

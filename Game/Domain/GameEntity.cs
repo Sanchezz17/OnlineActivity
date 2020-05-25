@@ -88,6 +88,7 @@ namespace Game.Domain
         public void StartNewRound()
         {
             CurrentRoundStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Canvas = new List<Line>();
             RoundNumber++;
             ExplainingPlayerName = Players[_random.Next(Players.Count - 1)].Name;
         }
