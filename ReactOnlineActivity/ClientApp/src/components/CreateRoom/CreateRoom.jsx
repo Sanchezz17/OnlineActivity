@@ -45,7 +45,9 @@ class CreateRoom extends Component {
 
     renderTheme = (theme) => {
         return (
-            <li className={styles.themes__theme}>
+            <li className={styles.themes__theme} style={{
+                backgroundImage: `url(${theme.pictureUrl})`,backgroundRepeat: 'no-repeat'
+            }}>
                 <p>{theme.name}</p>
             </li>
         );
