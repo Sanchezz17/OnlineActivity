@@ -1,9 +1,10 @@
-﻿import React, { Component } from 'react';
+﻿import React, {Component} from 'react';
 import reactCSS from 'reactcss'
-import { SketchPicker } from 'react-color';
+import {SketchPicker} from 'react-color';
+import stylesModule from './palette.module.css'
 
 
-export default class Pallet extends Component {
+export default class Palette extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,16 +19,16 @@ export default class Pallet extends Component {
     }
 
     handleClick = () => {
-        this.setState({ displayColorPicker: !this.state.displayColorPicker })
+        this.setState({displayColorPicker: !this.state.displayColorPicker})
     };
 
     handleClose = () => {
-        this.setState({ displayColorPicker: false })
+        this.setState({displayColorPicker: false})
     };
 
     handleChange = (color) => {
         this.props.changeColor(color.hex);
-        this.setState({ color: color.rgb })
+        this.setState({color: color.rgb})
     };
 
     render() {
@@ -37,7 +38,7 @@ export default class Pallet extends Component {
                     width: '36px',
                     height: '14px',
                     borderRadius: '2px',
-                    background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
+                    background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
                 },
                 swatch: {
                     padding: '5px',
@@ -62,14 +63,14 @@ export default class Pallet extends Component {
         });
 
         return (
-            <div>
-                <div style={ styles.swatch } onClick={ this.handleClick }>
-                    <div style={ styles.color } />
+            <div className={stylesModule.palette}>
+                <div style={styles.swatch} onClick={this.handleClick}>
+                    <div style={styles.color}/>
                 </div>
-                { this.state.displayColorPicker ? <div style={ styles.popover }>
-                    <div style={ styles.cover } onClick={ this.handleClose }/>
-                    <SketchPicker color={ this.state.color } onChange={ this.handleChange } />
-                </div> : null }
+                {this.state.displayColorPicker ? <div style={styles.popover}>
+                    <div style={styles.cover} onClick={this.handleClose}/>
+                    <SketchPicker color={this.state.color} onChange={this.handleChange}/>
+                </div> : null}
             </div>
         )
     }

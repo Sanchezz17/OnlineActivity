@@ -60,7 +60,7 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public void AddLineToFieldIntoRoom(int roomId, LineDto newLine)
+        public void AddLineToFieldIntoRoom(int roomId, Line newLine)
         {
             var room = FindById(roomId);
             if (room == null)
@@ -74,7 +74,7 @@ namespace ReactOnlineActivity.Repositories
             var room = FindById(roomId);
             if (room == null)
                 throw new Exception(); //todo: более осмысленное исключение сделать]
-            room.Game.Canvas = new List<LineDto>();
+            room.Game.Canvas = new List<Line>();
             dbContext.SaveChanges();
         }
 

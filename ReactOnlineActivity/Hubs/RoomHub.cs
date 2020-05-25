@@ -6,6 +6,8 @@ using Game.Domain;
 using Microsoft.AspNetCore.SignalR;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
+using Coordinate = ReactOnlineActivity.Models.Coordinate;
+using Line = ReactOnlineActivity.Models.Line;
 
 namespace ReactOnlineActivity.Hubs
 {
@@ -68,11 +70,13 @@ namespace ReactOnlineActivity.Hubs
             await Clients.Caller.SendAsync("newHiddenWord", hiddenWord);
         }
         
-        public async Task NewLine(string roomId, double[] line)
+        public async Task NewLine(string roomId, LineDto line)
         {
-            var newLine = new LineDto {Value = new List<CoordinateDto>()};
-            for(var i = 0; i < line.Length; i++)
-                newLine.Value.Add(new CoordinateDto {Value = line[i], SerialNumber = i});
+            if (line == null)
+                return;
+            var newLine = new Line {Value = new List<Coordinate>(), Color = line.Color};
+            for(var i = 0; i < line.Coordinates.Length; i++)
+                newLine.Value.Add(new Coordinate {Value = line.Coordinates[i], SerialNumber = i});
             roomRepository.AddLineToFieldIntoRoom(int.Parse(roomId), newLine);
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("newLine", line);

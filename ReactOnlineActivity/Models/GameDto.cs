@@ -11,7 +11,7 @@ namespace ReactOnlineActivity.Models
         public GameState GameState { get; set; }
         public int RoundNumber { get; set; }
         public string ExplainingPlayerName { get; set; }
-        public List<LineDto> Canvas { get; set; } // TODO: написать реализацию CanvasDto
+        public List<Line> Canvas { get; set; } // TODO: написать реализацию CanvasDto
         public long CurrentRoundStartTime { get; set; } // TODO: проверить как обработается DateTime
     }
 }

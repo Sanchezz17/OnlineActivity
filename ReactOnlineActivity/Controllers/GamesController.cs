@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
+using Line = ReactOnlineActivity.Models.Line;
 
 namespace ReactOnlineActivity.Controllers
 {
@@ -110,15 +111,20 @@ namespace ReactOnlineActivity.Controllers
 
 
         [HttpGet("fields/{roomId}")]
-        public double[][] GetField([FromRoute] int roomId)
+        public LineDto[] GetField([FromRoute] int roomId)
         {
             var room = roomRepository.FindById(roomId);
             var canvas = room.Game.Canvas;
-            return canvas.Select(line => line.Value
-                                            .OrderBy(c => c.SerialNumber)
-                                            .Select(c => c.Value)
-                                            .ToArray())
-                        .ToArray();
+            return canvas
+                .Select(line => new LineDto
+                {
+                    Coordinates = line.Value
+                        .OrderBy(c => c.SerialNumber)
+                        .Select(c => c.Value)
+                        .ToArray(),
+                    Color = line.Color
+                })
+                .ToArray();
         }
 
         [HttpGet("themes")]
@@ -151,7 +157,7 @@ namespace ReactOnlineActivity.Controllers
                 HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
                 Players = new List<PlayerDto>(),
                 CurrentRoundStartTime = DateTime.Now.ToEpochTime(),
-                Canvas = new List<LineDto>()
+                Canvas = new List<Line>()
             };
         }
     }

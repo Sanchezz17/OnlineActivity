@@ -26,7 +26,6 @@ export default class Room extends Component {
         const {user} = this.props;
         const response = await fetch(`/api/rooms/${this.roomId}/join?userName=${user.name}`);
         const joinRoomDto = await response.json();
-        console.log(joinRoomDto)
         await this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name, joinRoomDto.alreadyInRoom);
         if (!joinRoomDto.alreadyInRoom) {
             await this.hubConnection.invoke(RoomHubEvents.NEW_PLAYER, this.roomId, joinRoomDto.player);

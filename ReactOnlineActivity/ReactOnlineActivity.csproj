@@ -169,7 +169,7 @@
     <EmbeddedResource Remove="ClientApp\build\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClientApp\src\components\Room\Pallet\Pallet.jsx" />
+    <Content Include="ClientApp\src\components\Room\Palette\Pallette.jsx" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ReactOnlineActivity.Models
+﻿namespace ReactOnlineActivity.Models
 {
     public class LineDto
     {
-        public int Id { get; set; }
-        public List<CoordinateDto> Value { get; set; }
+        public double[] Coordinates { get; set; }
+        
+        public string Color { get; set; }
     }
 }
