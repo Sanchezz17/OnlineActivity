@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Domain;
 using Microsoft.EntityFrameworkCore;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
@@ -85,6 +86,7 @@ namespace ReactOnlineActivity.Repositories
                 throw new Exception(); //todo: более осмысленное исключение сделать]
             room.Game.GameState = game.GameState;
             room.Game.RoundNumber = game.RoundNumber;
+            room.Game.Canvas = game.Canvas;
             room.Game.ExplainingPlayerName = game.ExplainingPlayerName;
             room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
            

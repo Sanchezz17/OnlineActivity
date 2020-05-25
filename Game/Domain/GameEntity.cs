@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Timer = System.Timers.Timer;
 
 namespace Game.Domain
 {
@@ -66,13 +65,6 @@ namespace Game.Domain
         {
             Canvas.Add(line);
         }
-
-        public void Paint(IEnumerable<Pixel> pixels)
-        {
-            CheckTime();
-            //if (!GameIsOver)
-              //  Canvas.PaintOverPixels(pixels);  
-        } 
 
         public void CompleteRound(Player guessingPlayer)
         {

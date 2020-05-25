@@ -37,22 +37,19 @@ namespace ReactOnlineActivity.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            if (env.IsDevelopment())
-            {
-                var message = new StringBuilder();
-                message.AppendLine();
-                message.AppendLine(">>> -------------------- <<<");
-                message.AppendLine($"From: {userName}");
-                message.AppendLine($"To: {email}");
-                message.AppendLine($"Subject: {subject}");
-                message.AppendLine();
-                // NOTE: Можно использовать System.Web.HttpUtility.HtmlDecode,
-                // чтобы URL ссылки отображался в логе как текст, а не был закодирован в HTML-сущности.
-                message.AppendLine(htmlMessage);
-                message.AppendLine(">>> -------------------- <<<");
-                message.AppendLine();
-                logger.LogInformation(message.ToString());
-            }
+            var message = new StringBuilder();
+            message.AppendLine();
+            message.AppendLine(">>> -------------------- <<<");
+            message.AppendLine($"From: {userName}");
+            message.AppendLine($"To: {email}");
+            message.AppendLine($"Subject: {subject}");
+            message.AppendLine();
+            // NOTE: Можно использовать System.Web.HttpUtility.HtmlDecode,
+            // чтобы URL ссылки отображался в логе как текст, а не был закодирован в HTML-сущности.
+            message.AppendLine(htmlMessage);
+            message.AppendLine(">>> -------------------- <<<");
+            message.AppendLine();
+            logger.LogInformation(message.ToString());
 
             if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
             {

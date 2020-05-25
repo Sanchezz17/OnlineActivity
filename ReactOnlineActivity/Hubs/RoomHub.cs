@@ -6,8 +6,6 @@ using Game.Domain;
 using Microsoft.AspNetCore.SignalR;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
-using Coordinate = ReactOnlineActivity.Models.Coordinate;
-using Line = ReactOnlineActivity.Models.Line;
 
 namespace ReactOnlineActivity.Hubs
 {
@@ -115,19 +113,19 @@ namespace ReactOnlineActivity.Hubs
             {
                 gameEntity.GameState = GameState.WaitingForStart;
                 gameEntity.ExplainingPlayerName = null;
-                gameEntity.Canvas = new List<Game.Domain.Line>();
+                gameEntity.Canvas = new List<Line>();
+                var newGameDto = mapper.Map<GameDto>(gameEntity);
+                roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             
             if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started)
             {
                 gameEntity.StartNewRound();
+                var newGameDto = mapper.Map<GameDto>(gameEntity);
+                roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
-            
-            var newGameDto = mapper.Map<GameDto>(gameEntity);
-
-            roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
         }
 
         public async Task Send(string roomId, string from, string text)

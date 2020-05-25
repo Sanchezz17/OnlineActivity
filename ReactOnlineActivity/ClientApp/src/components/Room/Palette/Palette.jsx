@@ -36,7 +36,7 @@ export default class Palette extends Component {
             'default': {
                 color: {
                     width: '36px',
-                    height: '14px',
+                    height: '20px',
                     borderRadius: '2px',
                     background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
                 },

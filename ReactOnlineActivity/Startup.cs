@@ -21,8 +21,8 @@ using ReactOnlineActivity.Hubs;
 using ReactOnlineActivity.Repositories;
 using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
-using Coordinate = ReactOnlineActivity.Models.Coordinate;
-using Line = ReactOnlineActivity.Models.Line;
+using Coordinate = Game.Domain.Coordinate;
+using Line = Game.Domain.Line;
 
 namespace ReactOnlineActivity
 {
@@ -130,12 +130,8 @@ namespace ReactOnlineActivity
                 {
                     cfg.CreateMap<GameDto, GameEntity>();
                     cfg.CreateMap<GameEntity, GameDto>();
-                    cfg.CreateMap<Game.Domain.Line, Line>();
-                    cfg.CreateMap<Line, Game.Domain.Line>();
                     cfg.CreateMap<PlayerDto, Player>();
                     cfg.CreateMap<Player, PlayerDto>();
-                    cfg.CreateMap<Game.Domain.Coordinate, Coordinate>();
-                    cfg.CreateMap<Coordinate, Game.Domain.Coordinate>();
                     cfg.CreateMap<RoomSettingsDto, RoomSettings>().ForMember(dest => dest.Themes,
                         opt =>
                             opt.MapFrom(src => src.ThemesIds.Select(

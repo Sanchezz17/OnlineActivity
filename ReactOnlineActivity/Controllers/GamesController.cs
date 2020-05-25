@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
-using Line = ReactOnlineActivity.Models.Line;
+using Line = Game.Domain.Line;
 
 namespace ReactOnlineActivity.Controllers
 {
