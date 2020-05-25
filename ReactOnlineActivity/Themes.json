@@ -1,10 +1,18 @@
 ﻿[
 	{
 		"Name": "Животные",
+		"PictureUrl": "https://lh6.ggpht.com/-Of-zxlwNers/U6k4SQHLNvI/AAAAAAAE_OU/qyJWoewUxOk/s1024/datafile-124055.jpg",
 		"Words": [
 			{ "Value": "Жираф" },
 			{ "Value": "Тигр" },
 			{ "Value": "Лев" }
+		]
+	}, 
+	{
+		"Name" : "Test",
+		"PictureUrl" : "",
+		"Words": [
+			{"Value" : "test"}
 		]
 	}
 ]

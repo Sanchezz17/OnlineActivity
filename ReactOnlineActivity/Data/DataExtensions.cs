@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Game.Domain;
 using Microsoft.AspNetCore.Hosting;
@@ -38,10 +39,21 @@ namespace ReactOnlineActivity.Data
 
         private static async Task SeedWithSampleThemesAsync(this ApplicationDbContext dbContext)
         {
-            dbContext.Themes.RemoveRange(dbContext.Themes);
-            await dbContext.SaveChangesAsync();
             var themes = GetThemesFromJson(ThemesFileName);
-            dbContext.Themes.AddRange(themes);
+            foreach (var theme in themes)
+            {
+                var savedTheme = dbContext.Themes.FirstOrDefault(dbTheme => dbTheme.Name == theme.Name);
+                if (savedTheme != null)
+                {
+                    savedTheme.PictureUrl = theme.PictureUrl;
+                    savedTheme.Words = theme.Words;
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    dbContext.Themes.Add(theme);
+                }
+            }
             await dbContext.SaveChangesAsync();
         }
 
