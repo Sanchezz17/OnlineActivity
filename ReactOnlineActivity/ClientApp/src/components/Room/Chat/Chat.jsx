@@ -7,7 +7,8 @@ export default class Chat extends Component {
         super(props);
         this.state = {
             messages: [],
-            currentMessage: ''
+            currentMessage: '',
+            isActiveUser: false
         };
     }
 
@@ -22,6 +23,12 @@ export default class Chat extends Component {
             this.setState({
                 messages: [{from: notification, text: ''}, ...this.state.messages]
             })
+        });
+
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
+            if (explainingPlayerName === this.props.user.name) {
+                this.setState({isActiveUser: true});
+            }
         });
     }
 
@@ -58,6 +65,7 @@ export default class Chat extends Component {
                         placeholder="Отвечать тут..."
                         type='text'
                         onChange={this.onChangeInput}
+                        disabled={this.state.isActiveUser}
                     />
                 </form>
 
