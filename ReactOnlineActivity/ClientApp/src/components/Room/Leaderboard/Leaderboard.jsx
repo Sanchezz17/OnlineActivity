@@ -25,10 +25,11 @@ export default class Leaderboard extends Component {
             });
         });
 
-        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, async (explainingPlayerName) => {
             this.setState({
                 explainingPlayerName
             });
+            await this.fetchPlayers();
         });
         
         await this.fetchPlayers();

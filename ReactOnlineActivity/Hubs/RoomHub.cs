@@ -134,10 +134,18 @@ namespace ReactOnlineActivity.Hubs
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
             var player = gameEntity.Players.First(p => p.Name == from);
-            var response = gameEntity.MakeStep(player, text) ? "# Игрок угадал слово" : text;
+            var playerGuessed = gameEntity.MakeStep(player, text);
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-            await Clients.Group(roomId).SendAsync("newMessage", from, response);
+            if (playerGuessed)
+            {
+                await Clients.Group(roomId).SendAsync("notify", $"{from} угадал слово\nРаунд №{gameDto.RoundNumber + 1}");
+                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+            }
+            else
+            {
+                await Clients.Group(roomId).SendAsync("newMessage", from, text);
+            }
         }
     }
 }

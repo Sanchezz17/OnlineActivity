@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
 
@@ -17,36 +18,10 @@ namespace ReactOnlineActivity.Repositories
             this.dbContext = dbContext;
         }
 
-        public Room FindSuitable()
-        {
-            var rooms = dbContext.Rooms
-                .Include(r => r.Game)
-                .Include(r => r.Game.Players)
-                .Include(r => r.Settings)
-                .Include(r => r.Game.HiddenWords)
-                .Include(r => r.Game.Canvas)
-                    .ThenInclude(l => l.Value)
-                .Include(r => r.Settings)
-                .Include(r => r.Settings.Themes)
-                    .ThenInclude(t => t.Words);
-                
-            return rooms.FirstOrDefault(room =>
+        public Room FindSuitable() => GetQuery().FirstOrDefault(room =>
                     !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
-        }
 
-        public Room FindById(int roomId)
-        {
-            return dbContext.Rooms
-                .Include(r => r.Game)
-                .Include(r => r.Game.Players)
-                .Include(r => r.Game.HiddenWords)
-                .Include(r => r.Game.Canvas)
-                    .ThenInclude(l => l.Value)
-                .Include(r => r.Settings)
-                .Include(r => r.Settings.Themes)
-                .ThenInclude(t => t.Words)
-                .SingleOrDefault(r => r.Id == roomId);
-        }
+        public Room FindById(int roomId) => GetQuery().SingleOrDefault(r => r.Id == roomId);
 
         public void Insert(Room room)
         {
@@ -58,7 +33,7 @@ namespace ReactOnlineActivity.Repositories
         {
             var room = FindById(roomId);
             if (room == null)
-                throw new Exception(); //todo: более осмысленное исключение сделать
+                throw new Exception();
             room.Game.Players.Add(player);
             dbContext.SaveChanges();
         }
@@ -67,7 +42,7 @@ namespace ReactOnlineActivity.Repositories
         {
             var room = FindById(roomId);
             if (room == null)
-                throw new Exception(); //todo: более осмысленное исключение сделать
+                throw new Exception();
             room.Game.Canvas.Add(newLine);
             dbContext.SaveChanges();
         }
@@ -76,7 +51,7 @@ namespace ReactOnlineActivity.Repositories
         {
             var room = FindById(roomId);
             if (room == null)
-                throw new Exception(); //todo: более осмысленное исключение сделать]
+                throw new Exception();
             room.Game.Canvas = new List<Line>();
             dbContext.SaveChanges();
         }
@@ -85,14 +60,35 @@ namespace ReactOnlineActivity.Repositories
         {
             var room = FindById(roomId);
             if (room == null)
-                throw new Exception(); //todo: более осмысленное исключение сделать]
+                throw new Exception();
             room.Game.GameState = game.GameState;
             room.Game.RoundNumber = game.RoundNumber;
             room.Game.Canvas = game.Canvas;
             room.Game.ExplainingPlayerName = game.ExplainingPlayerName;
             room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
-           
+            /*
+             * TODO:
+             *        Проблема с сохранением очков как раз тут
+             *        по логику тут мы должны были написать строчку
+             *             room.Game.Players = game.Players;
+             *        но если ее написать, то будет ошибка с сохранением в базу PlayerDto
+             *        надо придумать как сохранять это и делать это элегантно 
+             */
             dbContext.SaveChanges();
+        }
+
+        private IIncludableQueryable<Room, List<Word>> GetQuery()
+        {
+            return dbContext.Rooms
+                .Include(r => r.Game)
+                .Include(r => r.Game.Players)
+                .Include(r => r.Settings)
+                .Include(r => r.Game.HiddenWords)
+                .Include(r => r.Game.Canvas)
+                .ThenInclude(l => l.Value)
+                .Include(r => r.Settings)
+                .Include(r => r.Settings.Themes)
+                .ThenInclude(t => t.Words);
         }
     }
 }

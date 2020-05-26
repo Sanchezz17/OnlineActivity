@@ -22,13 +22,11 @@ export default class Chat extends Component {
         this.props.hubConnection.on(RoomHubEvents.NOTIFY, (notification) => {
             this.setState({
                 messages: [{from: notification, text: ''}, ...this.state.messages]
-            })
+            });
         });
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
-            if (explainingPlayerName === this.props.user.name) {
-                this.setState({isActiveUser: true});
-            }
+            this.setState({isActiveUser: explainingPlayerName === this.props.user.name});
         });
     }
 

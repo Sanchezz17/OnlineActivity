@@ -35,11 +35,11 @@ export default class Field extends Component {
         });
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
-            if (explainingPlayerName === this.props.user.name) {
-                this.setState({isActiveUser: true});
+            const isActiveUser = explainingPlayerName === this.props.user.name;
+            if (isActiveUser) {
                 this.props.hubConnection.invoke(RoomHubEvents.REQUEST_WORD, this.props.roomId);
             }
-
+            this.setState({isActiveUser});
             this.fetchLines();
         });
 
