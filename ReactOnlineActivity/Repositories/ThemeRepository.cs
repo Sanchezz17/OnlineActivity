@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Game.Domain;
+using Microsoft.EntityFrameworkCore;
 using ReactOnlineActivity.Data;
 
 namespace ReactOnlineActivity.Repositories
@@ -21,7 +22,9 @@ namespace ReactOnlineActivity.Repositories
 
         public List<Theme> GetAllThemes()
         {
-            return dbContext.Themes.ToList();
+            return dbContext.Themes
+                .Include(t => t.Words)
+                .ToList();
         }
 
         public void Insert(Theme theme)

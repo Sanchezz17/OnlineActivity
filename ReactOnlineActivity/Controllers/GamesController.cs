@@ -96,11 +96,12 @@ namespace ReactOnlineActivity.Controllers
         [HttpPost("rooms")]
         public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
         {
-
+            var settings = mapper.Map<RoomSettings>(roomSettings);
+            var words = settings.Themes.SelectMany(t => t.Words);
             var newRoom = new Room
             {
-                Game = CreateTestGame(),
-                Settings = mapper.Map<RoomSettings>(roomSettings)
+                Game = CreateTestGame(words.ToList()),
+                Settings = settings
             };
 
             roomRepository.Insert(newRoom);
@@ -143,18 +144,19 @@ namespace ReactOnlineActivity.Controllers
         {
             var roomSettings = new RoomSettings();
             roomSettings.Themes = themeRepository.GetAllThemes();
+            var words = roomSettings.Themes.SelectMany(t => t.Words);
             return new Room
             {
-                Game = CreateTestGame(),
+                Game = CreateTestGame(words.ToList()),
                 Settings = roomSettings
             };
         }
 
-        private GameDto CreateTestGame()
+        private GameDto CreateTestGame(List<Word> words)
         {
             return new GameDto
             {
-                HiddenWords = new List<Word> {new Word {Value = "kek"}, new Word {Value = "lol"}},
+                HiddenWords = words,
                 Players = new List<PlayerDto>(),
                 CurrentRoundStartTime = DateTime.Now.ToEpochTime(),
                 Canvas = new List<Line>()

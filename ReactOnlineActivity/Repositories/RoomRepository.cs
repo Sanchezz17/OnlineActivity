@@ -23,6 +23,7 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
+                .Include(r => r.Game.HiddenWords)
                 .Include(r => r.Game.Canvas)
                     .ThenInclude(l => l.Value)
                 .Include(r => r.Settings)
@@ -38,6 +39,7 @@ namespace ReactOnlineActivity.Repositories
             return dbContext.Rooms
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
+                .Include(r => r.Game.HiddenWords)
                 .Include(r => r.Game.Canvas)
                     .ThenInclude(l => l.Value)
                 .Include(r => r.Settings)

@@ -128,8 +128,18 @@ namespace ReactOnlineActivity
 
             services.AddAutoMapper(cfg =>
                 {
-                    cfg.CreateMap<GameDto, GameEntity>();
-                    cfg.CreateMap<GameEntity, GameDto>();
+                    cfg.CreateMap<GameDto, GameEntity>()
+                        .ForMember(dest => dest.HiddenWords,
+                            opt => opt
+                                .MapFrom(src => src.HiddenWords
+                                    .Select(w => w.Value)
+                                    .ToArray()));
+                    cfg.CreateMap<GameEntity, GameDto>()
+                        .ForMember(dest => dest.HiddenWords,
+                            opt => opt
+                                .MapFrom(src => src.HiddenWords
+                                    .Select(w => new Word{Value = w})
+                                    .ToArray())); 
                     cfg.CreateMap<PlayerDto, Player>();
                     cfg.CreateMap<Player, PlayerDto>();
                     cfg.CreateMap<RoomSettingsDto, RoomSettings>().ForMember(dest => dest.Themes,
