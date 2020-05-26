@@ -16,6 +16,7 @@ class CreateRoom extends Component {
                 minPlayerCount: 2,
                 pointsToWin: 100,
                 isPrivateRoom: false,
+                is_selected: false,
                 themes: [],
             }
         }
@@ -45,12 +46,31 @@ class CreateRoom extends Component {
 
     renderTheme = (theme) => {
         return (
-            <li className={styles.themes__theme} style={{
-                backgroundImage: `url(${theme.pictureUrl})`,backgroundRepeat: 'no-repeat'
+
+            <li onClick={_ => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
+                backgroundImage: `url(${theme.pictureUrl})`, backgroundRepeat: 'no-repeat'
             }}>
-                <p>{theme.name}</p>
+                {theme.is_selected &&
+                <div className={styles.themes__selected}>
+                    <p className={styles.themes__text}>
+                        {theme.name}
+                    </p>
+                </div>
+                }
+                {!theme.is_selected &&
+                <div className={styles.themes__not_selected}>
+                    <p className={styles.themes__text}>
+                        {theme.name}
+                    </p>
+                </div>
+                }
             </li>
         );
+    }
+
+    onThemeClicked(theme) {
+        theme.is_selected = !theme.is_selected;
+        this.setState({themes: this.state.themes})
     }
 
     handleSettingsChange = (fieldName, newValue) => {
