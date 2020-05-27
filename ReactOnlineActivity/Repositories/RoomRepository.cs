@@ -66,14 +66,8 @@ namespace ReactOnlineActivity.Repositories
             room.Game.Canvas = game.Canvas;
             room.Game.ExplainingPlayerName = game.ExplainingPlayerName;
             room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
-            /*
-             * TODO:
-             *        Проблема с сохранением очков как раз тут
-             *        по логику тут мы должны были написать строчку
-             *             room.Game.Players = game.Players;
-             *        но если ее написать, то будет ошибка с сохранением в базу PlayerDto
-             *        надо придумать как сохранять это и делать это элегантно 
-             */
+            foreach (var player in game.Players)
+                room.Game.Players.Find(p => p.Id == player.Id).Score = player.Score;
             dbContext.SaveChanges();
         }
 
