@@ -164,7 +164,6 @@ export default class Field extends Component {
                         }}
                         ref={node => {
                             this.state.stageRef = node;
-                            // this.setState({ stageRef: node });
                         }}>
                         <Layer>
                             {this.state.lines.map((line, i) => (

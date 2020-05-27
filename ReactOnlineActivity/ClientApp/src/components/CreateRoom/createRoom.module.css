@@ -1,13 +1,11 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@700&display=swap');
-
-.container {
+﻿.container {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 75vh 20vh;
     margin: 30px;
     height: 95vh;
-    font-family: 'Balsamiq Sans', sans-serif;
+    font-family: 'Helvetica Neue', sans-serif;
     font-size: 4vh;
 }
 

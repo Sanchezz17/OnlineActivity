@@ -50,12 +50,14 @@ export default class Leaderboard extends Component {
         return this.state.players
             .map(player =>
                 <div className={styles.player} key={player.name}>
-                    {player.photoUrl && <img className={styles.player__image} src={player.photoUrl} alt={player.name}/>}
-                    <span 
-                        className={`${styles.player__name} ${this.state.explainingPlayerName === player.name ? styles.explaining : ''}`}
-                    >
+                    <div>
+                        {player.photoUrl && <img className={styles.player__image} src={player.photoUrl} alt={player.name}/>}
+                        <span
+                            className={`${styles.player__name} ${this.state.explainingPlayerName === player.name ? styles.explaining : ''}`}
+                        >
                         {player.name}
                     </span>
+                    </div>
                     <span className={styles.player__score}>{player.score}</span>
                 </div>
             )
