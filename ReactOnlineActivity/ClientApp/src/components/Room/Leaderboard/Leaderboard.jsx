@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
-import {RoomHubEvents} from "../RoomConstants";
+import React, { Component } from 'react';
+import authorizeFetch from '../../../utils/authorizeFetch';
+import { RoomHubEvents } from '../RoomConstants';
 import styles from './leaderboard.module.css';
 
 export default class Leaderboard extends Component {
@@ -34,12 +35,11 @@ export default class Leaderboard extends Component {
         
         await this.fetchPlayers();
 
-        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId)
+        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId);
     }
 
     fetchPlayers = async () => {
-        const response = await fetch(`/api/players?roomId=${this.props.roomId}`);
-        const players = await response.json();
+        const players = await authorizeFetch(`/api/players?roomId=${this.props.roomId}`);
         this.setState({
             loadingPlayers: false,
             players

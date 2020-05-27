@@ -1,9 +1,9 @@
-import React, {Component, Fragment} from 'react';
-import {NavItem, NavLink} from 'reactstrap';
-import {Link} from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import authService from '../AuthorizeService';
-import {ApplicationPaths} from '../ApiAuthorizationConstants';
-import styles from './loginMenu.module.css'
+import { ApplicationPaths } from '../ApiAuthorizationConstants';
+import styles from './loginMenu.module.css';
 
 export class LoginMenu extends Component {
     constructor(props) {
@@ -42,7 +42,7 @@ export class LoginMenu extends Component {
             return this.anonymousView(registerPath, loginPath);
         } else {
             const profilePath = `${ApplicationPaths.Profile}`;
-            const logoutPath = {pathname: `${ApplicationPaths.LogOut}`, state: {local: true}};
+            const logoutPath = { pathname: `${ApplicationPaths.LogOut}`, state: { local: true } };
             return this.authenticatedView(userName, profilePath, logoutPath);
         }
     }
@@ -54,7 +54,7 @@ export class LoginMenu extends Component {
                 <NavItem>
                     <img src={userPhotoUrl} alt={userName} className={styles.image}/>
                 </NavItem>
-            )
+            );
         }
     }
 

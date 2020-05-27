@@ -1,5 +1,6 @@
-﻿import React, {Component} from 'react';
-import {Redirect, withRouter} from 'react-router';
+﻿import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import authorizeFetch from '../../utils/authorizeFetch';
 import styles from './createRoom.module.css';
 
 class CreateRoom extends Component {
@@ -19,17 +20,15 @@ class CreateRoom extends Component {
                 is_selected: false,
                 themes: [],
             }
-        }
+        };
     }
 
     async componentDidMount() {
         await this.fetchThemes();
     }
 
-
     async fetchThemes() {
-        const response = await fetch('/api/themes');
-        const themes = await response.json();
+        const themes = await authorizeFetch('/api/themes');
         this.setState({
             loading: false,
             settings: {
@@ -47,7 +46,7 @@ class CreateRoom extends Component {
     renderTheme = (theme) => {
         return (
 
-            <li onClick={_ => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
+            <li onClick={() => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
                 backgroundImage: `url(${theme.pictureUrl})`, backgroundRepeat: 'no-repeat'
             }}>
                 {theme.is_selected &&
@@ -70,7 +69,7 @@ class CreateRoom extends Component {
 
     onThemeClicked(theme) {
         theme.is_selected = !theme.is_selected;
-        this.setState({themes: this.state.themes})
+        this.setState({ themes: this.state.themes });
     }
 
     handleSettingsChange = (fieldName, newValue) => {
@@ -106,9 +105,8 @@ class CreateRoom extends Component {
             pointsToWin: settings.pointsToWin,
             isPrivateRoom: settings.isPrivateRoom,
             themesIds: settings.themes.map(t => t.id)
-        }
+        };
     }
-
 
     render() {
         return (
@@ -128,7 +126,7 @@ class CreateRoom extends Component {
                                 type="text"
                                 value={this.state.settings.name}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("name", event.target.value)}
+                                    this.handleSettingsChange('name', event.target.value)}
                                 required={true}/>
                         </div>
                         <div className="form-group">
@@ -138,7 +136,7 @@ class CreateRoom extends Component {
                                 type="text"
                                 value={this.state.settings.description}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("description", event.target.value)}
+                                    this.handleSettingsChange('description', event.target.value)}
                                 required={true}/>
                         </div>
                         <div className={`form-group ${styles.settings__item}`}>
@@ -146,7 +144,7 @@ class CreateRoom extends Component {
                             <select
                                 value={this.state.settings.maxPlayerCount}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("maxPlayerCount", Number(event.target.value))}
+                                    this.handleSettingsChange('maxPlayerCount', Number(event.target.value))}
                             >
                                 <option selected value="5">5</option>
                                 <option value="10">10</option>
@@ -159,7 +157,7 @@ class CreateRoom extends Component {
                             <select
                                 value={this.state.settings.minPlayerCount}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("minPlayerCount", Number(event.target.value))}
+                                    this.handleSettingsChange('minPlayerCount', Number(event.target.value))}
                             >
                                 <option selected value="2">2</option>
                                 <option value="3">3</option>
@@ -172,7 +170,7 @@ class CreateRoom extends Component {
                             <select
                                 value={this.state.settings.pointsToWin}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("pointsToWin", Number(event.target.value))}
+                                    this.handleSettingsChange('pointsToWin', Number(event.target.value))}
                             >
                                 <option selected value="100">100</option>
                                 <option value="120">120</option>
@@ -185,7 +183,7 @@ class CreateRoom extends Component {
                             <select
                                 value={this.state.settings.roundTime}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("roundTime", Number(event.target.value))}
+                                    this.handleSettingsChange('roundTime', Number(event.target.value))}
                             >
                                 <option selected value="30">30 секунд</option>
                                 <option value="60">60 секунд</option>
@@ -199,7 +197,7 @@ class CreateRoom extends Component {
                                 type="checkbox"
                                 checked={this.state.settings.isPrivateRoom}
                                 onChange={(event) =>
-                                    this.handleSettingsChange("isPrivateRoom", event.target.checked)}
+                                    this.handleSettingsChange('isPrivateRoom', event.target.checked)}
                             />
                         </div>
                     </div>
@@ -221,8 +219,8 @@ class CreateRoom extends Component {
                         </button>
                     </div>
                 </form>
-        )
+        );
     }
 }
 
-export default withRouter(CreateRoom)
+export default withRouter(CreateRoom);

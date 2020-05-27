@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Stage, Layer, Line} from 'react-konva';
-import {RoomHubEvents} from "../RoomConstants";
+import React, { Component } from 'react';
+import { Stage, Layer, Line } from 'react-konva';
+import authorizeFetch from '../../../utils/authorizeFetch';
 import Palette from '../Palette/Palette';
+import { RoomHubEvents } from '../RoomConstants';
 import styles from './field.module.css';
-
 
 export default class Field extends Component {
     constructor(props) {
@@ -39,20 +39,19 @@ export default class Field extends Component {
             if (isActiveUser) {
                 this.props.hubConnection.invoke(RoomHubEvents.REQUEST_WORD, this.props.roomId);
             }
-            this.setState({isActiveUser});
+            this.setState({ isActiveUser });
             this.fetchLines();
         });
 
         this.props.hubConnection.on(RoomHubEvents.NEW_HIDDEN_WORD, (hiddenWord) => {
-            this.setState({hiddenWord})
+            this.setState({ hiddenWord });
         });
 
         await this.fetchLines();
     }
 
     fetchLines = async () => {
-        const response = await fetch(`/api/fields/${this.props.roomId}`);
-        const lines = await response.json();
+        const lines = await authorizeFetch(`/api/fields/${this.props.roomId}`);
         this.setState({
             isLoadingField: false,
             lines: lines || []
@@ -68,12 +67,12 @@ export default class Field extends Component {
         return {
             color: this.state.drawingColor,
             coordinates: []
-        }
+        };
     }
 
     handleMouseDown = () => {
-        this.state.isDrawing = true;
         this.setState({
+            isDrawing: true,
             lines: [
                 ...this.state.lines,
                 this.getNewEmptyLine()
@@ -82,7 +81,7 @@ export default class Field extends Component {
     };
 
     handleMouseUp = () => {
-        this.state.isDrawing = false;
+        this.setState({ isDrawing: false });
         this.addLine();
     };
 
@@ -92,7 +91,7 @@ export default class Field extends Component {
         }
         const stage = this.state.stageRef.getStage();
         const point = stage.getPointerPosition();
-        const {lines} = this.state;
+        const { lines } = this.state;
         let lastLine = lines[lines.length - 1] || this.getNewEmptyLine();
         lastLine.coordinates = lastLine.coordinates.concat([point.x, point.y]) || [];
         lines.splice(lines.length - 1, 1, lastLine);
@@ -102,16 +101,16 @@ export default class Field extends Component {
     };
 
     clearField = () => {
-        this.setState({lines: []});
         this.props.hubConnection.invoke(RoomHubEvents.CLEAR_FIELD, this.props.roomId);
+        this.setState({ lines: [] });
     }
 
     changeDrawingColor = (drawingColor) => {
-        this.setState({drawingColor})
+        this.setState({ drawingColor });
     }
 
     onEraserClick = () => {
-        this.setState({drawingColor: '#fff'})
+        this.setState({ drawingColor: '#fff' });
     }
 
     render() {
@@ -164,7 +163,8 @@ export default class Field extends Component {
                         onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {
                         }}
                         ref={node => {
-                            this.state.stageRef = node
+                            this.state.stageRef = node;
+                            // this.setState({ stageRef: node });
                         }}>
                         <Layer>
                             {this.state.lines.map((line, i) => (
@@ -177,6 +177,6 @@ export default class Field extends Component {
                     </Stage>
                 }
             </section>
-        )
+        );
     }
 }

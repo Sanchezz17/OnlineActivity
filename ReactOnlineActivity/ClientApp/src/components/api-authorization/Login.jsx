@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Component } from 'react';
 import authService from './AuthorizeService';
 import { AuthenticationResultStatus } from './AuthorizeService';
@@ -46,8 +46,8 @@ export class Login extends Component {
         const action = this.props.action;
         const { message } = this.state;
 
-        if (!!message) {
-            return <div>{message}</div>
+        if (message) {
+            return <div>{message}</div>;
         } else {
             switch (action) {
                 case LoginActions.Login:
@@ -104,7 +104,7 @@ export class Login extends Component {
         const fromQuery = params.get(QueryParameterNames.ReturnUrl);
         if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
             // This is an extra check to prevent open redirects.
-            throw new Error("Invalid return url. The return url needs to have the same origin as the current page.")
+            throw new Error('Invalid return url. The return url needs to have the same origin as the current page.');
         }
         return (state && state.returnUrl) || fromQuery || `${window.location.origin}/`;
     }

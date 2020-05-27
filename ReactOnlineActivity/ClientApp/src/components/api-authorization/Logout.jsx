@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Component } from 'react';
 import authService from './AuthorizeService';
 import { AuthenticationResultStatus } from './AuthorizeService';
@@ -22,18 +22,18 @@ export class Logout extends Component {
         const action = this.props.action;
         switch (action) {
             case LogoutActions.Logout:
-                if (!!window.history.state.state.local) {
+                if (window.history.state.state.local) {
                     this.logout(this.getReturnUrl());
                 } else {
                     // This prevents regular links to <app>/authentication/logout from triggering a logout
-                    this.setState({ isReady: true, message: "The logout was not initiated from within the page." });
+                    this.setState({ isReady: true, message: 'The logout was not initiated from within the page.' });
                 }
                 break;
             case LogoutActions.LogoutCallback:
                 this.processLogoutCallback();
                 break;
             case LogoutActions.LoggedOut:
-                this.setState({ isReady: true, message: "Вы успешно вышли!" });
+                this.setState({ isReady: true, message: 'Вы успешно вышли!' });
                 break;
             default:
                 throw new Error(`Invalid action '${action}'`);
@@ -45,9 +45,9 @@ export class Logout extends Component {
     render() {
         const { isReady, message } = this.state;
         if (!isReady) {
-            return <div/>
+            return <div/>;
         }
-        if (!!message) {
+        if (message) {
             return (<div>{message}</div>);
         } else {
             const action = this.props.action;
@@ -79,10 +79,10 @@ export class Logout extends Component {
                     this.setState({ message: result.message });
                     break;
                 default:
-                    throw new Error("Invalid authentication result status.");
+                    throw new Error('Invalid authentication result status.');
             }
         } else {
-            this.setState({ message: "Вы успешно вышли!" });
+            this.setState({ message: 'Вы успешно вышли!' });
         }
     }
 
@@ -101,7 +101,7 @@ export class Logout extends Component {
                 this.setState({ message: result.message });
                 break;
             default:
-                throw new Error("Invalid authentication result status.");
+                throw new Error('Invalid authentication result status.');
         }
     }
 
@@ -115,7 +115,7 @@ export class Logout extends Component {
         const fromQuery = params.get(QueryParameterNames.ReturnUrl);
         if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
             // This is an extra check to prevent open redirects.
-            throw new Error("Invalid return url. The return url needs to have the same origin as the current page.")
+            throw new Error('Invalid return url. The return url needs to have the same origin as the current page.');
         }
         return (state && state.returnUrl) ||
             fromQuery ||

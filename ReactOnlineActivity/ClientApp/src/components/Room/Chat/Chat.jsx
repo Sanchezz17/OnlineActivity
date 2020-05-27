@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {RoomHubEvents} from '../RoomConstants';
+import React, { Component } from 'react';
+import { RoomHubEvents } from '../RoomConstants';
 import styles from './chat.module.css';
 
 export default class Chat extends Component {
@@ -15,29 +15,29 @@ export default class Chat extends Component {
     componentDidMount() {
         this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
             this.setState({
-                messages: [{from, text}, ...this.state.messages]
-            })
+                messages: [{ from, text }, ...this.state.messages]
+            });
         });
 
         this.props.hubConnection.on(RoomHubEvents.NOTIFY, (notification) => {
             this.setState({
-                messages: [{from: notification, text: ''}, ...this.state.messages]
+                messages: [{ from: notification, text: '' }, ...this.state.messages]
             });
         });
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
-            this.setState({isActiveUser: explainingPlayerName === this.props.user.name});
+            this.setState({ isActiveUser: explainingPlayerName === this.props.user.name });
         });
     }
 
     onPostMessage = (event) => {
         event.preventDefault();
         this.props.hubConnection.invoke(RoomHubEvents.SEND, this.props.roomId, this.props.user.name, this.state.currentMessage);
-        this.setState({currentMessage: ''})
+        this.setState({ currentMessage: '' });
     };
 
     onChangeInput = (event) => {
-        const {value} = event.target;
+        const { value } = event.target;
 
         this.setState({
             ...this.state,
@@ -50,8 +50,8 @@ export default class Chat extends Component {
             <section className={styles.chat}>
                 <header className={`btn-sm ${styles.title}`}>Чат</header>
                 <section className={styles.messages}>
-                    {this.state.messages.map(message =>
-                        <p className={styles.message}>
+                    {this.state.messages.map((message, index) =>
+                        <p className={styles.message} key={index}>
                             <span className={styles.from}>{message.from}</span> <span className={styles.text}>{message.text}</span>
                         </p>
                     )}
@@ -66,8 +66,7 @@ export default class Chat extends Component {
                         disabled={this.state.isActiveUser}
                     />
                 </form>
-
             </section>
-        )
+        );
     }
 }

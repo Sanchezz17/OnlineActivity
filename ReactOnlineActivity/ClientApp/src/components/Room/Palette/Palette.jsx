@@ -1,8 +1,7 @@
-﻿import React, {Component} from 'react';
-import reactCSS from 'reactcss'
-import {SketchPicker} from 'react-color';
-import stylesModule from './palette.module.css'
-
+﻿import React, { Component } from 'react';
+import reactCSS from 'reactcss';
+import { SketchPicker } from 'react-color';
+import stylesModule from './palette.module.css';
 
 export default class Palette extends Component {
     constructor(props) {
@@ -19,16 +18,16 @@ export default class Palette extends Component {
     }
 
     handleClick = () => {
-        this.setState({displayColorPicker: !this.state.displayColorPicker})
+        this.setState({ displayColorPicker: !this.state.displayColorPicker });
     };
 
     handleClose = () => {
-        this.setState({displayColorPicker: false})
+        this.setState({ displayColorPicker: false });
     };
 
     handleChange = (color) => {
         this.props.changeColor(color.hex);
-        this.setState({color: color.rgb})
+        this.setState({ color: color.rgb });
     };
 
     render() {
@@ -72,6 +71,6 @@ export default class Palette extends Component {
                     <SketchPicker color={this.state.color} onChange={this.handleChange}/>
                 </div> : null}
             </div>
-        )
+        );
     }
 }

@@ -1,12 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import styles from './home.module.css';
 
 export class Home extends Component {
     static displayName = Home.name;
 
     render() {
-        const { user } = this.props;
-        
         return (
             <div>
                 <h1>Игра «Онлайн-Активити»</h1>

@@ -1,14 +1,13 @@
-import React, {Component} from 'react';
-import {Route} from 'react-router';
-import {Layout} from '../Layout/Layout';
-import {Home} from '../Home/Home';
-import AuthorizeRoute from '../api-authorization/AuthorizeRoute';
+import React, { Component } from 'react';
+import { Route } from 'react-router';
 import ApiAuthorizationRoutes from '../api-authorization/ApiAuthorizationRoutes';
-import {ApplicationPaths} from '../api-authorization/ApiAuthorizationConstants';
-import Room from "../Room/Room";
-
-import './app.module.css'
-import CreateRoom from "../CreateRoom/CreateRoom";
+import AuthorizeRoute from '../api-authorization/AuthorizeRoute';
+import CreateRoom from '../CreateRoom/CreateRoom';
+import Room from '../Room/Room';
+import { ApplicationPaths } from '../api-authorization/ApiAuthorizationConstants';
+import { Home } from '../Home/Home';
+import { Layout } from '../Layout/Layout';
+import './app.module.css';
 
 export default class App extends Component {
     static displayName = App.name;

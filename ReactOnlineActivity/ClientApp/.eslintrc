@@ -1,0 +1,19 @@
+﻿{
+  "parser": "babel-eslint",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "quotes": ["error", "single"],
+    "object-curly-spacing": ["error", "always"],
+    "semi": ["error", "always"],
+    "no-case-declarations": "off",
+    "react/prop-types": "off"
+  }
+}

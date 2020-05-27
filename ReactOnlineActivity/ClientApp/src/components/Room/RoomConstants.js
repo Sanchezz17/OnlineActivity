@@ -1,6 +1,6 @@
 ﻿export const RoomHubEvents = {
-    JOIN_ROOM: "join",
-    LEAVE_ROOM: "leave",
+    JOIN_ROOM: 'join',
+    LEAVE_ROOM: 'leave',
     SEND: 'send',
     NEW_MESSAGE: 'newMessage',
     NOTIFY: 'notify',
@@ -11,4 +11,4 @@
     REQUEST_ROUND: 'requestRound',
     REQUEST_WORD: 'requestWord',
     NEW_HIDDEN_WORD: 'newHiddenWord'
-}
+};
