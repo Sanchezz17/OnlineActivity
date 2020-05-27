@@ -65,7 +65,10 @@ namespace Game.Domain
             var playerGuessed = CheckWord(word);
             if (playerGuessed)
             {
-                player.Score += Players.Count - GuessingPlayers.Count;
+                var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
+                player.Score += Math.Max(0, 60 - secondsPassed) + (Players.Count - GuessingPlayers.Count) * 10;
+                var explainingPlayer = Players.First(p => p.Name == ExplainingPlayerName);
+                explainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - secondsPassed;
                 GuessingPlayers.Add(player);
             }
 
