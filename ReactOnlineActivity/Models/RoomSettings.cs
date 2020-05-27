@@ -15,6 +15,6 @@ namespace ReactOnlineActivity.Models
         
         public int PointsToWin { get; set; } = 100;
         public bool IsPrivateRoom { get; set; }
-        public List<Theme> Themes { get; set; } = new List<Theme>();
+        public  List<ThemeRoomSettings> ThemeRoomSettings { get; set; } = new List<ThemeRoomSettings>();
     }
 }

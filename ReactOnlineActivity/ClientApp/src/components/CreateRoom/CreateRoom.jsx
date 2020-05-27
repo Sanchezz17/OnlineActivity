@@ -1,5 +1,5 @@
-﻿import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+﻿import React, {Component} from 'react';
+import {withRouter} from 'react-router';
 import authorizeFetch from '../../utils/authorizeFetch';
 import styles from './createRoom.module.css';
 
@@ -17,7 +17,7 @@ class CreateRoom extends Component {
                 minPlayerCount: 2,
                 pointsToWin: 100,
                 isPrivateRoom: false,
-                is_selected: false,
+                isSelected: false,
                 themes: [],
             }
         };
@@ -49,14 +49,14 @@ class CreateRoom extends Component {
             <li onClick={() => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
                 backgroundImage: `url(${theme.pictureUrl})`, backgroundRepeat: 'no-repeat'
             }}>
-                {theme.is_selected &&
+                {theme.isSelected &&
                 <div className={styles.themes__selected}>
                     <p className={styles.themes__text}>
                         {theme.name}
                     </p>
                 </div>
                 }
-                {!theme.is_selected &&
+                {!theme.isSelected &&
                 <div className={styles.themes__not_selected}>
                     <p className={styles.themes__text}>
                         {theme.name}
@@ -68,8 +68,8 @@ class CreateRoom extends Component {
     }
 
     onThemeClicked(theme) {
-        theme.is_selected = !theme.is_selected;
-        this.setState({ themes: this.state.themes });
+        theme.isSelected = !theme.isSelected;
+        this.setState({ themes: this.state.themes});
     }
 
     handleSettingsChange = (fieldName, newValue) => {
@@ -103,7 +103,7 @@ class CreateRoom extends Component {
             minPlayerCount: settings.minPlayerCount,
             pointsToWin: settings.pointsToWin,
             isPrivateRoom: settings.isPrivateRoom,
-            themesIds: settings.themes.map(t => t.id)
+            themesIds: settings.themes.filter(t => t.isSelected).map(t => t.id)
         };
     }
 

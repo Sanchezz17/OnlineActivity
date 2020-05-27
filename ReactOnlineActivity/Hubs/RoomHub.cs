@@ -14,16 +14,19 @@ namespace ReactOnlineActivity.Hubs
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
+        private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
         
         public RoomHub(UserRepository userRepository,
             RoomRepository roomRepository,
             PlayerRepository playerRepository,
+            ThemeRepository themeRepository,
             IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
+            this.themeRepository = themeRepository;
             this.mapper = mapper;
         }
         
@@ -60,7 +63,7 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
-            gameEntity.HiddenWords = room.Settings.Themes
+            gameEntity.HiddenWords = themeRepository.GetAllThemes()
                 .SelectMany(t => t.Words.Select(w => w.Value)).ToArray();
             // toDo перемешать слова
             var hiddenWord = gameEntity.GetCurrentHiddenWord();
@@ -132,6 +135,7 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
+            var currentRoundNumber = gameEntity.RoundNumber;
             gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
             var player = gameEntity.Players.First(p => p.Name == from);
             var playerGuessed = gameEntity.MakeStep(player, text);
@@ -139,7 +143,9 @@ namespace ReactOnlineActivity.Hubs
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             if (playerGuessed)
             {
-                await Clients.Group(roomId).SendAsync("notify", $"{from} угадал слово\nРаунд №{gameDto.RoundNumber + 1}");
+                await Clients.Group(roomId).SendAsync("newMessage", "Проверяющая система", $"{from} угадал слово");
+                if (currentRoundNumber < gameEntity.RoundNumber)
+                    await Clients.Group(roomId).SendAsync("newMessage", $"Раунд №{gameDto.RoundNumber + 1}");
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             else

@@ -16,8 +16,26 @@ namespace ReactOnlineActivity.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
-            // Database.EnsureDeleted();
-            // Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ThemeRoomSettings>()
+                .HasKey(t => new { t.RoomSettingsId, t.ThemeId });
+
+            modelBuilder.Entity<ThemeRoomSettings>()
+                .HasOne(sc => sc.RoomSettings)
+                .WithMany(s => s.ThemeRoomSettings)
+                .HasForeignKey(sc => sc.ThemeId);
+
+            modelBuilder.Entity<ThemeRoomSettings>()
+                .HasOne(sc => sc.Theme)
+                .WithMany(c => c.ThemeRoomSettings)
+                .HasForeignKey(sc => sc.RoomSettingsId);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
