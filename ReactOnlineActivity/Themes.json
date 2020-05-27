@@ -87,5 +87,45 @@
 			{ "Value": "Олимпиада" },
 			{ "Value": "Чемпион" }
 		]
+	},
+	{
+		"Name": "Одежда",
+		"PictureUrl": "https://lh3.googleusercontent.com/proxy/ci9QhiM6UqCUsjuO622RgzHZ4oHb3V1v41zWcMijGW57Ne94z8j6sxkqGD0PXMpxugeldX7nO0hFM9U_JEebbdZoUzMggZlbDs8",
+		"Words": [
+			{ "Value": "Платье" },
+			{ "Value": "Варежки" },
+			{ "Value": "Брюки" },
+			{ "Value": "Галстук" },
+			{ "Value": "Пальто" },
+			{ "Value": "Шорты" },
+			{ "Value": "Очки" },
+			{ "Value": "Кроссовки" },
+			{ "Value": "Носки" },
+			{ "Value": "Рубашка" },
+			{ "Value": "Шапка" },
+			{ "Value": "Футболка" },
+			{ "Value": "Шарф" },
+			{ "Value": "Кепка" }
+		]
+	},
+	{
+		"Name": "Школа",
+		"PictureUrl": "https://lh3.googleusercontent.com/proxy/1cmRELwDuE64itguCEo8PtNntPtd5jAu8ZcS_CiRprBsqsh5gRtAV38XUp4TBvWxFA8xoFGyO27peq_5do_EUkpRHw3334877nE4EAgImXvlKGPRyz6CLZ34xODMnXTp3xZC",
+		"Words": [
+			{ "Value": "Книга" },
+			{ "Value": "Доска" },
+			{ "Value": "Ранец" },
+			{ "Value": "Компьютер" },
+			{ "Value": "Карандаш" },
+			{ "Value": "Ручка" },
+			{ "Value": "Пенал" },
+			{ "Value": "Учитель" },
+			{ "Value": "Ученик" },
+			{ "Value": "Парта" },
+			{ "Value": "Оценка" },
+			{ "Value": "Дневник" },
+			{ "Value": "Звонок" },
+			{ "Value": "Урок" }
+		]
 	}
 ]
