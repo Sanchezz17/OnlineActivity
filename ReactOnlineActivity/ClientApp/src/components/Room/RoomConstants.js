@@ -10,5 +10,6 @@
     ROUND_INFO: 'round',
     REQUEST_ROUND: 'requestRound',
     REQUEST_WORD: 'requestWord',
-    NEW_HIDDEN_WORD: 'newHiddenWord'
+    NEW_HIDDEN_WORD: 'newHiddenWord',
+    MESSAGE_RATED: 'messageRated'
 };

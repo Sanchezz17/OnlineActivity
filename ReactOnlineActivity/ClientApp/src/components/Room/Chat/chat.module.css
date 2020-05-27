@@ -81,6 +81,50 @@
     align-items: center;
 }
 
+.switchingLikeView
+{
+    display: none;
+}
+
+.switchingLikeView:checked + .switchingLikeView__label,
+.switchingLikeView__label:hover
+{
+    background: url('/likes/active_like.png') no-repeat center;
+}
+
+.switchingLikeView__label
+{
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-left: 3px;
+    padding: 0;
+    background: url('/likes/not_active_like.png') no-repeat center;
+    cursor: pointer;
+}
+
+.switchingDislikeView
+{
+    display: none;
+}
+
+.switchingDislikeView:checked + .switchingDislikeView__label,
+.switchingDislikeView__label:hover
+{
+    background: url('/likes/active_dislike.png') no-repeat center;
+}
+
+.switchingDislikeView__label
+{
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-left: 3px;
+    padding: 0;
+    background: url('/likes/not_active_dislike.png') no-repeat center;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 640px) {
     .title {
         display: none;

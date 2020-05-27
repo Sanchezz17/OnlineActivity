@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { RoomHubEvents } from '../RoomConstants';
 import styles from './chat.module.css';
+import { MessageState } from './MessageState';
 
 export default class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
             messages: [],
-            currentMessage: '',
+            currentMessageText: '',
             isActiveUser: false
         };
     }
@@ -15,35 +16,63 @@ export default class Chat extends Component {
     componentDidMount() {
         this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
             this.setState({
-                messages: [{ from, text }, ...this.state.messages]
+                messages: [
+                    { 
+                        id: this.state.messages.length,
+                        from,
+                        text, 
+                        state: MessageState.NotRated
+                    }, 
+                    ...this.state.messages
+                ]
             });
         });
 
         this.props.hubConnection.on(RoomHubEvents.NOTIFY, (notification) => {
             this.setState({
-                messages: [{ from: notification, text: '' }, ...this.state.messages]
+                messages: [
+                    { 
+                        id: this.state.messages.length,
+                        from: notification, 
+                        text: '',
+                        state: MessageState.NotRated 
+                    }, 
+                    ...this.state.messages
+                ]
             });
         });
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
             this.setState({ isActiveUser: explainingPlayerName === this.props.user.name });
         });
+        
+        this.props.hubConnection.on(RoomHubEvents.MESSAGE_RATED, (message) => {
+            console.log(message);
+            const index = this.state.messages.findIndex(m => m.id === message.id);
+            this.state.messages[index].state = message.state;
+            this.setState({ messages: this.state.messages });
+        });
     }
 
     onPostMessage = (event) => {
         event.preventDefault();
-        this.props.hubConnection.invoke(RoomHubEvents.SEND, this.props.roomId, this.props.user.name, this.state.currentMessage);
-        this.setState({ currentMessage: '' });
+        this.props.hubConnection.invoke(RoomHubEvents.SEND, 
+            this.props.roomId, this.props.user.name, this.state.currentMessageText);
+        this.setState({ currentMessageText: '' });
     };
 
-    onChangeInput = (event) => {
+    onChangecurrentMessageText = (event) => {
         const { value } = event.target;
 
         this.setState({
-            ...this.state,
-            currentMessage: value
+            currentMessageText: value
         });
     };
+    
+    rateMessage = (message, value) => {
+        message.state = value ? MessageState.Like : MessageState.Dislike;
+        this.props.hubConnection.invoke(RoomHubEvents.MESSAGE_RATED, this.props.roomId, message);
+    }
 
     render() {
         return (
@@ -51,18 +80,47 @@ export default class Chat extends Component {
                 <header className={`btn-sm ${styles.title}`}>Чат</header>
                 <section className={styles.messages}>
                     {this.state.messages.map((message, index) =>
-                        <p className={styles.message} key={index}>
+                        <p className={styles.message}>
                             <span className={styles.from}>{message.from}</span> <span className={styles.text}>{message.text}</span>
+                            {message.text && 
+                            <>
+                                <input 
+                                    type="radio"
+                                    name={`mark-${index}`} 
+                                    id={`switching-like-${index}`}
+                                    className={styles.switchingLikeView}
+                                    disabled={!this.state.isActiveUser}
+                                    checked={message.state === MessageState.Like}
+                                    onChange={() => this.rateMessage(message, true)}
+                                />
+                                <label 
+                                    htmlFor={`switching-like-${index}`} 
+                                    className={styles.switchingLikeView__label}
+                                />
+                                <input 
+                                    type="radio" 
+                                    name={`mark-${index}`}
+                                    id={`switching-dislike-${index}`} 
+                                    className={styles.switchingDislikeView}
+                                    disabled={!this.state.isActiveUser}
+                                    checked={message.state === MessageState.Dislike}
+                                    onChange={() => this.rateMessage(message, false)}
+                                />
+                                <label 
+                                    htmlFor={`switching-dislike-${index}`}
+                                    className={styles.switchingDislikeView__label}
+                                />
+                            </>}
                         </p>
                     )}
                 </section>
                 <form className={styles.form} onSubmit={this.onPostMessage}>
                     <input
                         className={styles.input}
-                        value={this.state.currentMessage}
+                        value={this.state.currentMessageText}
                         placeholder="Отвечать тут..."
                         type='text'
-                        onChange={this.onChangeInput}
+                        onChange={this.onChangecurrentMessageText}
                         disabled={this.state.isActiveUser}
                     />
                 </form>

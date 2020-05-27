@@ -147,5 +147,10 @@ namespace ReactOnlineActivity.Hubs
                 await Clients.Group(roomId).SendAsync("newMessage", from, text);
             }
         }
+        
+        public async Task MessageRated(string roomId, Message message)
+        {
+            await Clients.Group(roomId).SendAsync("messageRated", message);     
+        }
     }
 }
