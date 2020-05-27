@@ -83,15 +83,14 @@ class CreateRoom extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        const response = await fetch('/api/rooms', {
+        const newRoomId = await authorizeFetch('/api/rooms', {
             method: 'POST',
             redirect: 'manual',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(this.state.settings)
+            body: JSON.stringify(this.getRoomSettingsDto(this.state.settings))
         });
-        const newRoomId = await response.json();
         this.props.history.push(`/rooms/${newRoomId}`);
     }
 

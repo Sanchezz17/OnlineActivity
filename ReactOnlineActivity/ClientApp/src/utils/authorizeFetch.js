@@ -1,8 +1,8 @@
 ﻿import authService from '../components/api-authorization/AuthorizeService';
 
-const authorizeFetch = async (url) => {
+const authorizeFetch = async (url, options) => {
     const token = await authService.getAccessToken();
-    const options = {
+    const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -11,7 +11,10 @@ const authorizeFetch = async (url) => {
     };
     
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+            ...defaultOptions,
+            ...options
+        });
         if (response.ok) {
             return await response.json();
         }

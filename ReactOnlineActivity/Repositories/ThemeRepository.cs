@@ -17,7 +17,9 @@ namespace ReactOnlineActivity.Repositories
 
         public Theme FindById(int id)
         {
-            return dbContext.Themes.SingleOrDefault(theme => theme.Id == id);
+            return dbContext.Themes
+                .Include(t => t.Words)
+                .SingleOrDefault(theme => theme.Id == id);
         }
 
         public List<Theme> GetAllThemes()
