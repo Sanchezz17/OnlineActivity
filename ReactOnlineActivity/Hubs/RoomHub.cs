@@ -135,6 +135,7 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
+            var currentRoundNumber = gameEntity.RoundNumber;
             gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
             var player = gameEntity.Players.First(p => p.Name == from);
             var playerGuessed = gameEntity.MakeStep(player, text);
@@ -142,7 +143,9 @@ namespace ReactOnlineActivity.Hubs
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             if (playerGuessed)
             {
-                await Clients.Group(roomId).SendAsync("notify", $"{from} угадал слово\nРаунд №{gameDto.RoundNumber + 1}");
+                await Clients.Group(roomId).SendAsync("newMessage", "Проверяющая система", $"{from} угадал слово");
+                if (currentRoundNumber < gameEntity.RoundNumber)
+                    await Clients.Group(roomId).SendAsync("newMessage", $"Раунд №{gameDto.RoundNumber + 1}");
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             else
