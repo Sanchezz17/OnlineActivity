@@ -5,14 +5,87 @@
 		"Words": [
 			{ "Value": "Жираф" },
 			{ "Value": "Тигр" },
-			{ "Value": "Лев" }
+			{ "Value": "Лев" },
+			{ "Value": "Дельфин" },
+			{ "Value": "Орёл" },
+			{ "Value": "Обезьяна" },
+			{ "Value": "Краб" },
+			{ "Value": "Корова" },
+			{ "Value": "Кошка" },
+			{ "Value": "Курица" },
+			{ "Value": "Собака" },
+			{ "Value": "Олень" },
+			{ "Value": "Кролик" },
+			{ "Value": "Змея" },
+			{ "Value": "Медведь" },
+			{ "Value": "Заяц" },
+			{ "Value": "Лошадь" }
 		]
-	}, 
+	},
 	{
-		"Name" : "Test",
-		"PictureUrl" : "",
+		"Name": "Предметы",
+		"PictureUrl": "https://chefsadvice.ru/wp-content/uploads/2018/11/17065_1000-300x300.jpg",
 		"Words": [
-			{"Value" : "test"}
+			{ "Value": "Ножницы" },
+			{ "Value": "Лопата" },
+			{ "Value": "Диван" },
+			{ "Value": "Окно" },
+			{ "Value": "Книга" },
+			{ "Value": "Наушники" },
+			{ "Value": "Телефон" },
+			{ "Value": "Дверь" },
+			{ "Value": "Забор" }
+		]
+	},
+	{
+		"Name": "Общее",
+		"PictureUrl": "https://s00.yaplakal.com/pics/pics_original/0/6/1/14191160.jpg",
+		"Words": [
+			{ "Value": "Солнце" },
+			{ "Value": "Дуб" },
+			{ "Value": "Река" },
+			{ "Value": "Океан" },
+			{ "Value": "Грибы" },
+			{ "Value": "Луна" },
+			{ "Value": "Облака" }
+		]
+	},
+	{
+		"Name": "Еда",
+		"PictureUrl": "https://img4.goodfon.ru/original/800x480/3/16/assorti-kartofel-makarony-kukuruza-khleb-sukhofrukty-med-pas.jpg",
+		"Words": [
+			{ "Value": "Яблоко" },
+			{ "Value": "Пельмени" },
+			{ "Value": "Суп" },
+			{ "Value": "Шашлык" },
+			{ "Value": "Яйцо" },
+			{ "Value": "Торт" },
+			{ "Value": "Шоколад" },
+			{ "Value": "Банан" },
+			{ "Value": "Колбаса" },
+			{ "Value": "Помидор" },
+			{ "Value": "Кабачок" },
+			{ "Value": "Картофель" }
+		]
+	},
+	{
+		"Name": "Спорт",
+		"PictureUrl": "https://img2.freepng.ru/20171128/3d4/football-png-transparent-clip-art-image-5a1cee195bea25.0182632615118454013765.jpg",
+		"Words": [
+			{ "Value": "Гол" },
+			{ "Value": "Футбол" },
+			{ "Value": "Теннис" },
+			{ "Value": "Настольный теннис" },
+			{ "Value": "Баскетбол" },
+			{ "Value": "Мяч" },
+			{ "Value": "Коньки" },
+			{ "Value": "Клюшка" },
+			{ "Value": "Шайба" },
+			{ "Value": "Бег" },
+			{ "Value": "Велосипед" },
+			{ "Value": "Тренировка" },
+			{ "Value": "Олимпиада" },
+			{ "Value": "Чемпион" }
 		]
 	}
 ]

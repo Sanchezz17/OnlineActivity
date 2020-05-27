@@ -21,6 +21,7 @@ namespace ReactOnlineActivity.Controllers
         private readonly PlayerRepository playerRepository;
         private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
+        private readonly Random random;
 
         public GamesController(
             UserManager<ApplicationUser> userManager,
@@ -35,6 +36,7 @@ namespace ReactOnlineActivity.Controllers
             this.playerRepository = playerRepository;
             this.themeRepository = themeRepository;
             this.mapper = mapper;
+            this.random = new Random();
         }
 
         [HttpGet("play")]
@@ -51,7 +53,7 @@ namespace ReactOnlineActivity.Controllers
         }
 
         [HttpGet("players")]
-        public IEnumerable<PlayerDto> GetPlayers([FromQuery] int roomId) => playerRepository.SelectAllFromRoom(roomId);
+        public IEnumerable<Player> GetPlayers([FromQuery] int roomId) => playerRepository.SelectAllFromRoom(roomId);
 
         [HttpGet("rooms/{roomId}")]
         public Room GetRoom([FromRoute] int roomId)
@@ -75,7 +77,7 @@ namespace ReactOnlineActivity.Controllers
 
             if (player == null)
             {
-                player = new PlayerDto
+                player = new Player
                 {
                     Name = user.UserName,
                     PhotoUrl = user.PhotoUrl,
@@ -101,10 +103,10 @@ namespace ReactOnlineActivity.Controllers
                 : roomSettings.ThemesIds.Select(id => themeRepository.FindById(id)).ToList();
 
             var settings = mapper.Map<RoomSettings>(roomSettings);
-            var words = themes.SelectMany(t => t.Words);
+            var words = GetMixedWordsFromThemes(themes);
             var newRoom = new Room
             {
-                Game = CreateTestGame(words.ToList()),
+                Game = CreateTestGame(words),
                 Settings = settings
             };
 
@@ -120,8 +122,7 @@ namespace ReactOnlineActivity.Controllers
 
             return newRoom.Id.ToString();
         }
-
-
+        
         [HttpGet("fields/{roomId}")]
         public LineDto[] GetField([FromRoute] int roomId)
         {
@@ -139,26 +140,22 @@ namespace ReactOnlineActivity.Controllers
                 .ToArray();
         }
 
-        [HttpGet("themes")]
-        public List<Theme> GetThemes()
+        private List<Word> GetMixedWordsFromThemes(List<Theme> themes)
         {
-            return themeRepository.GetAllThemes().ToList();
-        }
-
-        [HttpPost("themes")]
-        public void AddTheme([FromBody] Theme theme)
-        {
-            themeRepository.Insert(theme);
+            return themes
+                .SelectMany(t => t.Words)
+                .OrderBy(x => random.Next())
+                .ToList();
         }
 
         private Room CreateTestRoom()
         {
             var roomSettings = new RoomSettings();
             var themes = themeRepository.GetAllThemes();
-            var words = themes.SelectMany(t => t.Words);
+            var words = GetMixedWordsFromThemes(themes);
             var newRoom = new Room
             {
-                Game = CreateTestGame(words.ToList()),
+                Game = CreateTestGame(words),
                 Settings = roomSettings
             };
 
@@ -178,7 +175,7 @@ namespace ReactOnlineActivity.Controllers
             return new GameDto
             {
                 HiddenWords = words,
-                Players = new List<PlayerDto>(),
+                Players = new List<Player>(),
                 CurrentRoundStartTime = DateTime.Now.ToEpochTime(),
                 Canvas = new List<Line>()
             };

@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Domain;
 using Microsoft.EntityFrameworkCore;
 using ReactOnlineActivity.Data;
+using ReactOnlineActivity.Models;
 
 namespace ReactOnlineActivity.Repositories
 {

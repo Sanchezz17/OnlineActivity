@@ -1,4 +1,4 @@
-﻿namespace Game.Domain
+﻿namespace ReactOnlineActivity.Models
 {
     public class Word
     {

@@ -29,7 +29,7 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public void InsertPlayerIntoRoom(int roomId, PlayerDto player)
+        public void InsertPlayerIntoRoom(int roomId, Player player)
         {
             var room = FindById(roomId);
             if (room == null)

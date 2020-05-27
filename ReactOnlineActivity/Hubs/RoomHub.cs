@@ -61,7 +61,7 @@ namespace ReactOnlineActivity.Hubs
             }
         }
 
-        public async Task NewPlayer(string roomId, PlayerDto player)
+        public async Task NewPlayer(string roomId, Player player)
         {
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("newPlayer", player);
@@ -70,9 +70,16 @@ namespace ReactOnlineActivity.Hubs
         public async Task RequestWord(string roomId)
         {
             var room = roomRepository.FindById(int.Parse(roomId));
-            var gameEntity = mapper.Map<GameEntity>(room.Game);
-            gameEntity.HiddenWords = themeRepository.GetAllThemes()
-                .SelectMany(t => t.Words.Select(w => w.Value)).ToArray();
+            var gameEntity = mapper.Map<GameDto, GameEntity>(room.Game);
+            
+            // toDo mapping не работает! удалить код ниже после исправления
+            var random = new Random();
+            gameEntity.HiddenWords = room.Game.HiddenWords
+                .Select(w => w.Value)
+                .OrderBy(x => random.Next())
+                .ToArray();
+            // gameEntity.HiddenWords = themeRepository.GetAllThemes()
+            //     .SelectMany(t => t.Words.Select(w => w.Value)).ToArray();
             // toDo перемешать слова
             var hiddenWord = gameEntity.GetCurrentHiddenWord();
 
@@ -152,7 +159,7 @@ namespace ReactOnlineActivity.Hubs
             var currentRoundNumber = gameEntity.RoundNumber;
             gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
             var player = gameEntity.Players.First(p => p.Name == message.From);
-            var playerGuessed = gameEntity.MakeStep(player, message.Text);
+            var playerGuessed = gameEntity.MakeStep(player, message.Text, room.Settings.MaxPlayerCount);
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             if (playerGuessed)

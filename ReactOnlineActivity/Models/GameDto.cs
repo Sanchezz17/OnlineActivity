@@ -6,7 +6,7 @@ namespace ReactOnlineActivity.Models
     public class GameDto
     {
         public int Id { get; set; }
-        public List<PlayerDto> Players { get; set; }
+        public List<Player> Players { get; set; }
         public List<Word> HiddenWords { get; set; }
         public GameState GameState { get; set; }
         public int RoundNumber { get; set; }

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using ReactOnlineActivity.Models;
 
-
-namespace Game.Domain
+namespace ReactOnlineActivity.Models
 {
     [Table("Theme")]
     public class Theme

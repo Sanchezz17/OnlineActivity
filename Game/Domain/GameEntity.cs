@@ -53,7 +53,7 @@ namespace Game.Domain
             return HiddenWords[RoundNumber % HiddenWords.Length];
         }
 
-        public bool MakeStep(Player player, string word)
+        public bool MakeStep(Player player, string word, int maxPlayerCount)
         {
             CheckTime();
             if (GameState == GameState.Finished)
@@ -66,9 +66,10 @@ namespace Game.Domain
             if (playerGuessed)
             {
                 var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
-                player.Score += Math.Max(0, 60 - secondsPassed) + (Players.Count - GuessingPlayers.Count) * 10;
+                player.Score += maxPlayerCount - GuessingPlayers.Count;
                 var explainingPlayer = Players.First(p => p.Name == ExplainingPlayerName);
-                explainingPlayer.Score += MaxRoundTimeInMinutes * SecondsInMinutes - secondsPassed;
+                explainingPlayer.Score += (MaxRoundTimeInMinutes * SecondsInMinutes - secondsPassed) / 20
+                                          + maxPlayerCount / Players.Count;
                 GuessingPlayers.Add(player);
             }
 

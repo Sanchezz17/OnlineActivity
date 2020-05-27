@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Domain;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
 
@@ -18,7 +19,7 @@ namespace ReactOnlineActivity.Repositories
             this.roomRepository = roomRepository;
         }
 
-        public IEnumerable<PlayerDto> SelectAllFromRoom(int roomId)
+        public IEnumerable<Player> SelectAllFromRoom(int roomId)
         {
             return roomRepository.FindById(roomId)
                 ?.Game
