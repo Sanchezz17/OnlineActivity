@@ -44,7 +44,7 @@ namespace ReactOnlineActivity.Controllers
             if (suitableRoom == null)
             {
                 suitableRoom = CreateTestRoom();
-                roomRepository.Insert(suitableRoom);
+                //roomRepository.Insert(suitableRoom);
             }
 
             return Redirect($"/rooms/{suitableRoom.Id}");
@@ -96,8 +96,12 @@ namespace ReactOnlineActivity.Controllers
         [HttpPost("rooms")]
         public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
         {
+            var themes = roomSettings.ThemesIds.Count == 0 
+                ? themeRepository.GetDefaultThemes()
+                : roomSettings.ThemesIds.Select(id => themeRepository.FindById(id)).ToList();
+
             var settings = mapper.Map<RoomSettings>(roomSettings);
-            var words = settings.Themes.SelectMany(t => t.Words);
+            var words = themes.SelectMany(t => t.Words);
             var newRoom = new Room
             {
                 Game = CreateTestGame(words.ToList()),
@@ -106,9 +110,16 @@ namespace ReactOnlineActivity.Controllers
 
             roomRepository.Insert(newRoom);
 
+            foreach (var theme in themes)
+            {
+                var themeRoomSettings = new ThemeRoomSettings
+                    {RoomSettingsId = newRoom.Settings.Id, ThemeId = theme.Id};
+                settings.ThemeRoomSettings.Add(themeRoomSettings);
+                theme.ThemeRoomSettings.Add(themeRoomSettings);
+            }
+
             return newRoom.Id.ToString();
         }
-
 
 
         [HttpGet("fields/{roomId}")]
@@ -143,13 +154,23 @@ namespace ReactOnlineActivity.Controllers
         private Room CreateTestRoom()
         {
             var roomSettings = new RoomSettings();
-            roomSettings.Themes = themeRepository.GetAllThemes();
-            var words = roomSettings.Themes.SelectMany(t => t.Words);
-            return new Room
+            var themes = themeRepository.GetAllThemes();
+            var words = themes.SelectMany(t => t.Words);
+            var newRoom = new Room
             {
                 Game = CreateTestGame(words.ToList()),
                 Settings = roomSettings
             };
+
+            roomRepository.Insert(newRoom);
+
+            foreach (var theme in themes)
+            {
+                newRoom.Settings.ThemeRoomSettings.Add(new ThemeRoomSettings
+                    {RoomSettingsId = newRoom.Settings.Id, ThemeId = theme.Id});
+            }
+
+            return newRoom;
         }
 
         private GameDto CreateTestGame(List<Word> words)

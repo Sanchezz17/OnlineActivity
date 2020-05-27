@@ -77,7 +77,7 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        private IIncludableQueryable<Room, List<Word>> GetQuery()
+        private IIncludableQueryable<Room, List<ThemeRoomSettings>> GetQuery()
         {
             return dbContext.Rooms
                 .Include(r => r.Game)
@@ -87,8 +87,7 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game.Canvas)
                 .ThenInclude(l => l.Value)
                 .Include(r => r.Settings)
-                .Include(r => r.Settings.Themes)
-                .ThenInclude(t => t.Words);
+                .Include(r => r.Settings.ThemeRoomSettings);
         }
     }
 }

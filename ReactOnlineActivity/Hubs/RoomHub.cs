@@ -14,16 +14,19 @@ namespace ReactOnlineActivity.Hubs
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
+        private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
         
         public RoomHub(UserRepository userRepository,
             RoomRepository roomRepository,
             PlayerRepository playerRepository,
+            ThemeRepository themeRepository,
             IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
+            this.themeRepository = themeRepository;
             this.mapper = mapper;
         }
         
@@ -60,7 +63,7 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
-            gameEntity.HiddenWords = room.Settings.Themes
+            gameEntity.HiddenWords = themeRepository.GetAllThemes()
                 .SelectMany(t => t.Words.Select(w => w.Value)).ToArray();
             // toDo перемешать слова
             var hiddenWord = gameEntity.GetCurrentHiddenWord();

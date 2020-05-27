@@ -9,6 +9,7 @@ namespace ReactOnlineActivity.Repositories
     public class ThemeRepository
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly HashSet<int> defaultThemesIds = new HashSet<int> {0};
 
         public ThemeRepository(ApplicationDbContext dbContext)
         {
@@ -26,6 +27,14 @@ namespace ReactOnlineActivity.Repositories
         {
             return dbContext.Themes
                 .Include(t => t.Words)
+                .ToList();
+        }
+
+        public List<Theme> GetDefaultThemes()
+        {
+            return dbContext.Themes
+                .Include(t => t.Words)
+                .Where(t => defaultThemesIds.Contains(t.Id))
                 .ToList();
         }
 
