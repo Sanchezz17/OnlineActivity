@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,7 +35,14 @@ namespace ReactOnlineActivity.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             if (!alreadyInRoom)
-                await Clients.Group(roomId).SendAsync("notify", $"{userName} вошел в игру");
+            {
+                var joinNotification = new Message
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    From = $"{userName} вошел в игру"
+                };
+                await Clients.Group(roomId).SendAsync("newMessage", joinNotification); 
+            }
 
             var room = roomRepository.FindById(int.Parse(roomId));
             var playersCount = room.Game.Players.Count;
@@ -105,7 +113,13 @@ namespace ReactOnlineActivity.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync("leave", userName);
-            await Clients.Group(roomId).SendAsync("notify", $"{userName} покинул игру");
+            
+            var leaveNotification = new Message
+            {
+                Id = Guid.NewGuid().ToString(),
+                From = $"{userName} покинул игру"
+            };
+            await Clients.Group(roomId).SendAsync("newMessage", leaveNotification);
             playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
             
             var playersCount = room.Game.Players.Count;
@@ -131,26 +145,40 @@ namespace ReactOnlineActivity.Hubs
             }
         }
 
-        public async Task Send(string roomId, string from, string text)
+        public async Task Send(string roomId, Message message)
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
             gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
-            var player = gameEntity.Players.First(p => p.Name == from);
-            var playerGuessed = gameEntity.MakeStep(player, text);
+            var player = gameEntity.Players.First(p => p.Name == message.From);
+            var playerGuessed = gameEntity.MakeStep(player, message.Text);
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             if (playerGuessed)
             {
-                await Clients.Group(roomId).SendAsync("newMessage", "Проверяющая система", $"{from} угадал слово");
+                var guessedNotification = new Message
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    From = $"{message.From} угадал слово"
+                };
+
+                await Clients.Group(roomId).SendAsync("newMessage", guessedNotification);
                 if (currentRoundNumber < gameEntity.RoundNumber)
-                    await Clients.Group(roomId).SendAsync("newMessage", $"Раунд №{gameDto.RoundNumber + 1}");
+                {
+                    var newRoundNotification = new Message
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        From = $"Раунд №{gameDto.RoundNumber + 1}"
+                    };
+                    await Clients.Group(roomId).SendAsync("newMessage", newRoundNotification);
+                }
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             else
             {
-                await Clients.Group(roomId).SendAsync("newMessage", from, text);
+                message.Id = Guid.NewGuid().ToString();
+                await Clients.Group(roomId).SendAsync("newMessage", message);
             }
         }
         

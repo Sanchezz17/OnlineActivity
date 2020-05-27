@@ -14,29 +14,10 @@ export default class Chat extends Component {
     }
 
     componentDidMount() {
-        this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (from, text) => {
+        this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (message) => {
             this.setState({
                 messages: [
-                    { 
-                        id: this.state.messages.length,
-                        from,
-                        text, 
-                        state: MessageState.NotRated
-                    }, 
-                    ...this.state.messages
-                ]
-            });
-        });
-
-        this.props.hubConnection.on(RoomHubEvents.NOTIFY, (notification) => {
-            this.setState({
-                messages: [
-                    { 
-                        id: this.state.messages.length,
-                        from: notification, 
-                        text: '',
-                        state: MessageState.NotRated 
-                    }, 
+                    message, 
                     ...this.state.messages
                 ]
             });
@@ -47,7 +28,6 @@ export default class Chat extends Component {
         });
         
         this.props.hubConnection.on(RoomHubEvents.MESSAGE_RATED, (message) => {
-            console.log(message);
             const index = this.state.messages.findIndex(m => m.id === message.id);
             this.state.messages[index].state = message.state;
             this.setState({ messages: this.state.messages });
@@ -56,12 +36,19 @@ export default class Chat extends Component {
 
     onPostMessage = (event) => {
         event.preventDefault();
-        this.props.hubConnection.invoke(RoomHubEvents.SEND, 
-            this.props.roomId, this.props.user.name, this.state.currentMessageText);
+        this.props.hubConnection.invoke(
+            RoomHubEvents.SEND, 
+            this.props.roomId, 
+            {
+                id: null,
+                from: this.props.user.name,
+                text: this.state.currentMessageText,
+                state: MessageState.NotRated
+            });
         this.setState({ currentMessageText: '' });
     };
 
-    onChangecurrentMessageText = (event) => {
+    onChangeCurrentMessageText = (event) => {
         const { value } = event.target;
 
         this.setState({
@@ -120,7 +107,7 @@ export default class Chat extends Component {
                         value={this.state.currentMessageText}
                         placeholder="Отвечать тут..."
                         type='text'
-                        onChange={this.onChangecurrentMessageText}
+                        onChange={this.onChangeCurrentMessageText}
                         disabled={this.state.isActiveUser}
                     />
                 </form>
