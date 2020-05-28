@@ -61,7 +61,7 @@ export default class Leaderboard extends Component {
                     <span className={styles.player__score}>{player.score}</span>
                 </div>
             )
-            .sort(p => p.score);
+            .sort(p => -p.score);
     }
 
     render() {

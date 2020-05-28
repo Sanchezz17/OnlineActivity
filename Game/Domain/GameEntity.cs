@@ -92,7 +92,7 @@ namespace Game.Domain
         private bool CheckWord(string wordFromPlayer)
         {
             return GameState != GameState.Finished 
-                   && string.Equals(GetCurrentHiddenWord(), wordFromPlayer.Trim(), 
+                   && string.Equals(GetCurrentHiddenWord().ToLower(), wordFromPlayer.Trim().ToLower(), 
                        StringComparison.CurrentCultureIgnoreCase);
         }
 
