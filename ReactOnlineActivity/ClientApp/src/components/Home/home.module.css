@@ -1,8 +1,17 @@
-﻿.links {
+﻿.links,
+.wish {
     display: flex;
     justify-content: center;
 }
 
 .link {
     margin: 20px;
+}
+
+p {
+    text-indent: 25px;
+}
+
+h2 {
+    margin: 15px;
 }

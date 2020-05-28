@@ -124,7 +124,9 @@ namespace ReactOnlineActivity.Hubs
             var leaveNotification = new Message
             {
                 Id = Guid.NewGuid().ToString(),
-                From = $"{userName} покинул игру"
+                From = $"{userName} покинул игру",
+                Text = "",
+                State = 2
             };
             await Clients.Group(roomId).SendAsync("newMessage", leaveNotification);
             playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
@@ -167,7 +169,9 @@ namespace ReactOnlineActivity.Hubs
                 var guessedNotification = new Message
                 {
                     Id = Guid.NewGuid().ToString(),
-                    From = $"{message.From} угадал слово"
+                    From = $"{message.From} угадал слово",
+                    Text = "",
+                    State = message.State
                 };
 
                 await Clients.Group(roomId).SendAsync("newMessage", guessedNotification);
@@ -176,7 +180,9 @@ namespace ReactOnlineActivity.Hubs
                     var newRoundNotification = new Message
                     {
                         Id = Guid.NewGuid().ToString(),
-                        From = $"Раунд №{gameDto.RoundNumber + 1}"
+                        From = $"Раунд №{gameDto.RoundNumber + 1}",
+                        Text = "",
+                        State = message.State
                     };
                     await Clients.Group(roomId).SendAsync("newMessage", newRoundNotification);
                 }
