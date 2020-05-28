@@ -16,7 +16,6 @@ export default class Timer extends Component {
     }
 
     async componentDidMount() {
-        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_TIME, this.props.roomId);
         this.props.hubConnection.on(RoomHubEvents.TIME_LEFT, (seconds) => {
             this.setState({
                 seconds,
@@ -24,6 +23,8 @@ export default class Timer extends Component {
             });
             this.startTimer();
         });
+
+        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_TIME, this.props.roomId);
     }
 
     startTimer = () => {
