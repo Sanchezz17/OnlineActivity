@@ -5,6 +5,7 @@ import styles from './createRoom.module.css';
 import { Modal } from '@skbkontur/react-ui/components/Modal';
 import { Button } from '@skbkontur/react-ui/components/Button';
 import { Input } from '@skbkontur/react-ui/components/Input';
+import { Gapped } from '@skbkontur/react-ui';
 
 class CreateRoom extends Component {
     constructor(props) {
@@ -58,7 +59,7 @@ class CreateRoom extends Component {
     renderTheme = (theme) => {
         return (
             <li onClick={() => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
-                backgroundImage: `url(${theme.pictureUrl})`, 
+                backgroundImage: `url(${theme.pictureUrl})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover'
             }}>
@@ -135,16 +136,20 @@ class CreateRoom extends Component {
                             </label>
                             <label>
                                 <div className='label'>Добавить слово</div>
-                                <Input
-                                    placeholder='Введите слово'
-                                    value={wordToAdd}
-                                    onChange={(event) => this.setState({ wordToAdd: event.target.value })}
-                                    onKeyPress={(event) => {
-                                        if (event.key === 'Enter') {
-                                            this.onNewWordEntered(wordToAdd);
-                                        }
-                                    }}
-                                />
+                                <Gapped>
+                                    <Input
+                                        style = {{ ['margin-right'] : 10 }}
+                                        placeholder='Введите слово'
+                                        value={wordToAdd}
+                                        onChange={(event) => this.setState({ wordToAdd: event.target.value })}
+                                        onKeyPress={(event) => {
+                                            if (event.key === 'Enter') {
+                                                this.onNewWordEntered(wordToAdd);
+                                            }
+                                        }}
+                                    />
+                                    <Button onClick={() => this.onNewWordEntered(wordToAdd)}>Добавить</Button>
+                                </Gapped>
                             </label>
                             <div className={styles.themes__words}>
                                 {words.map(word => this.renderWord(word))}
@@ -153,7 +158,7 @@ class CreateRoom extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => this.saveTheme(this.state.theme)}>Сохранить</Button>
+                    <Button use='success' onClick={() => this.saveTheme(this.state.theme)}>Сохранить</Button>
                 </Modal.Footer>
             </Modal>
         );
