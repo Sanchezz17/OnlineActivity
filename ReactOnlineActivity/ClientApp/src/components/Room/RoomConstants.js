@@ -14,5 +14,6 @@
     MESSAGE_RATED: 'messageRated',
     GAME_OVER: 'gameOver',
     TIME_LEFT: 'timeLeft',
-    REQUEST_TIME: 'requestTime'
+    REQUEST_TIME: 'requestTime',
+    GIVE_UP: 'giveUp'
 };

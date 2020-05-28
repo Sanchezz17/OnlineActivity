@@ -7,18 +7,22 @@ import styles from './field.module.css';
 import Timer from '../Timer/Timer';
 
 export default class Field extends Component {
+    defaultState = {
+        lines: [],
+        isLoadingField: true,
+        isActiveUser: false,
+        activeUser: null,
+        hiddenWord: null,
+        drawingColor: '#000',
+        isPalletShow: false,
+        isDrawing: false,
+        stageRef: null
+    };
+    
     constructor(props) {
         super(props);
         this.state = {
-            lines: [],
-            isLoadingField: true,
-            isDrawing: false,
-            stageRef: null,
-            isActiveUser: false,
-            activeUser: null,
-            hiddenWord: null,
-            drawingColor: '#000',
-            isPalletShow: false
+            ...this.defaultState
         };
     }
 
@@ -51,20 +55,10 @@ export default class Field extends Component {
         this.props.hubConnection.on(RoomHubEvents.GAME_OVER, () => {
 
             setTimeout(async () => {
-                this.setState({
-                    lines: [],
-                    isLoadingField: true,
-                    isDrawing: false,
-                    stageRef: null,
-                    isActiveUser: false,
-                    activeUser: null,
-                    hiddenWord: null,
-                    drawingColor: '#000',
-                    isPalletShow: false
-                });
+                this.setState({ ...this.defaultState });
 
                 await this.fetchLines();
-            }, 2000);
+            }, 5000);
         });
 
         await this.fetchLines();
@@ -91,8 +85,8 @@ export default class Field extends Component {
     };
 
     handleMouseDown = () => {
+        this.state.isDrawing = true;
         this.setState({
-            isDrawing: true,
             lines: [
                 ...this.state.lines,
                 this.getNewEmptyLine()
@@ -101,7 +95,7 @@ export default class Field extends Component {
     };
 
     handleMouseUp = () => {
-        this.setState({ isDrawing: false });
+        this.state.isDrawing = false;
         this.addLine();
     };
 
@@ -125,6 +119,10 @@ export default class Field extends Component {
         this.setState({ lines: [] });
     };
 
+    giveUp = () => {
+        this.props.hubConnection.invoke(RoomHubEvents.GIVE_UP, this.props.roomId, this.props.user.name);
+    };
+    
     changeDrawingColor = (drawingColor) => {
         this.setState({ drawingColor });
     };
@@ -157,8 +155,9 @@ export default class Field extends Component {
                             </button>
                             <button
                                 className={`btn btn-primary btn-sm ${styles.end}`}
+                                onClick={this.giveUp}
                             >
-                                Завершить
+                                Сдаться
                             </button>
                         </section>
                         <div className={styles.wordContainer}>

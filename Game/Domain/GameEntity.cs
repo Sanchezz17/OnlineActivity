@@ -100,7 +100,7 @@ namespace Game.Domain
                        StringComparison.CurrentCultureIgnoreCase);
         }
 
-        private void CompleteRound()
+        public void CompleteRound()
         {
             if (Players.Max(p => p.Score) >= PointsToWin)
                 GameState = GameState.Finished;

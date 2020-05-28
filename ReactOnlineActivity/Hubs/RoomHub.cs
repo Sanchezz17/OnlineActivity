@@ -33,7 +33,7 @@ namespace ReactOnlineActivity.Hubs
                 var joinNotification = new Message
                 {
                     Id = Guid.NewGuid().ToString(),
-                    From = $"{userName} вошел в игру"
+                    From = $"{userName} присоединился(лась) к игре"
                 };
                 await Clients.Group(roomId).SendAsync("newMessage", joinNotification); 
             }
@@ -112,6 +112,27 @@ namespace ReactOnlineActivity.Hubs
                 .SendAsync("clearField");
         }
 
+        public async Task GiveUp(string roomId, string playerName)
+        {
+            var room = roomRepository.FindById(int.Parse(roomId));
+            var gameEntity = mapper.Map<GameEntity>(room.Game);
+            var currentRoundNumber = gameEntity.RoundNumber;
+            gameEntity.HiddenWords = room.Game.HiddenWords.ToArray();
+            gameEntity.CompleteRound();
+            var gameDto = mapper.Map<GameDto>(gameEntity);
+            roomRepository.UpdateGame(int.Parse(roomId), gameDto);
+            var giveUpNotification = new Message
+            {
+                Id = Guid.NewGuid().ToString(),
+                From = $"{playerName} сдался(лась)",
+                Text = "",
+                State = 2
+            };
+            await Clients.Group(roomId).SendAsync("newMessage", giveUpNotification);
+            
+            OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
+        }
+
         public async Task Leave(string roomId, string userName)
         {
             var room = roomRepository.FindById(int.Parse(roomId));
@@ -125,7 +146,7 @@ namespace ReactOnlineActivity.Hubs
             var leaveNotification = new Message
             {
                 Id = Guid.NewGuid().ToString(),
-                From = $"{userName} покинул игру",
+                From = $"{userName} покинул(а) игру",
                 Text = "",
                 State = 2
             };
@@ -170,47 +191,52 @@ namespace ReactOnlineActivity.Hubs
                 var guessedNotification = new Message
                 {
                     Id = Guid.NewGuid().ToString(),
-                    From = $"{message.From} угадал слово",
+                    From = $"{message.From} угадал(а) слово",
                     Text = "",
                     State = message.State
                 };
 
                 await Clients.Group(roomId).SendAsync("newMessage", guessedNotification);
-                if (currentRoundNumber < gameEntity.RoundNumber)
-                {
-                    var newRoundNotification = new Message
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        From = $"Раунд №{gameDto.RoundNumber + 1}",
-                        Text = "",
-                        State = message.State
-                    };
-                    await Clients.Group(roomId).SendAsync("newMessage", newRoundNotification);
-                }
 
-                if (gameEntity.GameState == GameState.Finished)
-                {
-                    var pointsWinner = gameEntity.Players.Max(p => p.Score);
-                    var winner = gameEntity.Players.First(p => p.Score == pointsWinner);
-                    gameEntity.Start();
-                    gameDto = mapper.Map<GameDto>(gameEntity);
-                    roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-                    await Clients.Group(roomId).SendAsync("gameOver",new Message
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        From = $"{winner.Name} победил!"
-                    });
-                }
-                else
-                {
-                    await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
-                }
-
+                OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
             }
             else
             {
                 message.Id = Guid.NewGuid().ToString();
                 await Clients.Group(roomId).SendAsync("newMessage", message);
+            }
+        }
+
+        private async Task OnNextStep(string roomId, int currentRoundNumber, GameDto gameDto, GameEntity gameEntity)
+        {
+            if (currentRoundNumber < gameEntity.RoundNumber)
+            {
+                var newRoundNotification = new Message
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    From = $"Раунд №{gameDto.RoundNumber + 1}",
+                    Text = "",
+                    State = 2
+                };
+                await Clients.Group(roomId).SendAsync("newMessage", newRoundNotification);
+            }
+            
+            if (gameEntity.GameState == GameState.Finished)
+            {
+                var pointsWinner = gameEntity.Players.Max(p => p.Score);
+                var winner = gameEntity.Players.First(p => p.Score == pointsWinner);
+                gameEntity.Start();
+                gameDto = mapper.Map<GameDto>(gameEntity);
+                roomRepository.UpdateGame(int.Parse(roomId), gameDto);
+                await Clients.Group(roomId).SendAsync("gameOver",new Message
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    From = $"{winner.Name} победил(а)!"
+                });
+            }
+            else
+            {
+                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
         }
         
