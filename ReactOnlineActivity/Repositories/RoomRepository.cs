@@ -19,7 +19,7 @@ namespace ReactOnlineActivity.Repositories
         }
 
         public Room FindSuitable() => GetQuery().FirstOrDefault(room =>
-                    !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
+            !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
 
         public Room FindById(int roomId) => GetQuery().SingleOrDefault(r => r.Id == roomId);
 

@@ -51,7 +51,7 @@ namespace Game.Domain
 
         public int GetSecondsLeft()
         {
-            var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
+            var secondsPassed = (int) (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
             Console.WriteLine(MaxRoundTimeInSeconds - secondsPassed);
             return MaxRoundTimeInSeconds - secondsPassed;
         }
@@ -67,14 +67,14 @@ namespace Game.Domain
             UpdateLevel();
             if (GameState == GameState.Finished)
                 return false;
-            
+
             if (GuessingPlayers.Contains(player))
                 return true;
 
             var playerGuessed = CheckWord(word);
             if (playerGuessed)
             {
-                var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
+                var secondsPassed = (int) (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
                 player.Score += maxPlayerCount - GuessingPlayers.Count;
                 var explainingPlayer = Players.First(p => p.Name == ExplainingPlayerName);
                 explainingPlayer.Score += (MaxRoundTimeInSeconds - secondsPassed) / 20
@@ -92,8 +92,8 @@ namespace Game.Domain
 
         private bool CheckWord(string wordFromPlayer)
         {
-            return GameState != GameState.Finished 
-                   && string.Equals(GetCurrentHiddenWord().ToLower(), wordFromPlayer.Trim().ToLower(), 
+            return GameState != GameState.Finished
+                   && string.Equals(GetCurrentHiddenWord().ToLower(), wordFromPlayer.Trim().ToLower(),
                        StringComparison.CurrentCultureIgnoreCase);
         }
 
@@ -104,6 +104,5 @@ namespace Game.Domain
             if (GameState == GameState.Started)
                 StartNewRound();
         }
-        
     }
 }

@@ -6,7 +6,7 @@ namespace Game.Domain
     {
         public int Id { get; set; }
         public List<Coordinate> Value { get; set; }
-        
+
         public string Color { get; set; }
     }
 }

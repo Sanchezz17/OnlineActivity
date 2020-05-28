@@ -1,5 +1,4 @@
-﻿using Game.Domain;
-using ReactOnlineActivity.Models;
+﻿using ReactOnlineActivity.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +15,14 @@ namespace ReactOnlineActivity.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
-        //     Database.EnsureDeleted();
-        //     Database.EnsureCreated();
+            //     Database.EnsureDeleted();
+            //     Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ThemeRoomSettings>()
-                .HasKey(t => new { t.RoomSettingsId, t.ThemeId });
+                .HasKey(t => new {t.RoomSettingsId, t.ThemeId});
 
             modelBuilder.Entity<ThemeRoomSettings>()
                 .HasOne(sc => sc.RoomSettings)

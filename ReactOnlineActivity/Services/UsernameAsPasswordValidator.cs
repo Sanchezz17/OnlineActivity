@@ -17,6 +17,7 @@ namespace ReactOnlineActivity.Services
                     Description = "Вы не можете использовать имя пользователя в качестве пароля"
                 }));
             }
+
             return Task.FromResult(IdentityResult.Success);
         }
     }

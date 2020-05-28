@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Game.Domain;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -55,6 +54,7 @@ namespace ReactOnlineActivity.Data
                     dbContext.Themes.Add(theme);
                 }
             }
+
             await dbContext.SaveChangesAsync();
         }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Domain;
 using ReactOnlineActivity.Data;
-using ReactOnlineActivity.Models;
 
 namespace ReactOnlineActivity.Repositories
 {
@@ -11,7 +10,7 @@ namespace ReactOnlineActivity.Repositories
     {
         private readonly ApplicationDbContext dbContext;
         private readonly RoomRepository roomRepository;
-        
+
         public PlayerRepository(ApplicationDbContext dbContext,
             RoomRepository roomRepository)
         {
@@ -33,8 +32,8 @@ namespace ReactOnlineActivity.Repositories
                 .Game
                 .Players
                 .SingleOrDefault(p => p.Name == playerName);
-            if (player == null) 
-                throw new Exception(); // todo: 
+            if (player == null)
+                throw new Exception();
             room.Game.Players.Remove(player);
             dbContext.SaveChanges();
         }

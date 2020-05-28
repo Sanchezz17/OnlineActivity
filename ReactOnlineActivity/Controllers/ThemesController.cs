@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Game.Domain;
 using Microsoft.AspNetCore.Mvc;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
@@ -19,7 +18,7 @@ namespace ReactOnlineActivity.Controllers
             this.themeRepository = themeRepository;
             this.mapper = mapper;
         }
-        
+
         [HttpGet("")]
         public List<Theme> GetThemes()
         {
