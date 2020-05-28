@@ -11,5 +11,6 @@
     REQUEST_ROUND: 'requestRound',
     REQUEST_WORD: 'requestWord',
     NEW_HIDDEN_WORD: 'newHiddenWord',
-    MESSAGE_RATED: 'messageRated'
+    MESSAGE_RATED: 'messageRated',
+    GAME_OVER: 'gameOver'
 };

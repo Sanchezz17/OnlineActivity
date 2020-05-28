@@ -14,14 +14,7 @@ export default class Chat extends Component {
     }
 
     componentDidMount() {
-        this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, (message) => {
-            this.setState({
-                messages: [
-                    message, 
-                    ...this.state.messages
-                ]
-            });
-        });
+        this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, this.addMessage);
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
             this.setState({ isActiveUser: explainingPlayerName === this.props.user.name });
@@ -32,7 +25,28 @@ export default class Chat extends Component {
             this.state.messages[index].state = message.state;
             this.setState({ messages: this.state.messages });
         });
+
+        this.props.hubConnection.on(RoomHubEvents.GAME_OVER, (winner) => {
+            this.addMessage(winner);
+            setTimeout(() => {
+                this.setState({
+                    messages: [],
+                    currentMessageText: '',
+                    isActiveUser: false
+                });
+                
+            }, 2000)
+        });
     }
+    
+    addMessage = (message) => {
+        this.setState({
+            messages: [
+                message,
+                ...this.state.messages
+            ]
+        });
+    };
 
     onPostMessage = (event) => {
         event.preventDefault();

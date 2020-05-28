@@ -106,7 +106,7 @@ namespace ReactOnlineActivity.Controllers
             var words = GetMixedWordsFromThemes(themes);
             var newRoom = new Room
             {
-                Game = CreateTestGame(words),
+                Game = CreateTestGame(words, settings),
                 Settings = settings
             };
 
@@ -160,7 +160,7 @@ namespace ReactOnlineActivity.Controllers
             var words = GetMixedWordsFromThemes(themes);
             var newRoom = new Room
             {
-                Game = CreateTestGame(words),
+                Game = CreateTestGame(words, roomSettings),
                 Settings = roomSettings
             };
 
@@ -175,14 +175,17 @@ namespace ReactOnlineActivity.Controllers
             return newRoom;
         }
 
-        private GameDto CreateTestGame(List<Word> words)
+        private GameDto CreateTestGame(List<Word> words, RoomSettings settings)
         {
             return new GameDto
             {
                 HiddenWords = words,
                 Players = new List<Player>(),
                 CurrentRoundStartTime = DateTime.Now.ToEpochTime(),
-                Canvas = new List<Line>()
+                Canvas = new List<Line>(),
+                MaxPlayerCount = settings.MaxPlayerCount,
+                MaxRoundTimeInSeconds = settings.RoundTime,
+                PointsToWin = settings.PointsToWin
             };
         }
     }

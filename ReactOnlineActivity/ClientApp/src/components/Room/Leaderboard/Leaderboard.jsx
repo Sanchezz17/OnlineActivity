@@ -33,8 +33,16 @@ export default class Leaderboard extends Component {
             await this.fetchPlayers();
         });
         
+        this.props.hubConnection.on(RoomHubEvents.GAME_OVER, async () => {
+            await this.fetchPlayers();
+            
+            setTimeout(async () => {
+                await this.fetchPlayers();
+                await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId);
+            }, 2000);
+        });
+        
         await this.fetchPlayers();
-
         await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId);
     }
 

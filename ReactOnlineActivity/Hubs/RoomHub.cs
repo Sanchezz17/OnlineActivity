@@ -12,22 +12,16 @@ namespace ReactOnlineActivity.Hubs
 {
     public class RoomHub : Hub
     {
-        private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
-        private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
         
-        public RoomHub(UserRepository userRepository,
-            RoomRepository roomRepository,
+        public RoomHub(RoomRepository roomRepository,
             PlayerRepository playerRepository,
-            ThemeRepository themeRepository,
             IMapper mapper)
         {
-            this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
-            this.themeRepository = themeRepository;
             this.mapper = mapper;
         }
         
@@ -185,7 +179,25 @@ namespace ReactOnlineActivity.Hubs
                     };
                     await Clients.Group(roomId).SendAsync("newMessage", newRoundNotification);
                 }
-                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+
+                if (gameEntity.GameState == GameState.Finished)
+                {
+                    var pointsWinner = gameEntity.Players.Max(p => p.Score);
+                    var winner = gameEntity.Players.First(p => p.Score == pointsWinner);
+                    gameEntity.Start();
+                    gameDto = mapper.Map<GameDto>(gameEntity);
+                    roomRepository.UpdateGame(int.Parse(roomId), gameDto);
+                    await Clients.Group(roomId).SendAsync("gameOver",new Message
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        From = $"{winner.Name} победил!"
+                    });
+                }
+                else
+                {
+                    await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+                }
+
             }
             else
             {

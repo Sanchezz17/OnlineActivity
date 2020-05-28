@@ -6,11 +6,11 @@ namespace Game.Domain
 {
     public class GameEntity
     {
-        private const int MaxRoundTimeInMinutes = 5;
         private const int SecondsInMinutes = 60;
-        private readonly Random _random;
-        private readonly int _maxRound;
-
+        
+        public int MaxRoundTimeInSeconds { get; set; }
+        public int MaxPlayerCount { get; set; }
+        public int PointsToWin { get; set; }
         public Word[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
         public GameState GameState { get; set; }
@@ -24,18 +24,17 @@ namespace Game.Domain
         public GameEntity(Word[] hiddenWords, IEnumerable<Player> players)
         {
             HiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
-            _maxRound = HiddenWords.Length;
-            _random = new Random();
-            
+            Players = players.ToList();
             GuessingPlayers = new List<Player>();
             Canvas = new List<Line>();
-            Players = players.ToList();
         }
 
         public void Start()
         {
             RoundNumber = -1;
             GameState = GameState.Started;
+            foreach (var player in Players)
+                player.Score = 0;
             StartNewRound();
         }
 
@@ -45,7 +44,7 @@ namespace Game.Domain
             GuessingPlayers = new List<Player>();
             Canvas = new List<Line>();
             RoundNumber++;
-            ExplainingPlayerName = Players[_random.Next(Players.Count)].Name;
+            ExplainingPlayerName = Players[RoundNumber % Players.Count].Name;
         }
 
         public string GetCurrentHiddenWord()
@@ -68,7 +67,7 @@ namespace Game.Domain
                 var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
                 player.Score += maxPlayerCount - GuessingPlayers.Count;
                 var explainingPlayer = Players.First(p => p.Name == ExplainingPlayerName);
-                explainingPlayer.Score += (MaxRoundTimeInMinutes * SecondsInMinutes - secondsPassed) / 20
+                explainingPlayer.Score += (MaxRoundTimeInSeconds - secondsPassed) / 20
                                           + maxPlayerCount / Players.Count;
                 GuessingPlayers.Add(player);
             }
@@ -83,8 +82,7 @@ namespace Game.Domain
 
         private void CheckTime()
         {
-            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime >
-                MaxRoundTimeInMinutes * SecondsInMinutes)
+            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime > MaxRoundTimeInSeconds)
                 GameState = GameState.Finished;
         }
 
@@ -98,7 +96,7 @@ namespace Game.Domain
 
         private void CompleteRound()
         {
-            if (RoundNumber >= _maxRound)
+            if (Players.Max(p => p.Score) >= PointsToWin)
                 GameState = GameState.Finished;
             if (GameState == GameState.Started)
                 StartNewRound();

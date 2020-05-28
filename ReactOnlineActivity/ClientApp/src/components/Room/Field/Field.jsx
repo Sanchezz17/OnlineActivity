@@ -47,6 +47,25 @@ export default class Field extends Component {
             this.setState({ hiddenWord });
         });
 
+        this.props.hubConnection.on(RoomHubEvents.GAME_OVER, () => {
+            
+            setTimeout(async () => {
+                this.setState({
+                    lines: [],
+                    isLoadingField: true,
+                    isDrawing: false,
+                    stageRef: null,
+                    isActiveUser: false,
+                    activeUser: null,
+                    hiddenWord: null,
+                    drawingColor: '#000',
+                    isPalletShow: false
+                });
+                
+                await this.fetchLines();
+            }, 2000);
+        });
+
         await this.fetchLines();
     }
 
