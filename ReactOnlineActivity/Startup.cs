@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using Game.Domain;
@@ -134,6 +135,10 @@ namespace ReactOnlineActivity
                                 .Select(w => new Word{Value = w})
                                 .ToArray()));*/
                 cfg.CreateMap<RoomSettingsDto, RoomSettings>();
+                cfg.CreateMap<ThemeDto, Theme>()
+                    .ForMember(dest => dest.Words,
+                        opt => opt
+                            .MapFrom(src => src.Words.Select(word => new Word { Value = word })));
             });
             
             var mapper = mappingConfig.CreateMapper();

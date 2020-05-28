@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aspnet/signalr": "1.1.4",
+    "@skbkontur/react-ui": "^2.3.0",
     "bootstrap": "4.4.1",
     "jquery": "3.5.1",
     "konva": "6.0.0",

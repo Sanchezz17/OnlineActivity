@@ -42,6 +42,7 @@ namespace ReactOnlineActivity.Repositories
         public void Insert(Theme theme)
         {
             dbContext.Themes.Add(theme);
+            dbContext.SaveChanges();
         }
     }
 }

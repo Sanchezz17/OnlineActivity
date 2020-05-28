@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Game.Domain;
 using Microsoft.AspNetCore.Mvc;
 using ReactOnlineActivity.Models;
@@ -11,10 +12,12 @@ namespace ReactOnlineActivity.Controllers
     public class ThemesController : Controller
     {
         private readonly ThemeRepository themeRepository;
+        private readonly IMapper mapper;
 
-        public ThemesController(ThemeRepository themeRepository)
+        public ThemesController(ThemeRepository themeRepository, IMapper mapper)
         {
             this.themeRepository = themeRepository;
+            this.mapper = mapper;
         }
         
         [HttpGet("")]
@@ -24,9 +27,11 @@ namespace ReactOnlineActivity.Controllers
         }
 
         [HttpPost("")]
-        public void AddTheme([FromBody] Theme theme)
+        public string AddTheme([FromBody] ThemeDto themeDto)
         {
+            var theme = mapper.Map<Theme>(themeDto);
             themeRepository.Insert(theme);
+            return theme.Id.ToString();
         }
     }
 }
