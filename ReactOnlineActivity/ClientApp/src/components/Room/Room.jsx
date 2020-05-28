@@ -6,6 +6,7 @@ import authorizeFetch from '../../utils/authorizeFetch';
 import Chat from './Chat/Chat';
 import Field from './Field/Field';
 import Leaderboard from './Leaderboard/Leaderboard';
+import Timer from './Timer/Timer'
 import { RoomHubEvents } from './RoomConstants';
 import styles from './room.module.css';
 
@@ -58,6 +59,9 @@ export default class Room extends Component {
                 :  <div>
                     <div className={styles.nameContainer}>
                         <span className={styles.name}>{this.room.settings.name}</span>
+                        <span className={`btn btn-warning btn-sm `}>
+                            Оставшееся время: <Timer roomId={this.roomId} hubConnection={this.hubConnection}/>
+                        </span>
                         <CopyToClipboard text={`${window.location.host}/rooms/${this.roomId}`}>
                             <span className={styles.copy}>Скопировать ссылку на комнату</span>
                         </CopyToClipboard>

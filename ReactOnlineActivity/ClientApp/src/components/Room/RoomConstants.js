@@ -12,5 +12,7 @@
     REQUEST_WORD: 'requestWord',
     NEW_HIDDEN_WORD: 'newHiddenWord',
     MESSAGE_RATED: 'messageRated',
-    GAME_OVER: 'gameOver'
+    GAME_OVER: 'gameOver',
+    TIME_LEFT: 'timeLeft',
+    REQUEST_TIME: 'requestTime'
 };

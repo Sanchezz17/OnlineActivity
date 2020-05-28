@@ -52,6 +52,12 @@ namespace Game.Domain
             return HiddenWords.First(w => w.SerialNumber == RoundNumber).Value;
         }
 
+        public int GetSecondsLeft()
+        {
+            var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
+            return MaxRoundTimeInSeconds - secondsPassed;
+        }
+
         public bool MakeStep(Player player, string word, int maxPlayerCount)
         {
             CheckTime();

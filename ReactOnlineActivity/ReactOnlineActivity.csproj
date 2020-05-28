@@ -48,6 +48,7 @@
     <Content Include="ClientApp\src\components\Room\Chat\Chat.jsx" />
     <Content Include="ClientApp\src\components\Room\Field\Field.jsx" />
     <Content Include="ClientApp\src\components\Room\Leaderboard\Leaderboard.jsx" />
+    <Content Include="ClientApp\src\components\Room\Timer\Timer.jsx" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <Content Update="Areas\Identity\Pages\Account\Manage\Index.cshtml">

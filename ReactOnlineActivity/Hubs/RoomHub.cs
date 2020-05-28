@@ -52,6 +52,7 @@ namespace ReactOnlineActivity.Hubs
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
                 
                 await Clients.Group(roomId).SendAsync("round", newGameDto.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
             }
         }
 
@@ -83,6 +84,13 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             await Clients.Group(roomId).SendAsync("round", room.Game.ExplainingPlayerName);
+        }
+
+        public async Task RequestTime(string roomId)
+        {
+            var room = roomRepository.FindById(int.Parse(roomId));
+            var gameEntity = mapper.Map<GameEntity>(room.Game);
+            await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
         }
 
         public async Task NewLine(string roomId, LineDto line)
