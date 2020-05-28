@@ -66,17 +66,7 @@ namespace ReactOnlineActivity.Hubs
         {
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameDto, GameEntity>(room.Game);
-            
-            // toDo mapping не работает! удалить код ниже после исправления
-            var random = new Random();
-            gameEntity.HiddenWords = room.Game.HiddenWords
-                .OrderBy(x => random.Next())
-                .ToArray();
-            // gameEntity.HiddenWords = themeRepository.GetAllThemes()
-            //     .SelectMany(t => t.Words.Select(w => w.Value)).ToArray();
-            // toDo перемешать слова
             var hiddenWord = gameEntity.GetCurrentHiddenWord();
-
             await Clients.Caller.SendAsync("newHiddenWord", hiddenWord);
         }
 
@@ -117,7 +107,6 @@ namespace ReactOnlineActivity.Hubs
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
-            gameEntity.HiddenWords = room.Game.HiddenWords.ToArray();
             gameEntity.CompleteRound();
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
@@ -182,7 +171,6 @@ namespace ReactOnlineActivity.Hubs
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
-            gameEntity.HiddenWords = room.Game.HiddenWords.ToArray();
             var player = gameEntity.Players.First(p => p.Name == message.From);
             var playerGuessed = gameEntity.MakeStep(player, message.Text, room.Settings.MaxPlayerCount);
             var gameDto = mapper.Map<GameDto>(gameEntity);
@@ -237,8 +225,8 @@ namespace ReactOnlineActivity.Hubs
             }
             else
             {
-                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
                 await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
+                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
         }
         
@@ -254,7 +242,6 @@ namespace ReactOnlineActivity.Hubs
             gameEntity.UpdateLevel();
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-            Console.WriteLine($"ПРИ ОТПРАВКЕ: {gameEntity.ExplainingPlayerName}");
             await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
             await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
         }

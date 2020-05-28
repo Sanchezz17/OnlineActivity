@@ -8,7 +8,7 @@ namespace Game.Domain
     {
         public int MaxRoundTimeInSeconds { get; set; }
         public int PointsToWin { get; set; }
-        public Word[] HiddenWords { get; set; }
+        public List<Word> HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
         public GameState GameState { get; set; }
         public string ExplainingPlayerName { get; set; }
@@ -18,9 +18,9 @@ namespace Game.Domain
 
         public List<Player> GuessingPlayers { get; set; }
 
-        public GameEntity(Word[] hiddenWords, IEnumerable<Player> players)
+        public GameEntity(List<Word> hiddenWords, IEnumerable<Player> players)
         {
-            HiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
+            HiddenWords = hiddenWords;
             Players = players.ToList();
             GuessingPlayers = new List<Player>();
             Canvas = new List<Line>();
