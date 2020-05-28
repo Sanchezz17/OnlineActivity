@@ -149,6 +149,8 @@
 .themes__text{
     margin-top: 30px;
     font-weight: 900;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .themes__add {
