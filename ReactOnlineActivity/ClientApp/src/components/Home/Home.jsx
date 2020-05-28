@@ -7,9 +7,9 @@ export class Home extends Component {
     render() {
         return (
             <div>
-                <h1>«Онлайн-Активити»</h1>
+                <h1 className={styles.header}>«Онлайн-Активити»</h1>
                 <p>Это игра, смысл которой объяснить загаданное слово при помощи рисования каких-то ассоциаций</p>
-                <h2>Правила игры</h2>
+                <h2 className={styles.header}>Правила игры</h2>
                 <article>
                     <p>
                         Игра делится на несколько раундов.
@@ -35,7 +35,7 @@ export class Home extends Component {
                         <strong>Создайте комнату</strong> и настройте её под себя для игры с друзьями!
                     </li>
                 </ul>
-                <h2 className={styles.wish}>
+                <h2 className={`${styles.wish} ${styles.header}`}>
                     Удачной игры!
                 </h2>
                 <div className={styles.links}>
