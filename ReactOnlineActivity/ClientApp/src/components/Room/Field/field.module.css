@@ -57,6 +57,21 @@
     border-radius: 15px;
 }
 
+.timerContainer {
+    position: absolute;
+    z-index: 10;
+    bottom: 0;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: "Helvetica Neue", sans-serif;
+}
 
 .loading {
     width: 100%;

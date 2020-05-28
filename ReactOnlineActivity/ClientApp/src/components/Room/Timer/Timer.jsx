@@ -1,10 +1,17 @@
 ﻿import React, { Component } from 'react';
 import { RoomHubEvents } from '../RoomConstants';
+import styles from './timer.module.css';
 
 export default class Timer extends Component {
     constructor(props) {
         super(props);
-        this.state = { time: {minutes: 0, seconds: 0}, seconds: 0 };
+        this.state = { 
+            time: { 
+                minutesStr: '00',
+                secondsStr: '00' 
+            },
+            seconds: 0 
+        };
         this.timer = 0;
     }
 
@@ -32,8 +39,8 @@ export default class Timer extends Component {
         const seconds = Math.ceil(divisorForSeconds);
 
         return {
-            minutes,
-            seconds
+            minutesStr: minutes.toString().padStart(2, '0'),
+            secondsStr: seconds.toString().padStart(2, '0')
         };
     };
     
@@ -51,8 +58,8 @@ export default class Timer extends Component {
 
     render() {
         return(
-            <div>
-                {this.state.time.minutes} : {this.state.time.seconds}
+            <div className={styles.timer}>
+                {this.state.time.minutesStr} : {this.state.time.secondsStr}
             </div>
         );
     }

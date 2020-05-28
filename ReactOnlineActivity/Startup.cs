@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using Game.Domain;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,8 +18,6 @@ using ReactOnlineActivity.Hubs;
 using ReactOnlineActivity.Repositories;
 using ReactOnlineActivity.Services;
 using ReactOnlineActivity.Services.Constants;
-using Coordinate = Game.Domain.Coordinate;
-using Line = Game.Domain.Line;
 
 namespace ReactOnlineActivity
 {

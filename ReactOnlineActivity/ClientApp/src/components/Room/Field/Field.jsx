@@ -4,6 +4,7 @@ import authorizeFetch from '../../../utils/authorizeFetch';
 import Palette from '../Palette/Palette';
 import { RoomHubEvents } from '../RoomConstants';
 import styles from './field.module.css';
+import Timer from '../Timer/Timer';
 
 export default class Field extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ export default class Field extends Component {
         });
 
         this.props.hubConnection.on(RoomHubEvents.GAME_OVER, () => {
-            
+
             setTimeout(async () => {
                 this.setState({
                     lines: [],
@@ -61,7 +62,7 @@ export default class Field extends Component {
                     drawingColor: '#000',
                     isPalletShow: false
                 });
-                
+
                 await this.fetchLines();
             }, 2000);
         });
@@ -75,19 +76,19 @@ export default class Field extends Component {
             isLoadingField: false,
             lines: lines || []
         });
-    }
+    };
 
     addLine = () => {
         this.props.hubConnection.invoke(RoomHubEvents.NEW_LINE,
             this.props.roomId, this.state.lines[this.state.lines.length - 1]);
     };
-    
+
     getNewEmptyLine = () => {
         return {
             color: this.state.drawingColor,
             coordinates: []
         };
-    }
+    };
 
     handleMouseDown = () => {
         this.setState({
@@ -122,15 +123,15 @@ export default class Field extends Component {
     clearField = () => {
         this.props.hubConnection.invoke(RoomHubEvents.CLEAR_FIELD, this.props.roomId);
         this.setState({ lines: [] });
-    }
+    };
 
     changeDrawingColor = (drawingColor) => {
         this.setState({ drawingColor });
-    }
+    };
 
     onEraserClick = () => {
         this.setState({ drawingColor: '#fff' });
-    }
+    };
 
     render() {
         if (typeof window === 'undefined') {
@@ -139,6 +140,9 @@ export default class Field extends Component {
 
         return (
             <section className={styles.field} id='field'>
+                <span className={`btn btn-warning btn-sm ${styles.timerContainer}`}>
+                    Оставшееся время: <Timer roomId={this.props.roomId} hubConnection={this.props.hubConnection}/>
+                </span>
                 {this.state.isActiveUser ?
                     <>
                         <section className={styles.drawerTools}>
