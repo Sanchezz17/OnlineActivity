@@ -5,7 +5,8 @@
     border-radius: 15px;
     box-sizing: border-box;
     margin: 0;
-
+    height: 100%;
+    width: 100%;
     grid-column: 2 / 4;
     grid-row: 1 / 5;
 }

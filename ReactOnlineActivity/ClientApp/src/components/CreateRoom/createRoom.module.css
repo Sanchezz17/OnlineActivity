@@ -41,7 +41,7 @@
 .themes__list {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
     flex-direction: row;
     flex-wrap: wrap;
     font-size: 20px;
@@ -51,6 +51,7 @@
 .themes__theme {
     display: flex;
     width: 30%;
+    margin-right: 3%;
     height: 100px;
     border: 2px solid black;
     border-radius: 5px;
@@ -147,6 +148,7 @@
 
 .themes__text{
     margin-top: 30px;
+    font-weight: 900;
 }
 
 .themes__add {

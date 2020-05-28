@@ -24,7 +24,7 @@
 	},
 	{
 		"Name": "Предметы",
-		"PictureUrl": "",
+		"PictureUrl": "https://dom-store.ru/image/catalog/image/data/SUCKUK/SKPENCILPOT1/4.jpg",
 		"Words": [
 			{ "Value": "Ножницы" },
 			{ "Value": "Лопата" },
@@ -38,7 +38,7 @@
 	},
 	{
 		"Name": "Общее",
-		"PictureUrl": "",
+		"PictureUrl": "https://cdn.pixabay.com/photo/2019/03/24/14/38/landscape-4077837__480.jpg",
 		"Words": [
 			{ "Value": "Солнце" },
 			{ "Value": "Дуб" },
@@ -51,7 +51,7 @@
 	},
 	{
 		"Name": "Еда",
-		"PictureUrl": "",
+		"PictureUrl": "https://f.vividscreen.info/soft/7fc8a8918cae0efadaf001da70c34d80/Pizza-320x240.jpg",
 		"Words": [
 			{ "Value": "Яблоко" },
 			{ "Value": "Пельмени" },
@@ -69,7 +69,7 @@
 	},
 	{
 		"Name": "Спорт",
-		"PictureUrl": "",
+		"PictureUrl": "https://img2.freepng.ru/20171128/3d4/football-png-transparent-clip-art-image-5a1cee195bea25.0182632615118454013765.jpg",
 		"Words": [
 			{ "Value": "Гол" },
 			{ "Value": "Футбол" },
@@ -89,7 +89,7 @@
 	},
 	{
 		"Name": "Одежда",
-		"PictureUrl": "",
+		"PictureUrl": "https://2.bp.blogspot.com/-_EGavD0EISY/V_PSJtpG16I/AAAAAAAAAZc/PWho_OHBw7QSrHAllgayiIDuUakZnMKcACK4B/s320/%25D0%25B3%25D0%25B0%25D1%2580.jpg",
 		"Words": [
 			{ "Value": "Платье" },
 			{ "Value": "Варежки" },
@@ -109,7 +109,7 @@
 	},
 	{
 		"Name": "Школа",
-		"PictureUrl": "",
+		"PictureUrl": "https://www.test.mercury-education.com/wp-content/uploads/2018/04/modern-education.jpg",
 		"Words": [
 			{ "Value": "Книга" },
 			{ "Value": "Доска" },

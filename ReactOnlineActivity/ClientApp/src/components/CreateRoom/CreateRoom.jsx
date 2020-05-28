@@ -58,7 +58,9 @@ class CreateRoom extends Component {
     renderTheme = (theme) => {
         return (
             <li onClick={() => this.onThemeClicked(theme)} className={styles.themes__theme} style={{
-                backgroundImage: `url(${theme.pictureUrl})`, backgroundRepeat: 'no-repeat'
+                backgroundImage: `url(${theme.pictureUrl})`, 
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover'
             }}>
                 {this.renderThemeSquare(theme.name, theme.isSelected, styles.themes__text)}
             </li>
