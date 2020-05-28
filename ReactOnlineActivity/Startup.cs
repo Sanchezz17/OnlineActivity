@@ -126,18 +126,18 @@ namespace ReactOnlineActivity
 
             var mappingConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<GameDto, GameEntity>()
-                    .ForMember(dest => dest.HiddenWords,
+                cfg.CreateMap<GameDto, GameEntity>();
+                    /*.ForMember(dest => dest.HiddenWords,
                         opt => opt
                             .MapFrom(src => src.HiddenWords
                                 .Select(w => w.Value)
-                                .ToArray()));
-                cfg.CreateMap<GameEntity, GameDto>()
-                    .ForMember(dest => dest.HiddenWords,
+                                .ToArray()));*/
+                cfg.CreateMap<GameEntity, GameDto>();
+                    /*.ForMember(dest => dest.HiddenWords,
                         opt => opt
                             .MapFrom(src => src.HiddenWords
                                 .Select(w => new Word{Value = w})
-                                .ToArray()));
+                                .ToArray()));*/
                 cfg.CreateMap<RoomSettingsDto, RoomSettings>();
             });
             

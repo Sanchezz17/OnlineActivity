@@ -11,7 +11,7 @@ namespace Game.Domain
         private readonly Random _random;
         private readonly int _maxRound;
 
-        public string[] HiddenWords { get; set; }
+        public Word[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
         public GameState GameState { get; set; }
         public string ExplainingPlayerName { get; set; }
@@ -21,7 +21,7 @@ namespace Game.Domain
 
         public List<Player> GuessingPlayers { get; set; }
 
-        public GameEntity(string[] hiddenWords, IEnumerable<Player> players)
+        public GameEntity(Word[] hiddenWords, IEnumerable<Player> players)
         {
             HiddenWords = hiddenWords ?? throw new ArgumentException("Hidden word is null");
             _maxRound = HiddenWords.Length;
@@ -50,7 +50,7 @@ namespace Game.Domain
 
         public string GetCurrentHiddenWord()
         {
-            return HiddenWords[RoundNumber % HiddenWords.Length];
+            return HiddenWords.First(w => w.SerialNumber == RoundNumber).Value;
         }
 
         public bool MakeStep(Player player, string word, int maxPlayerCount)

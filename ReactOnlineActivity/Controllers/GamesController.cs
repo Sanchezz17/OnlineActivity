@@ -142,10 +142,15 @@ namespace ReactOnlineActivity.Controllers
 
         private List<Word> GetMixedWordsFromThemes(List<Theme> themes)
         {
-            return themes
+            var words = themes
                 .SelectMany(t => t.Words)
                 .OrderBy(x => random.Next())
                 .ToList();
+
+            for (var i = 0; i < words.Count; i++)
+                words[i].SerialNumber = i;
+
+            return words;
         }
 
         private Room CreateTestRoom()

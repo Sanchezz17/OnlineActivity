@@ -75,7 +75,6 @@ namespace ReactOnlineActivity.Hubs
             // toDo mapping не работает! удалить код ниже после исправления
             var random = new Random();
             gameEntity.HiddenWords = room.Game.HiddenWords
-                .Select(w => w.Value)
                 .OrderBy(x => random.Next())
                 .ToArray();
             // gameEntity.HiddenWords = themeRepository.GetAllThemes()
@@ -159,7 +158,7 @@ namespace ReactOnlineActivity.Hubs
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
-            gameEntity.HiddenWords = room.Game.HiddenWords.Select(w => w.Value).ToArray();
+            gameEntity.HiddenWords = room.Game.HiddenWords.ToArray();
             var player = gameEntity.Players.First(p => p.Name == message.From);
             var playerGuessed = gameEntity.MakeStep(player, message.Text, room.Settings.MaxPlayerCount);
             var gameDto = mapper.Map<GameDto>(gameEntity);
