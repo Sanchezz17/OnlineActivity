@@ -167,7 +167,8 @@ namespace ReactOnlineActivity.Hubs
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
             }
             
-            if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started)
+            if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started 
+                                                             && userName == gameEntity.ExplainingPlayerName)
             {
                 gameEntity.StartNewRound();
                 var newGameDto = mapper.Map<GameDto>(gameEntity);
@@ -237,12 +238,25 @@ namespace ReactOnlineActivity.Hubs
             else
             {
                 await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
             }
         }
         
         public async Task MessageRated(string roomId, Message message)
         {
             await Clients.Group(roomId).SendAsync("messageRated", message);     
+        }
+        
+        public async Task TimeOver(string roomId)
+        {
+            var room = roomRepository.FindById(int.Parse(roomId));
+            var gameEntity = mapper.Map<GameEntity>(room.Game);
+            gameEntity.UpdateLevel();
+            var gameDto = mapper.Map<GameDto>(gameEntity);
+            roomRepository.UpdateGame(int.Parse(roomId), gameDto);
+            Console.WriteLine($"ПРИ ОТПРАВКЕ: {gameEntity.ExplainingPlayerName}");
+            await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
+            await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
         }
     }
 }

@@ -6,10 +6,7 @@ namespace Game.Domain
 {
     public class GameEntity
     {
-        private const int SecondsInMinutes = 60;
-        
         public int MaxRoundTimeInSeconds { get; set; }
-        public int MaxPlayerCount { get; set; }
         public int PointsToWin { get; set; }
         public Word[] HiddenWords { get; set; }
         public int RoundNumber { get; private set; }
@@ -55,12 +52,19 @@ namespace Game.Domain
         public int GetSecondsLeft()
         {
             var secondsPassed = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
+            Console.WriteLine(MaxRoundTimeInSeconds - secondsPassed);
             return MaxRoundTimeInSeconds - secondsPassed;
+        }
+
+        public void UpdateLevel()
+        {
+            if (GetSecondsLeft() <= 0)
+                CompleteRound();
         }
 
         public bool MakeStep(Player player, string word, int maxPlayerCount)
         {
-            CheckTime();
+            UpdateLevel();
             if (GameState == GameState.Finished)
                 return false;
             
@@ -86,13 +90,6 @@ namespace Game.Domain
             return playerGuessed;
         }
 
-        private void CheckTime()
-        {
-            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime > MaxRoundTimeInSeconds)
-                GameState = GameState.Finished;
-        }
-
-
         private bool CheckWord(string wordFromPlayer)
         {
             return GameState != GameState.Finished 
@@ -107,5 +104,6 @@ namespace Game.Domain
             if (GameState == GameState.Started)
                 StartNewRound();
         }
+        
     }
 }

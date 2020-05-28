@@ -5,12 +5,12 @@ import styles from './timer.module.css';
 export default class Timer extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            time: { 
+        this.state = {
+            time: {
                 minutesStr: '00',
-                secondsStr: '00' 
+                secondsStr: '00'
             },
-            seconds: 0 
+            seconds: 0,
         };
         this.timer = 0;
     }
@@ -18,12 +18,15 @@ export default class Timer extends Component {
     async componentDidMount() {
         this.props.hubConnection.on(RoomHubEvents.TIME_LEFT, (seconds) => {
             this.setState({
-                seconds,
-                time: this.secondsToTime(seconds)
+                seconds: seconds + 1,
+                time: this.secondsToTime(seconds + 1)
             });
-            this.startTimer();
         });
-
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayer) => {
+            if (explainingPlayer !== null && this.timer === 0) {
+                this.startTimer()
+            }
+        });
         await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_TIME, this.props.roomId);
     }
 
@@ -44,16 +47,22 @@ export default class Timer extends Component {
             secondsStr: seconds.toString().padStart(2, '0')
         };
     };
-    
-    countDown = () => {
-        let seconds = this.state.seconds - 1;
-        this.setState({
-            time: this.secondsToTime(seconds),
-            seconds: seconds,
-        });
 
-        if (seconds === 0) {
+    countDown = async () => {
+        if (this.state.seconds > 0) {
+            let seconds = this.state.seconds - 1;
+            this.setState({
+                time: this.secondsToTime(seconds),
+                seconds: seconds,
+            });
+        } else {
             clearInterval(this.timer);
+            this.timer = 0;
+            this.setState({
+                time: this.secondsToTime(0),
+                seconds: 0,
+            });
+            await this.props.hubConnection.invoke(RoomHubEvents.TIME_OVER, this.props.roomId);
         }
     };
 
