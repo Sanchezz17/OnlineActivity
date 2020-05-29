@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Game.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +17,10 @@ namespace ReactOnlineActivity.Repositories
             this.dbContext = dbContext;
         }
 
-        public Room FindSuitable() => GetQuery().FirstOrDefault(room =>
+        public Room FindSuitable() => RoomsIncludeAll().FirstOrDefault(room =>
             !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
 
-        public Room FindById(int roomId) => GetQuery().SingleOrDefault(r => r.Id == roomId);
+        public Room FindById(int roomId) => RoomsIncludeAll().Single(r => r.Id == roomId);
 
         public void Insert(Room room)
         {
@@ -29,20 +28,9 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public void InsertPlayerIntoRoom(int roomId, Player player)
-        {
-            var room = FindById(roomId);
-            if (room == null)
-                throw new Exception();
-            room.Game.Players.Add(player);
-            dbContext.SaveChanges();
-        }
-
         public void AddLineToFieldIntoRoom(int roomId, Line newLine)
         {
             var room = FindById(roomId);
-            if (room == null)
-                throw new Exception();
             room.Game.Canvas.Add(newLine);
             dbContext.SaveChanges();
         }
@@ -50,8 +38,6 @@ namespace ReactOnlineActivity.Repositories
         public void ClearField(int roomId)
         {
             var room = FindById(roomId);
-            if (room == null)
-                throw new Exception();
             room.Game.Canvas = new List<Line>();
             dbContext.SaveChanges();
         }
@@ -59,8 +45,6 @@ namespace ReactOnlineActivity.Repositories
         public void UpdateGame(int roomId, GameDto game)
         {
             var room = FindById(roomId);
-            if (room == null)
-                throw new Exception();
             room.Game.GameState = game.GameState;
             room.Game.RoundNumber = game.RoundNumber;
             room.Game.Canvas = game.Canvas;
@@ -71,7 +55,7 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        private IIncludableQueryable<Room, List<ThemeRoomSettings>> GetQuery()
+        private IIncludableQueryable<Room, List<ThemeRoomSettings>> RoomsIncludeAll()
         {
             return dbContext.Rooms
                 .Include(r => r.Game)
