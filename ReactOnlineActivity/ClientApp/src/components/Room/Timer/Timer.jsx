@@ -23,7 +23,7 @@ export default class Timer extends Component {
             });
         });
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayer) => {
-            if (explainingPlayer !== null && this.timer === 0) {
+            if (explainingPlayer !== null) {
                 this.startTimer()
             }
         });

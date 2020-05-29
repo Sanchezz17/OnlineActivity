@@ -51,8 +51,9 @@ namespace Game.Domain
 
         public int GetSecondsLeft()
         {
+            if (GameState == GameState.WaitingForStart)
+                return MaxRoundTimeInSeconds;
             var secondsPassed = (int) (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CurrentRoundStartTime);
-            Console.WriteLine(MaxRoundTimeInSeconds - secondsPassed);
             return MaxRoundTimeInSeconds - secondsPassed;
         }
 
