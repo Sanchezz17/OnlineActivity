@@ -24,6 +24,13 @@ namespace ReactOnlineActivity.Repositories
                 ?.Game
                 .Players;
         }
+        
+        public void InsertPlayerIntoRoom(int roomId, Player player)
+        {
+            var room = roomRepository.FindById(roomId);
+            room.Game.Players.Add(player);
+            dbContext.SaveChanges();
+        }
 
         public void DeletePlayerFromRoom(int roomId, string playerName)
         {

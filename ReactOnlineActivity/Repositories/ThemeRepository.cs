@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
 
@@ -18,22 +20,17 @@ namespace ReactOnlineActivity.Repositories
 
         public Theme FindById(int id)
         {
-            return dbContext.Themes
-                .Include(t => t.Words)
-                .SingleOrDefault(theme => theme.Id == id);
+            return ThemesIncludeAll().Single(theme => theme.Id == id);
         }
 
         public List<Theme> GetAllThemes()
         {
-            return dbContext.Themes
-                .Include(t => t.Words)
-                .ToList();
+            return ThemesIncludeAll().ToList();
         }
 
         public List<Theme> GetDefaultThemes()
         {
-            return dbContext.Themes
-                .Include(t => t.Words)
+            return ThemesIncludeAll()
                 .Where(t => defaultThemesIds.Contains(t.Id))
                 .ToList();
         }
@@ -42,6 +39,12 @@ namespace ReactOnlineActivity.Repositories
         {
             dbContext.Themes.Add(theme);
             dbContext.SaveChanges();
+        }
+
+        private IIncludableQueryable<Theme, List<Word>> ThemesIncludeAll()
+        {
+            return dbContext.Themes
+                .Include(t => t.Words);
         }
     }
 }

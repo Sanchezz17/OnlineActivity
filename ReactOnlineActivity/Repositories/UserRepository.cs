@@ -13,6 +13,9 @@ namespace ReactOnlineActivity.Repositories
             this.dbContext = dbContext;
         }
 
-        public ApplicationUser FindByName(string userName) => dbContext.Users.First(u => u.UserName == userName);
+        public ApplicationUser FindByName(string userName)
+        {
+            return dbContext.Users.First(u => u.UserName == userName);
+        }
     }
 }

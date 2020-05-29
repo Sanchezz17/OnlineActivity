@@ -96,7 +96,7 @@ namespace ReactOnlineActivity.Controllers
                     PhotoUrl = user.PhotoUrl,
                     Score = 0
                 };
-                roomRepository.InsertPlayerIntoRoom(roomId, player);
+                playerRepository.InsertPlayerIntoRoom(roomId, player);
             }
             else
             {
