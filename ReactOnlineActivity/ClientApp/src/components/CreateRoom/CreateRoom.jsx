@@ -22,8 +22,7 @@ class CreateRoom extends Component {
                 minPlayerCount: 2,
                 pointsToWin: 100,
                 isPrivateRoom: false,
-                isSelected: false,
-                themes: [],
+                themes: []
             },
             theme: {
                 name: '',
@@ -42,15 +41,7 @@ class CreateRoom extends Component {
         this.setState({
             loading: false,
             modalOpened: false,
-            settings: {
-                name: '',
-                description: '',
-                roundTime: 60,
-                maxPlayerCount: 5,
-                pointsToWin: 100,
-                isPrivateRoom: false,
-                themes: themes || []
-            },
+            settings: this.getUpdatedSettings(themes || []),
             theme: this.state.theme,
             wordToAdd: ''
         });
@@ -138,7 +129,6 @@ class CreateRoom extends Component {
                                 <div className='label'>Добавить слово</div>
                                 <Gapped>
                                     <Input
-                                        style = {{ ['margin-right'] : 10 }}
                                         placeholder='Введите слово'
                                         value={wordToAdd}
                                         onChange={(event) => this.setState({ wordToAdd: event.target.value })}
@@ -220,9 +210,7 @@ class CreateRoom extends Component {
                 name: '',
                 words: []
             },
-            settings: {
-                themes: themes
-            }
+            settings: this.getUpdatedSettings(themes)
         });
     }
 
@@ -357,6 +345,13 @@ class CreateRoom extends Component {
                 : <>{this.renderForm()}
                     {this.state.modalOpened && this.renderModal()}</>
         );
+    }
+
+    getUpdatedSettings(themes) {
+        return {
+            ...this.state.settings,
+            themes: themes
+        };
     }
 }
 
