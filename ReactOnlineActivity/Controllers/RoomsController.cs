@@ -17,17 +17,20 @@ namespace ReactOnlineActivity.Controllers
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly ThemeRepository themeRepository;
+        private readonly PlayerRepository playerRepository;
         private readonly IMapper mapper;
         private readonly Random random;
 
         public RoomsController(UserRepository userRepository,
             RoomRepository roomRepository,
             ThemeRepository themeRepository,
+            PlayerRepository playerRepository,
             IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.themeRepository = themeRepository;
+            this.playerRepository = playerRepository;
             this.mapper = mapper;
             this.random = new Random();
         }
