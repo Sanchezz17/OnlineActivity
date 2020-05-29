@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using ReactOnlineActivity.Hubs.Constants;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
+using ReactOnlineActivity.Services;
 
 namespace ReactOnlineActivity.Hubs
 {
@@ -31,11 +32,7 @@ namespace ReactOnlineActivity.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             if (!alreadyInRoom)
             {
-                var joinNotification = new Message
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    From = $"{userName} присоединился(лась) к игре"
-                };
+                var joinNotification = MessageFactory.CreateJoinNotification(userName);
                 await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, joinNotification);
             }
 
@@ -66,7 +63,7 @@ namespace ReactOnlineActivity.Hubs
         public async Task RequestWord(string roomId)
         {
             var room = roomRepository.FindById(int.Parse(roomId));
-            var gameEntity = mapper.Map<GameDto, GameEntity>(room.Game);
+            var gameEntity = mapper.Map<GameEntity>(room.Game);
             var hiddenWord = gameEntity.GetCurrentHiddenWord();
             await Clients.Caller.SendAsync(RoomHubEvents.NewHiddenWord, hiddenWord);
         }
@@ -106,13 +103,7 @@ namespace ReactOnlineActivity.Hubs
             gameEntity.CompleteRound();
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-            var giveUpNotification = new Message
-            {
-                Id = Guid.NewGuid().ToString(),
-                From = $"{playerName} сдался(лась)",
-                Text = "",
-                State = MessageState.NotRated
-            };
+            var giveUpNotification = MessageFactory.CreateGiveUpNotification(playerName);
             await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, giveUpNotification);
 
             OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
@@ -128,13 +119,7 @@ namespace ReactOnlineActivity.Hubs
             await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
                 .SendAsync(RoomHubEvents.Leave, userName);
 
-            var leaveNotification = new Message
-            {
-                Id = Guid.NewGuid().ToString(),
-                From = $"{userName} покинул(а) игру",
-                Text = "",
-                State = MessageState.NotRated
-            };
+            var leaveNotification = MessageFactory.CreateLeaveNotification(userName);
             await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, leaveNotification);
             playerRepository.DeletePlayerFromRoom(int.Parse(roomId), userName);
 
@@ -175,14 +160,7 @@ namespace ReactOnlineActivity.Hubs
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             if (playerGuessed)
             {
-                var guessedNotification = new Message
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    From = $"{message.From} угадал(а) слово",
-                    Text = "",
-                    State = MessageState.NotRated
-                };
-
+                var guessedNotification = MessageFactory.CreateGuessedNotification(message.From);
                 await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, guessedNotification);
 
                 OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
@@ -198,13 +176,7 @@ namespace ReactOnlineActivity.Hubs
         {
             if (currentRoundNumber < gameEntity.RoundNumber)
             {
-                var newRoundNotification = new Message
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    From = $"Раунд №{gameDto.RoundNumber + 1}",
-                    Text = "",
-                    State = MessageState.NotRated
-                };
+                var newRoundNotification = MessageFactory.CreateNewRoundNotification(gameDto.RoundNumber + 1);
                 await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, newRoundNotification);
             }
 
@@ -215,11 +187,8 @@ namespace ReactOnlineActivity.Hubs
                 gameEntity.Start();
                 gameDto = mapper.Map<GameDto>(gameEntity);
                 roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-                await Clients.Group(roomId).SendAsync(RoomHubEvents.GameOver, new Message
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    From = $"{winner.Name} победил(а)!"
-                });
+                var victoryNotification = MessageFactory.CreateVictoryNotification(winner.Name);
+                await Clients.Group(roomId).SendAsync(RoomHubEvents.GameOver, victoryNotification);
             }
             else
             {
