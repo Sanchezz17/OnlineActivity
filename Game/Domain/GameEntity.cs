@@ -46,7 +46,8 @@ namespace Game.Domain
 
         public string GetCurrentHiddenWord()
         {
-            return HiddenWords.First(w => w.SerialNumber == RoundNumber).Value;
+            var maxSerialNumber = HiddenWords.Max(w => w.SerialNumber);
+            return HiddenWords.First(w => w.SerialNumber == RoundNumber % (maxSerialNumber + 1)).Value;
         }
 
         public int GetSecondsLeft()
