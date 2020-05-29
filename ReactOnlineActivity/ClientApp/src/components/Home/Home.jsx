@@ -39,7 +39,7 @@ export class Home extends Component {
                     Удачной игры!
                 </h2>
                 <div className={styles.links}>
-                    <a className={`btn btn-success btn-lg ${styles.link}`} href="/api/play">
+                    <a className={`btn btn-success btn-lg ${styles.link}`} href="/api/rooms/any">
                         Начать игру
                     </a>
                     <a className={`btn btn-warning btn-lg ${styles.link}`} href="/create">

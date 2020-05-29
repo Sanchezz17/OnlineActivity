@@ -7,55 +7,74 @@ using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Repositories;
-using Line = Game.Domain.Line;
 
 namespace ReactOnlineActivity.Controllers
 {
     [ApiController]
-    [Route("api")]
-    public class GamesController : Controller
+    [Route("api/rooms")]
+    public class RoomsController : Controller
     {
         private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
-        private readonly PlayerRepository playerRepository;
         private readonly ThemeRepository themeRepository;
         private readonly IMapper mapper;
         private readonly Random random;
 
-        public GamesController(UserRepository userRepository,
+        public RoomsController(UserRepository userRepository,
             RoomRepository roomRepository,
-            PlayerRepository playerRepository,
             ThemeRepository themeRepository,
             IMapper mapper)
         {
             this.userRepository = userRepository;
             this.roomRepository = roomRepository;
-            this.playerRepository = playerRepository;
             this.themeRepository = themeRepository;
             this.mapper = mapper;
             this.random = new Random();
         }
 
-        [HttpGet("play")]
+        [HttpGet("any")]
         public RedirectResult Play()
         {
             var suitableRoom = roomRepository.FindSuitable() ?? CreateRoom();
             return Redirect($"/rooms/{suitableRoom.Id}");
         }
 
-        [HttpGet("players")]
-        public IEnumerable<Player> GetPlayers([FromQuery] int roomId)
+        [HttpPost("")]
+        public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
         {
-            return playerRepository.SelectAllFromRoom(roomId);
+            var themes = roomSettings.ThemesIds.Count == 0
+                ? themeRepository.GetDefaultThemes()
+                : roomSettings.ThemesIds.Select(id => themeRepository.FindById(id)).ToList();
+
+            var settings = mapper.Map<RoomSettings>(roomSettings);
+            var words = GetMixedWordsFromThemes(themes);
+            var newRoom = new Room
+            {
+                Game = CreateGame(words, settings),
+                Settings = settings
+            };
+
+            roomRepository.Insert(newRoom);
+
+            foreach (var theme in themes)
+            {
+                var themeRoomSettings = new ThemeRoomSettings
+                    {RoomSettingsId = newRoom.Settings.Id, ThemeId = theme.Id};
+                settings.ThemeRoomSettings.Add(themeRoomSettings);
+                theme.ThemeRoomSettings.Add(themeRoomSettings);
+            }
+
+            return newRoom.Id.ToString();
         }
 
-        [HttpGet("rooms/{roomId}")]
+
+        [HttpGet("{roomId}")]
         public Room GetRoom([FromRoute] int roomId)
         {
             return roomRepository.FindById(roomId);
         }
 
-        [HttpGet("rooms/{roomId}/join")]
+        [HttpGet("{roomId}/join")]
         public JoinRoomDto JoinRoom([FromRoute] int roomId, [FromQuery] string userName)
         {
             var room = roomRepository.FindById(roomId);
@@ -87,64 +106,6 @@ namespace ReactOnlineActivity.Controllers
             joinRoomDto.Player = player;
 
             return joinRoomDto;
-        }
-
-        [HttpPost("rooms")]
-        public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
-        {
-            var themes = roomSettings.ThemesIds.Count == 0
-                ? themeRepository.GetDefaultThemes()
-                : roomSettings.ThemesIds.Select(id => themeRepository.FindById(id)).ToList();
-
-            var settings = mapper.Map<RoomSettings>(roomSettings);
-            var words = GetMixedWordsFromThemes(themes);
-            var newRoom = new Room
-            {
-                Game = CreateGame(words, settings),
-                Settings = settings
-            };
-
-            roomRepository.Insert(newRoom);
-
-            foreach (var theme in themes)
-            {
-                var themeRoomSettings = new ThemeRoomSettings
-                    {RoomSettingsId = newRoom.Settings.Id, ThemeId = theme.Id};
-                settings.ThemeRoomSettings.Add(themeRoomSettings);
-                theme.ThemeRoomSettings.Add(themeRoomSettings);
-            }
-
-            return newRoom.Id.ToString();
-        }
-
-        [HttpGet("fields/{roomId}")]
-        public LineDto[] GetField([FromRoute] int roomId)
-        {
-            var room = roomRepository.FindById(roomId);
-            var canvas = room.Game.Canvas;
-            return canvas
-                .Select(line => new LineDto
-                {
-                    Coordinates = line.Value
-                        .OrderBy(c => c.SerialNumber)
-                        .Select(c => c.Value)
-                        .ToArray(),
-                    Color = line.Color
-                })
-                .ToArray();
-        }
-
-        private List<Word> GetMixedWordsFromThemes(List<Theme> themes)
-        {
-            var words = themes
-                .SelectMany(t => t.Words)
-                .OrderBy(x => random.Next())
-                .ToList();
-
-            for (var i = 0; i < words.Count; i++)
-                words[i].SerialNumber = i;
-
-            return words;
         }
 
         private Room CreateRoom()
@@ -181,6 +142,19 @@ namespace ReactOnlineActivity.Controllers
                 MaxRoundTimeInSeconds = settings.RoundTime,
                 PointsToWin = settings.PointsToWin
             };
+        }
+
+        private List<Word> GetMixedWordsFromThemes(List<Theme> themes)
+        {
+            var words = themes
+                .SelectMany(t => t.Words)
+                .OrderBy(x => random.Next())
+                .ToList();
+
+            for (var i = 0; i < words.Count; i++)
+                words[i].SerialNumber = i;
+
+            return words;
         }
     }
 }
