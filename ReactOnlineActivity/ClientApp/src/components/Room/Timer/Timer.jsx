@@ -16,18 +16,16 @@ export default class Timer extends Component {
     }
 
     async componentDidMount() {
-        this.props.hubConnection.on(RoomHubEvents.TIME_LEFT, (seconds) => {
+        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName, seconds) => {
             this.setState({
                 seconds: seconds + 1,
                 time: this.secondsToTime(seconds + 1)
             });
-        });
-        this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayer) => {
-            if (explainingPlayer !== null) {
-                this.startTimer()
+            if (explainingPlayerName !== null) {
+                this.startTimer();
             }
         });
-        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_TIME, this.props.roomId);
+        await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId);
     }
 
     startTimer = () => {
@@ -38,9 +36,9 @@ export default class Timer extends Component {
 
     secondsToTime = (totalSeconds) => {
         const divisorForMinutes = totalSeconds % (60 * 60);
-        const minutes = Math.floor(divisorForMinutes / 60);
+        const minutes = Math.max(Math.floor(divisorForMinutes / 60), 0);
         const divisorForSeconds = divisorForMinutes % 60;
-        const seconds = Math.ceil(divisorForSeconds);
+        const seconds = Math.max(Math.ceil(divisorForSeconds), 0);
 
         return {
             minutesStr: minutes.toString().padStart(2, '0'),

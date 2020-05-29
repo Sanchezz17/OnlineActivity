@@ -7,6 +7,8 @@ import styles from './field.module.css';
 import Timer from '../Timer/Timer';
 
 export default class Field extends Component {
+    isDrawing = false;
+    stageRef = null;
     defaultState = {
         lines: [],
         isLoadingField: true,
@@ -15,8 +17,7 @@ export default class Field extends Component {
         hiddenWord: null,
         drawingColor: '#000',
         isPalletShow: false,
-        isDrawing: false,
-        stageRef: null
+        explainingPlayerName: null
     };
     
     constructor(props) {
@@ -44,7 +45,7 @@ export default class Field extends Component {
             if (isActiveUser) {
                 this.props.hubConnection.invoke(RoomHubEvents.REQUEST_WORD, this.props.roomId);
             }
-            this.setState({ isActiveUser });
+            this.setState({ isActiveUser, explainingPlayerName });
             this.fetchLines();
         });
 
@@ -56,9 +57,9 @@ export default class Field extends Component {
 
             setTimeout(async () => {
                 this.setState({ ...this.defaultState });
-
+                
                 await this.fetchLines();
-            }, 5000);
+            }, 10000);
         });
 
         await this.fetchLines();
@@ -85,7 +86,7 @@ export default class Field extends Component {
     };
 
     handleMouseDown = () => {
-        this.state.isDrawing = true;
+        this.isDrawing = true;
         this.setState({
             lines: [
                 ...this.state.lines,
@@ -95,15 +96,15 @@ export default class Field extends Component {
     };
 
     handleMouseUp = () => {
-        this.state.isDrawing = false;
+        this.isDrawing = false;
         this.addLine();
     };
 
     handleMouseMove = () => {
-        if (!this.state.isDrawing) {
+        if (!this.isDrawing) {
             return;
         }
-        const stage = this.state.stageRef.getStage();
+        const stage = this.stageRef.getStage();
         const point = stage.getPointerPosition();
         const { lines } = this.state;
         let lastLine = lines[lines.length - 1] || this.getNewEmptyLine();
@@ -138,9 +139,9 @@ export default class Field extends Component {
 
         return (
             <section className={styles.field} id='field'>
-                <span className={`btn btn-warning btn-sm ${styles.timerContainer}`}>
+                {this.state.explainingPlayerName && <span className={`btn btn-warning btn-sm ${styles.timerContainer}`}>
                     Оставшееся время: <Timer roomId={this.props.roomId} hubConnection={this.props.hubConnection}/>
-                </span>
+                </span>}
                 {this.state.isActiveUser ?
                     <>
                         <section className={styles.drawerTools}>
@@ -185,7 +186,7 @@ export default class Field extends Component {
                         onContentMouseup={this.state.isActiveUser ? this.handleMouseUp : () => {
                         }}
                         ref={node => {
-                            this.state.stageRef = node;
+                            this.stageRef = node;
                         }}>
                         <Layer>
                             {this.state.lines.map((line, i) => (

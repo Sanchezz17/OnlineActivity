@@ -51,8 +51,8 @@ namespace ReactOnlineActivity.Hubs
 
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
 
-                await Clients.Group(roomId).SendAsync("round", newGameDto.ExplainingPlayerName);
-                await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
+                await Clients.Group(roomId).SendAsync("round", 
+                    room.Game.ExplainingPlayerName, gameEntity.GetSecondsLeft());
             }
         }
 
@@ -73,14 +73,9 @@ namespace ReactOnlineActivity.Hubs
         public async Task RequestRound(string roomId)
         {
             var room = roomRepository.FindById(int.Parse(roomId));
-            await Clients.Group(roomId).SendAsync("round", room.Game.ExplainingPlayerName);
-        }
-
-        public async Task RequestTime(string roomId)
-        {
-            var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
-            await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
+            await Clients.Group(roomId).SendAsync("round", 
+                room.Game.ExplainingPlayerName, gameEntity.GetSecondsLeft());
         }
 
         public async Task NewLine(string roomId, LineDto line)
@@ -153,7 +148,8 @@ namespace ReactOnlineActivity.Hubs
                 gameEntity.Canvas = new List<Line>();
                 var newGameDto = mapper.Map<GameDto>(gameEntity);
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
-                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("round", 
+                    gameEntity.ExplainingPlayerName, gameEntity.GetSecondsLeft());
             }
 
             if (playersCount >= room.Settings.MinPlayerCount && gameEntity.GameState == GameState.Started
@@ -162,7 +158,8 @@ namespace ReactOnlineActivity.Hubs
                 gameEntity.StartNewRound();
                 var newGameDto = mapper.Map<GameDto>(gameEntity);
                 roomRepository.UpdateGame(int.Parse(roomId), newGameDto);
-                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("round",
+                    gameEntity.ExplainingPlayerName, gameEntity.GetSecondsLeft());
             }
         }
 
@@ -225,8 +222,8 @@ namespace ReactOnlineActivity.Hubs
             }
             else
             {
-                await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
-                await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+                await Clients.Group(roomId).SendAsync("round", 
+                    gameEntity.ExplainingPlayerName, gameEntity.GetSecondsLeft());
             }
         }
 
@@ -242,8 +239,8 @@ namespace ReactOnlineActivity.Hubs
             gameEntity.UpdateLevel();
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
-            await Clients.Group(roomId).SendAsync("timeLeft", gameEntity.GetSecondsLeft());
-            await Clients.Group(roomId).SendAsync("round", gameEntity.ExplainingPlayerName);
+            await Clients.Group(roomId).SendAsync("round", 
+                gameEntity.ExplainingPlayerName, gameEntity.GetSecondsLeft());
         }
     }
 }

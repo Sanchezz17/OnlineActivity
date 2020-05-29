@@ -13,8 +13,6 @@
     NEW_HIDDEN_WORD: 'newHiddenWord',
     MESSAGE_RATED: 'messageRated',
     GAME_OVER: 'gameOver',
-    TIME_LEFT: 'timeLeft',
-    REQUEST_TIME: 'requestTime',
     TIME_OVER: 'timeOver',
     GIVE_UP: 'giveUp'
 };
