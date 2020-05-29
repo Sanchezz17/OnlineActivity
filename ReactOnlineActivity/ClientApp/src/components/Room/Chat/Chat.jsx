@@ -35,7 +35,7 @@ export default class Chat extends Component {
                     isActiveUser: false
                 });
                 
-            }, 2000)
+            }, 10000)
         });
     }
     
@@ -50,6 +50,8 @@ export default class Chat extends Component {
 
     onPostMessage = (event) => {
         event.preventDefault();
+        if (this.state.currentMessageText === '')
+            return;
         this.props.hubConnection.invoke(
             RoomHubEvents.SEND, 
             this.props.roomId, 

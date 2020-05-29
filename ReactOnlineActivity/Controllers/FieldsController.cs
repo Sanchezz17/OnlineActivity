@@ -20,7 +20,7 @@ namespace ReactOnlineActivity.Controllers
         [HttpGet("{roomId}")]
         public LineDto[] GetField([FromRoute] int roomId)
         {
-            var room = roomRepository.FindById(roomId);
+            var room = roomRepository.FindById(roomId, true);
             var canvas = room.Game.Canvas;
             return canvas
                 .Select(line => new LineDto

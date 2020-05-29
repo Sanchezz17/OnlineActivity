@@ -80,12 +80,13 @@ namespace ReactOnlineActivity.Hubs
         {
             if (line == null)
                 return;
+            Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
+                .SendAsync(RoomHubEvents.NewLine, line);
             var newLine = new Line {Value = new List<Coordinate>(), Color = line.Color};
             for (var i = 0; i < line.Coordinates.Length; i++)
                 newLine.Value.Add(new Coordinate {Value = line.Coordinates[i], SerialNumber = i});
             roomRepository.AddLineToFieldIntoRoom(int.Parse(roomId), newLine);
-            await Clients.GroupExcept(roomId, new[] {Context.ConnectionId})
-                .SendAsync(RoomHubEvents.NewLine, line);
+            
         }
 
         public async Task ClearField(string roomId)

@@ -17,10 +17,18 @@ namespace ReactOnlineActivity.Repositories
             this.dbContext = dbContext;
         }
 
-        public Room FindSuitable() => RoomsIncludeAll().FirstOrDefault(room =>
-            !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
+        public Room FindSuitable()
+        {
+            return RoomsIncludeMainProperties().FirstOrDefault(room =>
+                !room.Settings.IsPrivateRoom && room.Game.Players.Count < room.Settings.MaxPlayerCount);
+        }
 
-        public Room FindById(int roomId) => RoomsIncludeAll().Single(r => r.Id == roomId);
+        public Room FindById(int roomId, bool withCoordinates = false)
+        {
+            return withCoordinates
+                ? RoomsIncludeMainProperties().ThenInclude(l => l.Value).Single(r => r.Id == roomId)
+                : RoomsIncludeMainProperties().Single(r => r.Id == roomId);
+        }
 
         public void Insert(Room room)
         {
@@ -55,17 +63,16 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        private IIncludableQueryable<Room, List<ThemeRoomSettings>> RoomsIncludeAll()
+        private IIncludableQueryable<Room, List<Line>> RoomsIncludeMainProperties()
         {
             return dbContext.Rooms
                 .Include(r => r.Game)
                 .Include(r => r.Game.Players)
                 .Include(r => r.Settings)
                 .Include(r => r.Game.HiddenWords)
-                .Include(r => r.Game.Canvas)
-                .ThenInclude(l => l.Value)
                 .Include(r => r.Settings)
-                .Include(r => r.Settings.ThemeRoomSettings);
+                .Include(r => r.Settings.ThemeRoomSettings)
+                .Include(r => r.Game.Canvas);
         }
     }
 }
