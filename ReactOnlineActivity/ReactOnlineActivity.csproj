@@ -45,10 +45,10 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <Content Include="ClientApp\src\components\api-authorization\LoginMenu\loginMenu.module.css" />
-    <Content Include="ClientApp\src\components\Room\Chat\Chat.jsx" />
-    <Content Include="ClientApp\src\components\Room\Field\Field.jsx" />
-    <Content Include="ClientApp\src\components\Room\Leaderboard\Leaderboard.jsx" />
-    <Content Include="ClientApp\src\components\Room\Timer\Timer.jsx" />
+    <Content Include="ClientApp\src\components\Room\Chat\index.jsx" />
+    <Content Include="ClientApp\src\components\Room\Field\index.jsx" />
+    <Content Include="ClientApp\src\components\Room\Leaderboard\index.jsx" />
+    <Content Include="ClientApp\src\components\Room\Timer\index.jsx" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <Content Update="Areas\Identity\Pages\Account\Manage\Index.cshtml">

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import authorizeFetch from '../../../utils/authorizeFetch';
-import Palette from '../Palette/Palette';
+import Palette from '../Palette';
 import { RoomHubEvents } from '../RoomConstants';
 import styles from './field.module.css';
-import Timer from '../Timer/Timer';
+import Timer from '../Timer';
 
 export default class Field extends Component {
     isDrawing = false;

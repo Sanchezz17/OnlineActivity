@@ -3,9 +3,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { HubConnectionState } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
 import authorizeFetch from '../../utils/authorizeFetch';
-import Chat from './Chat/Chat';
-import Field from './Field/Field';
-import Leaderboard from './Leaderboard/Leaderboard';
+import Chat from './Chat';
+import Field from './Field';
+import Leaderboard from './Leaderboard';
 import { RoomHubEvents } from './RoomConstants';
 import styles from './room.module.css';
 
