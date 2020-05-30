@@ -1,4 +1,4 @@
-FROM node:13 AS buildNode
+FROM node:13-alpine AS buildNode
 WORKDIR /ClientApp
 COPY ReactOnlineActivity/ClientApp/package.json ./
 COPY ReactOnlineActivity/ClientApp/package-lock.json ./
