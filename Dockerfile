@@ -4,7 +4,7 @@ COPY ReactOnlineActivity/ClientApp/package.json ./
 COPY ReactOnlineActivity/ClientApp/package-lock.json ./
 RUN npm install
 COPY ReactOnlineActivity/ClientApp/. ./
-RUN npm run build
+RUN npm run build --prod
 
 # https://hub.docker.com/_/microsoft-dotnet-core
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS buildNet
