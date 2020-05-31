@@ -14,23 +14,18 @@ namespace ReactOnlineActivity.Controllers
     [Route("api/rooms")]
     public class RoomsController : Controller
     {
-        private readonly UserRepository userRepository;
         private readonly RoomRepository roomRepository;
         private readonly ThemeRepository themeRepository;
-        private readonly PlayerRepository playerRepository;
         private readonly IMapper mapper;
         private readonly Random random;
 
-        public RoomsController(UserRepository userRepository,
+        public RoomsController(
             RoomRepository roomRepository,
             ThemeRepository themeRepository,
-            PlayerRepository playerRepository,
             IMapper mapper)
         {
-            this.userRepository = userRepository;
             this.roomRepository = roomRepository;
             this.themeRepository = themeRepository;
-            this.playerRepository = playerRepository;
             this.mapper = mapper;
             this.random = new Random();
         }
@@ -70,45 +65,10 @@ namespace ReactOnlineActivity.Controllers
             return newRoom.Id.ToString();
         }
 
-
         [HttpGet("{roomId}")]
         public Room GetRoom([FromRoute] int roomId)
         {
             return roomRepository.FindById(roomId);
-        }
-
-        [HttpPost("{roomId}/players")]
-        public JoinRoomDto JoinRoom([FromRoute] int roomId, [FromQuery] string userName)
-        {
-            var room = roomRepository.FindById(roomId);
-
-            var user = userRepository.FindByName(userName);
-
-            var player = room
-                .Game
-                .Players
-                .FirstOrDefault(p => p.Name == user.UserName);
-
-            var joinRoomDto = new JoinRoomDto();
-
-            if (player == null)
-            {
-                player = new Player
-                {
-                    Name = user.UserName,
-                    PhotoUrl = user.PhotoUrl,
-                    Score = 0
-                };
-                playerRepository.InsertPlayerIntoRoom(roomId, player);
-            }
-            else
-            {
-                joinRoomDto.AlreadyInRoom = true;
-            }
-
-            joinRoomDto.Player = player;
-
-            return joinRoomDto;
         }
 
         private Room CreateRoom()

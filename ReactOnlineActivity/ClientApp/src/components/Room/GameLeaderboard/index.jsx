@@ -47,7 +47,7 @@ export default class GameLeaderboard extends Component {
     }
 
     fetchPlayers = async () => {
-        const players = await authorizeFetch(`/api/players?roomId=${this.props.roomId}`);
+        const players = await authorizeFetch(`/api/rooms/${this.props.roomId}/players`);
         this.setState({
             loadingPlayers: false,
             players
