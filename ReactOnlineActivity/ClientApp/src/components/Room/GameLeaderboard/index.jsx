@@ -39,7 +39,7 @@ export default class GameLeaderboard extends Component {
             setTimeout(async () => {
                 await this.fetchPlayers();
                 await this.props.hubConnection.invoke(RoomHubEvents.REQUEST_ROUND, this.props.roomId);
-            }, 2000);
+            }, 10000);
         });
         
         await this.fetchPlayers();
@@ -47,7 +47,7 @@ export default class GameLeaderboard extends Component {
     }
 
     fetchPlayers = async () => {
-        const players = await authorizeFetch(`/api/players?roomId=${this.props.roomId}`);
+        const players = await authorizeFetch(`/api/rooms/${this.props.roomId}/players`);
         this.setState({
             loadingPlayers: false,
             players
@@ -56,6 +56,7 @@ export default class GameLeaderboard extends Component {
 
     renderPlayers = () => {
         return this.state.players
+            .sort(p => -p.score)
             .map(player =>
                 <div className={styles.player} key={player.name}>
                     <div>
@@ -68,8 +69,7 @@ export default class GameLeaderboard extends Component {
                     </div>
                     <span className={styles.player__score}>{player.score}</span>
                 </div>
-            )
-            .sort(p => -p.score);
+            );
     }
 
     render() {

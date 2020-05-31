@@ -35,7 +35,7 @@ export default class Chat extends Component {
                     isActiveUser: false
                 });
                 
-            }, 10000)
+            }, 10000);
         });
     }
     
