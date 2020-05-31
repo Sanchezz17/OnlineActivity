@@ -55,5 +55,12 @@ namespace ReactOnlineActivity.Services
                 Id = Guid.NewGuid().ToString(),
                 From = $"{userName} победил(а)!"
             };
+
+        public static Message CreateHiddenWordNotification(string hiddenWord) =>
+            new Message
+            {
+                Id = Guid.NewGuid().ToString(),
+                From = $"Правильный ответ: {hiddenWord}"
+            };
     }
 }

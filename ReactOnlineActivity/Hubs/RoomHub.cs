@@ -101,13 +101,14 @@ namespace ReactOnlineActivity.Hubs
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
+            var currentHiddenWord = gameEntity.GetCurrentHiddenWord();
             gameEntity.CompleteRound();
             var gameDto = mapper.Map<GameDto>(gameEntity);
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
             var giveUpNotification = MessageFactory.CreateGiveUpNotification(playerName);
             await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, giveUpNotification);
 
-            OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
+            OnNextStep(roomId, currentRoundNumber, currentHiddenWord, gameDto, gameEntity);
         }
 
         public async Task Leave(string roomId, string userName)
@@ -155,6 +156,7 @@ namespace ReactOnlineActivity.Hubs
             var room = roomRepository.FindById(int.Parse(roomId));
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             var currentRoundNumber = gameEntity.RoundNumber;
+            var currentHiddenWord = gameEntity.GetCurrentHiddenWord();
             var player = gameEntity.Players.First(p => p.Name == message.From);
             var playerGuessed = gameEntity.MakeStep(player, message.Text, room.Settings.MaxPlayerCount);
             var gameDto = mapper.Map<GameDto>(gameEntity);
@@ -164,7 +166,7 @@ namespace ReactOnlineActivity.Hubs
                 var guessedNotification = MessageFactory.CreateGuessedNotification(message.From);
                 await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, guessedNotification);
 
-                OnNextStep(roomId, currentRoundNumber, gameDto, gameEntity);
+                OnNextStep(roomId, currentRoundNumber, currentHiddenWord, gameDto, gameEntity);
             }
             else
             {
@@ -173,10 +175,17 @@ namespace ReactOnlineActivity.Hubs
             }
         }
 
-        private async Task OnNextStep(string roomId, int currentRoundNumber, GameDto gameDto, GameEntity gameEntity)
+        private async Task OnNextStep(
+            string roomId,
+            int currentRoundNumber,
+            string currentHiddenWord, 
+            GameDto gameDto,
+            GameEntity gameEntity)
         {
             if (currentRoundNumber < gameEntity.RoundNumber)
             {
+                var hiddenWordNotification = MessageFactory.CreateHiddenWordNotification(currentHiddenWord);
+                await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, hiddenWordNotification);
                 var newRoundNotification = MessageFactory.CreateNewRoundNotification(gameDto.RoundNumber + 1);
                 await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, newRoundNotification);
             }
