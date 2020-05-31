@@ -5,7 +5,7 @@ import * as signalR from '@aspnet/signalr';
 import authorizeFetch from '../../utils/authorizeFetch';
 import Chat from './Chat';
 import Field from './Field';
-import Leaderboard from './Leaderboard';
+import Leaderboard from './GameLeaderboard';
 import { RoomHubEvents } from './RoomConstants';
 import styles from './room.module.css';
 
@@ -25,7 +25,12 @@ export default class Room extends Component {
     async componentDidMount() {
         await this.hubConnection.start();
         const { user } = this.props;
-        const joinRoomDto = await authorizeFetch(`/api/rooms/${this.roomId}/join?userName=${user.name}`);
+        const joinRoomDto = await authorizeFetch(`/api/rooms/${this.roomId}/players?userName=${user.name}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        });
         await this.hubConnection.invoke(RoomHubEvents.JOIN_ROOM, this.roomId, user.name, joinRoomDto.alreadyInRoom);
         if (!joinRoomDto.alreadyInRoom) {
             await this.hubConnection.invoke(RoomHubEvents.NEW_PLAYER, this.roomId, joinRoomDto.player);
@@ -36,12 +41,12 @@ export default class Room extends Component {
 
         window.addEventListener('beforeunload', this.beforeUnload);
     }
-    
+
     beforeUnload = async () => {
         const { user } = this.props;
         if (this.hubConnection.state === HubConnectionState.Connected)
             await this.hubConnection.invoke(RoomHubEvents.LEAVE_ROOM, this.roomId, user.name);
-    }
+    };
 
     async componentWillUnmount() {
         await this.beforeUnload();
@@ -55,7 +60,7 @@ export default class Room extends Component {
                 ? <div className={styles.loading}>
                     <p>Загрузка игры...</p>
                 </div>
-                :  <div>
+                : <div>
                     <div className={styles.nameContainer}>
                         <span className={styles.name}>{this.room.settings.name}</span>
                         <CopyToClipboard text={`${window.location.host}/rooms/${this.roomId}`}>

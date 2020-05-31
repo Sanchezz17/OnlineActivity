@@ -10,6 +10,7 @@ import { ApplicationPaths } from '../api-authorization/ApiAuthorizationConstants
 import { Home } from '../Home';
 import { Layout } from '../Layout';
 import './app.module.css';
+import Leaderboard from '../Leaderboard';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -21,6 +22,7 @@ export default class App extends Component {
                     <AuthorizeRoute exact path='/' component={Home}/>
                     <AuthorizeRoute path='/rooms/:roomId' component={Room}/>
                     <AuthorizeRoute path='/create' component={CreateRoom}/>
+                    <AuthorizeRoute path='/leaderboard' component={Leaderboard}/>
                     <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes}/>
                     <Route path="*" component={NotFound}/>
                 </Switch>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import authorizeFetch from '../../../utils/authorizeFetch';
 import { RoomHubEvents } from '../RoomConstants';
-import styles from './leaderboard.module.css';
+import styles from './gameLeaderboard.module.css';
 
-export default class Leaderboard extends Component {
+export default class GameLeaderboard extends Component {
     constructor(props) {
         super(props);
         this.state = {

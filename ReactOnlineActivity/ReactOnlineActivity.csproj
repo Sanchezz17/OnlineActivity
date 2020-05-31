@@ -47,7 +47,7 @@
     <Content Include="ClientApp\src\components\api-authorization\LoginMenu\loginMenu.module.css" />
     <Content Include="ClientApp\src\components\Room\Chat\index.jsx" />
     <Content Include="ClientApp\src\components\Room\Field\index.jsx" />
-    <Content Include="ClientApp\src\components\Room\Leaderboard\index.jsx" />
+    <Content Include="ClientApp\src\components\Room\GameLeaderboard\index.jsx" />
     <Content Include="ClientApp\src\components\Room\Timer\index.jsx" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />

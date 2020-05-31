@@ -77,7 +77,7 @@ namespace ReactOnlineActivity.Controllers
             return roomRepository.FindById(roomId);
         }
 
-        [HttpGet("{roomId}/join")]
+        [HttpPost("{roomId}/players")]
         public JoinRoomDto JoinRoom([FromRoute] int roomId, [FromQuery] string userName)
         {
             var room = roomRepository.FindById(roomId);
