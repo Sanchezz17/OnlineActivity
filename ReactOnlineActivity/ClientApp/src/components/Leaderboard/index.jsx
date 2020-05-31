@@ -11,7 +11,7 @@ export default class Leaderboard extends Component {
         this.state = {
             users: [],
             loadingUsers: true
-        }
+        };
     }
 
     componentDidMount() {
