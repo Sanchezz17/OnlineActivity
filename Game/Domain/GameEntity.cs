@@ -42,6 +42,8 @@ namespace Game.Domain
             Canvas = new List<Line>();
             RoundNumber++;
             ExplainingPlayerName = Players[RoundNumber % Players.Count].Name;
+            var explainingPlayer = Players.First(p => p.Name == ExplainingPlayerName);
+            explainingPlayer.NumberOfDraws++;
         }
 
         public string GetCurrentHiddenWord()
