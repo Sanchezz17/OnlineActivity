@@ -16,14 +16,17 @@ namespace ReactOnlineActivity.Hubs
     {
         private readonly RoomRepository roomRepository;
         private readonly PlayerRepository playerRepository;
+        private readonly UserRepository userRepository;
         private readonly IMapper mapper;
 
         public RoomHub(RoomRepository roomRepository,
             PlayerRepository playerRepository,
+            UserRepository userRepository,
             IMapper mapper)
         {
             this.roomRepository = roomRepository;
             this.playerRepository = playerRepository;
+            this.userRepository = userRepository;
             this.mapper = mapper;
         }
 
@@ -194,6 +197,10 @@ namespace ReactOnlineActivity.Hubs
             {
                 var pointsWinner = gameEntity.Players.Max(p => p.Score);
                 var winner = gameEntity.Players.First(p => p.Score == pointsWinner);
+                userRepository.IncreaseWinsCount(winner);
+                foreach (var player in gameEntity.Players)
+                    userRepository.UpdateStatistics(player);
+
                 gameEntity.Start();
                 gameDto = mapper.Map<GameDto>(gameEntity);
                 roomRepository.UpdateGame(int.Parse(roomId), gameDto);

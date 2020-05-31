@@ -6,5 +6,7 @@
         public string Name { get; set; }
         public int Score { get; set; }
         public string PhotoUrl { get; set; }
+        
+        public int NumberOfDraws { get; set; }
     }
 }

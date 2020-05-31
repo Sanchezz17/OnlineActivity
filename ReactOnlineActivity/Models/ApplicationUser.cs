@@ -6,5 +6,7 @@ namespace ReactOnlineActivity.Models
     {
         [PersonalData]
         public string PhotoUrl { get; set; }
+        [PersonalData]
+        public UserStatistics Statistics { get; set; }
     }
 }
