@@ -7,8 +7,8 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using ReactOnlineActivity.Models;
 using ReactOnlineActivity.Services.Constants;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ReactOnlineActivity.Services
 {
@@ -34,8 +34,11 @@ namespace ReactOnlineActivity.Services
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
             // Add custom claims in token here based on user properties or any other source
-            var jsonStatistics = JsonSerializer.Serialize(user.Statistics);
             claims.Add(new Claim(CustomClaimTypes.PhotoUrl, user.PhotoUrl ?? string.Empty));
+            
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            var jsonStatistics = JsonConvert.SerializeObject(user.Statistics, serializerSettings);
             claims.Add(new Claim(CustomClaimTypes.Statistics, jsonStatistics ?? string.Empty));
             context.IssuedClaims = claims;
         }
