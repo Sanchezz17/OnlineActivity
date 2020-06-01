@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Query;
 using ReactOnlineActivity.Data;
 using ReactOnlineActivity.Models;
 
@@ -12,14 +14,6 @@ namespace ReactOnlineActivity.Repositories
     public class UserRepository
     {
         private readonly ApplicationDbContext dbContext;
-        private static readonly Dictionary<string, Func<UserStatistics, int>> getStatisticsByName 
-            = new Dictionary<string, Func<UserStatistics, int>>
-            {
-                ["totalScore"] = statistics => statistics.TotalScore,
-                ["numberOfGamesPlayed"] = statistics => statistics.NumberOfGamesPlayed,
-                ["numberOfDraws"] = statistics => statistics.NumberOfDraws,
-                ["winsCount"] = statistics => statistics.WinsCount
-            };
 
         public UserRepository(ApplicationDbContext dbContext)
         {
@@ -28,8 +22,7 @@ namespace ReactOnlineActivity.Repositories
 
         public ApplicationUser FindByName(string userName)
         {
-            return dbContext.Users
-                .Include(u => u.Statistics)
+            return UsersIncludeMainProperties()
                 .First(u => u.UserName == userName);
         }
 
@@ -49,19 +42,11 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public List<ApplicationUser> SelectTopByStatistics(string statisticSelector, int limit)
+        public List<ApplicationUser> SelectTopByStatistics(string desiredStatistics, int limit)
         {
-            var query = dbContext.Users
-                .Include(u => u.Statistics)
-                .OrderByDescending(u => u);
             try
             {
-                if (limit == -1)
-                {
-                    return SortTop(query, statisticSelector)
-                        .ToList();
-                }
-                return SortTop(query, statisticSelector)
+                return SortTop(UsersIncludeMainProperties(), desiredStatistics)
                     .Take(limit)
                     .ToList();
             }
@@ -71,9 +56,21 @@ namespace ReactOnlineActivity.Repositories
             }
         }
 
-        private static IOrderedQueryable<ApplicationUser> SortTop(IQueryable<ApplicationUser> query, string statisticSelector)
+        public int GetUserPositionInTop(string desiredStatistics, string userName)
         {
-            return statisticSelector switch
+            var users = SortTop(UsersIncludeMainProperties(), desiredStatistics).ToArray();
+            for (var i = 0; i < users.Length; i++)
+            {
+                if (users[i].UserName == userName)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private static IOrderedQueryable<ApplicationUser> SortTop(IQueryable<ApplicationUser> query, string desiredStatistics)
+        {
+            return desiredStatistics switch
             {
                 "totalScore" => query.OrderByDescending(u => u.Statistics.TotalScore),
                 "numberOfGamesPlayed" => query.OrderByDescending(u => u.Statistics.NumberOfGamesPlayed),
@@ -81,6 +78,12 @@ namespace ReactOnlineActivity.Repositories
                 "winsCount" => query.OrderByDescending(u => u.Statistics.WinsCount),
                 _ => throw new NotImplementedException()
             };
+        }
+
+        public IIncludableQueryable<ApplicationUser, UserStatistics> UsersIncludeMainProperties()
+        {
+            return dbContext.Users
+                .Include(u => u.Statistics);
         }
     }
 }

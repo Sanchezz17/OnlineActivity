@@ -3,82 +3,99 @@ import authorizeFetch from '../../utils/authorizeFetch';
 import styles from './leaderboard.module.css';
 import { UserStatistics } from './LeaderboardConstants';
 
-const DEFAULT_LIMIT = 1;
+const DEFAULT_LIMIT = 5;
 
 export default class Leaderboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
             bestUsers: [],
+            currentUser: null,
+            currentUserInBestUsers: false,
+            currentUserPosition: -1,
             loadingUsers: true,
-            desiredStatistics: UserStatistics.TOTAL_SCORE,
-            currentUserIndex: -1
+            desiredStatistics: UserStatistics.TOTAL_SCORE
         };
     }
 
-    componentDidMount() {
-        const { user } = this.props;
-        this.getIndexOfCurrentUser(user);        
-        this.fetchUsers(UserStatistics.TOTAL_SCORE);
-
+    async componentDidMount() {
+        await this.fetchCurrentUser();
+        await this.fetchCurrentUserPosition();
+        this.fetchUsers();
     }
 
     onChangeSelectedSort = (event) => {
         const { value } = event.target;
-        this.fetchUsers(value);
+        this.setState({
+            desiredStatistics: value
+        });
+        this.fetchCurrentUserPosition();
+        this.fetchUsers();
     };
 
-    fetchUsers = async (desiredStatistics, limit = DEFAULT_LIMIT) => {
-        const bestUsers = await authorizeFetch(`/api/users?desiredStatistics=${desiredStatistics}&limit=${limit}`);
+    fetchUsers = async (limit = DEFAULT_LIMIT) => {
+        const bestUsers = await authorizeFetch(`/api/users?desiredStatistics=${this.state.desiredStatistics}&limit=${limit}`);
         this.setState({
             loadingUsers: false,
             bestUsers,
-            desiredStatistics
+            currentUserInBestUsers: bestUsers.some(u => u.userName === this.state.currentUser.userName)
+        });
+    };
+
+    fetchCurrentUser = async () => {
+        const { user } = this.props;
+        const currentUser = await authorizeFetch(`/api/users/${user.name}`);
+        this.setState({
+            currentUser
         });
     };
     
-    getIndexOfCurrentUser = async (currentUser) => {
-        const allUsers = await authorizeFetch(`/api/users?desiredStatistics=${this.state.desiredStatistics}&limit=${-1}`);
+    fetchCurrentUserPosition = async () => {
+        const { user } = this.props;
+        const currentUserPosition = await authorizeFetch(`/api/users/${user.name}/position?desiredStatistics=${this.state.desiredStatistics}`);
         this.setState({
-            currentUserIndex: allUsers.findIndex(u => u.userName === currentUser.name)
+            currentUserPosition
         });
-    }
+    };
 
-    renderUsers(users, userInBestUsers, currentUser) {
-        let index = 0;
-        const renderUser = user => (
+    renderUser = (user, position) => {
+        const { currentUserInBestUsers, currentUser } = this.state;
+        return (
             <div className={styles.user} key={user.userName}>
                 <div className={styles.user__info}>
-                    <span className={styles.user__index}>{++index}</span>
+                    <span className={styles.user__index}>{position}</span>
                     {user.photoUrl &&
-                    <img className={styles.user__image} src={user.photoUrl} alt={user.userName}/>}
-                    <span className={userInBestUsers ? user.userName === userInBestUsers.userName ?
-                        `${styles.current__user}`:`${styles.user__name}`: `${styles.user__name}`}>{user.userName}</span>
+                        <img className={styles.user__image} src={user.photoUrl} alt={user.userName}/>
+                    }
+                    <span 
+                        className={currentUserInBestUsers && user.userName === currentUser.userName 
+                            ? `${styles.current__user}`
+                            : `${styles.user__name}`}
+                    >
+                        {user.userName}
+                    </span>
                 </div>
                 <p className={styles.user__score}>{user.statistics[this.state.desiredStatistics]}</p>
             </div>
         );
-        
-        return (<>
-            {
-                userInBestUsers ? users.map(user => renderUser(user)): 
-                    <section>
-                        {users.map(user => renderUser(user))}
-                        <p className={styles.ellipsis}>...</p>
-                        <div className={styles.user} key={currentUser.name}>
-                            <div className={styles.user__info}>
-                                <span className={styles.user__index}>{this.state.currentUserIndex + 1}</span>
-                                {currentUser.photoUrl &&
-                                <img className={styles.user__image} src={currentUser.photoUrl} alt={currentUser.name}/>}
-                                <span className={`${styles.current__user}`}>{currentUser.name}</span>
-                            </div>
-                            <p className={styles.user__score}>{JSON.parse(currentUser.statistics)[this.state.desiredStatistics]}</p>
-                        </div>
-                    </section>
-            }
-        </>);
-    }
-    
+    };
+
+    renderUsers = (users) => {
+        return (
+            <>
+                {
+                    this.state.currentUserInBestUsers
+                        ? users.map((user, index) => this.renderUser(user, index + 1))
+                        : <section>
+                            {users.map((user, index) => this.renderUser(user, index + 1))}
+                            <p className={styles.ellipsis}>...</p>
+                            {this.renderUser(this.state.currentUser, this.state.currentUserPosition)}
+                        </section>
+                }
+            </>
+        );
+    };
+
     getTableHeader = () => {
         switch (this.state.desiredStatistics) {
             case UserStatistics.TOTAL_SCORE:
@@ -90,13 +107,10 @@ export default class Leaderboard extends Component {
             case UserStatistics.WINS_COUNT:
                 return 'Количество побед';
         }
-    }
+    };
 
     render() {
         const { bestUsers, loadingUsers } = this.state;
-        const { user } = this.props;
-        const currentUser = user;
-        const userInBestUsers = bestUsers.find(u => u.userName === user.preferred_username);
         return (
             <>
                 <h1>Список лидеров</h1>
@@ -107,8 +121,10 @@ export default class Leaderboard extends Component {
                             <label htmlFor="leaders" className={styles.select__label}>Сортировать</label>
 
                             <select name="leaders" id="leaders" onChange={this.onChangeSelectedSort}>
-                                <option value={UserStatistics.TOTAL_SCORE} selected='selected'>по количеству очков</option>
-                                <option value={UserStatistics.NUMBER_OF_GAMES_PLAYED}>по количеству сыгранных игр</option>
+                                <option value={UserStatistics.TOTAL_SCORE} selected='selected'>по количеству очков
+                                </option>
+                                <option value={UserStatistics.NUMBER_OF_GAMES_PLAYED}>по количеству сыгранных игр
+                                </option>
                                 <option value={UserStatistics.NUMBER_OF_DRAWS}>по количеству рисований</option>
                                 <option value={UserStatistics.WINS_COUNT}>по количеству побед</option>
                             </select>
@@ -119,7 +135,7 @@ export default class Leaderboard extends Component {
                                 <p className={styles.p__info}>Игрок</p>
                                 <p className={styles.p__score}>{this.getTableHeader()}</p>
                             </section>
-                            {this.renderUsers(bestUsers, userInBestUsers, currentUser)}
+                            {this.renderUsers(bestUsers)}
                         </section>
                     </>
                 }

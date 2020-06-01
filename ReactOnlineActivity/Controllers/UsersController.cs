@@ -21,5 +21,17 @@ namespace ReactOnlineActivity.Controllers
         {
             return userRepository.SelectTopByStatistics(desiredStatistics, limit);
         }
+        
+        [Route("{userName}")]
+        public ApplicationUser GetUserByName([FromRoute] string userName)
+        {
+            return userRepository.FindByName(userName);
+        }
+        
+        [Route("{userName}/position")]
+        public int GetUserPositionInTop([FromRoute] string userName, [FromQuery] string desiredStatistics)
+        {
+            return userRepository.GetUserPositionInTop(desiredStatistics, userName);
+        }
     }
 }
