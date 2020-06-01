@@ -11,6 +11,14 @@ namespace ReactOnlineActivity.Repositories
     public class UserRepository
     {
         private readonly ApplicationDbContext dbContext;
+        private static readonly Dictionary<string, Func<UserStatistics, int>> getStatisticsByName 
+            = new Dictionary<string, Func<UserStatistics, int>>
+            {
+                ["totalScore"] = statistics => statistics.TotalScore,
+                ["numberOfGamesPlayed"] = statistics => statistics.NumberOfGamesPlayed,
+                ["numberOfDraws"] = statistics => statistics.NumberOfDraws,
+                ["winsCount"] = statistics => statistics.WinsCount
+            };
 
         public UserRepository(ApplicationDbContext dbContext)
         {
@@ -40,13 +48,33 @@ namespace ReactOnlineActivity.Repositories
             dbContext.SaveChanges();
         }
 
-        public List<ApplicationUser> SelectTopByStatistics(Func<UserStatistics, int> statisticSelector, int limit)
+        public List<ApplicationUser> SelectTopByStatistics(string statisticSelector, int limit)
         {
-            return dbContext.Users
+            var query = dbContext.Users
                 .Include(u => u.Statistics)
-                .OrderByDescending(u => statisticSelector(u.Statistics))
-                .Take(limit)
-                .ToList();
+                .OrderByDescending(u => u);
+            try
+            {
+                return SortTop(query, statisticSelector)
+                    .Take(limit)
+                    .ToList();
+            }
+            catch (NotImplementedException)
+            {
+                return null;
+            }
+        }
+
+        private static IOrderedQueryable<ApplicationUser> SortTop(IQueryable<ApplicationUser> query, string statisticSelector)
+        {
+            return statisticSelector switch
+            {
+                "totalScore" => query.OrderByDescending(u => u.Statistics.TotalScore),
+                "numberOfGamesPlayed" => query.OrderByDescending(u => u.Statistics.NumberOfGamesPlayed),
+                "numberOfDraws" => query.OrderByDescending(u => u.Statistics.NumberOfDraws),
+                "winsCount" => query.OrderByDescending(u => u.Statistics.WinsCount),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }
