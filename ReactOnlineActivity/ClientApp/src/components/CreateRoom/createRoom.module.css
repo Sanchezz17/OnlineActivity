@@ -170,3 +170,27 @@
     width: 30%;
     height: 40%;
 }
+
+.privateCheckbox
+{
+    display: none;
+}
+
+.privateLabel:before
+{
+    content: '';
+    display: block;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: center;
+}
+
+.privateCheckbox:checked + .privateLabel:before
+{
+    content: '\2713';
+}
+

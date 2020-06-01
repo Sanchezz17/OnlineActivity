@@ -307,12 +307,16 @@ class CreateRoom extends Component {
                 </div>
                 <div className={`form-group ${styles.settings__item}`}>
                     <label>Приватная</label>
+
                     <input
+                        id='private'
+                        className={styles.privateCheckbox}
                         type="checkbox"
                         checked={this.state.settings.isPrivateRoom}
                         onChange={(event) =>
                             this.handleSettingsChange('isPrivateRoom', event.target.checked)}
                     />
+                    <label htmlFor='private' className={styles.privateLabel} />
                 </div>
             </div>
             <div className={styles.themes}>
