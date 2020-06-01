@@ -19,12 +19,21 @@ namespace ReactOnlineActivity.Controllers
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// Получение всех тем
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("")]
         public List<Theme> GetThemes()
         {
             return themeRepository.GetAllThemes().ToList();
         }
 
+        /// <summary>
+        /// Добавление пользовательской темы
+        /// </summary>
+        /// <param name="themeDto"></param>
+        /// <returns></returns>
         [HttpPost("")]
         public string AddTheme([FromBody] ThemeDto themeDto)
         {

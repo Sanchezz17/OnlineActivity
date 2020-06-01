@@ -30,6 +30,10 @@ namespace ReactOnlineActivity.Controllers
             this.random = new Random();
         }
 
+        /// <summary>
+        /// Получение любой свободной комнаты
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("any")]
         public RedirectResult Play()
         {
@@ -37,6 +41,11 @@ namespace ReactOnlineActivity.Controllers
             return Redirect($"/rooms/{suitableRoom.Id}");
         }
 
+        /// <summary>
+        /// Создание комнаты с указанными настройками
+        /// </summary>
+        /// <param name="roomSettings"></param>
+        /// <returns></returns>
         [HttpPost("")]
         public string CreateRoom([FromBody] RoomSettingsDto roomSettings)
         {
@@ -65,6 +74,11 @@ namespace ReactOnlineActivity.Controllers
             return newRoom.Id.ToString();
         }
 
+        /// <summary>
+        /// Получение комнаты по Id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet("{roomId}")]
         public Room GetRoom([FromRoute] int roomId)
         {

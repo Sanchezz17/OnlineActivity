@@ -25,12 +25,23 @@ namespace ReactOnlineActivity.Controllers
             this.userRepository = userRepository;
         }
 
+        /// <summary>
+        /// Получение игроков в комнате
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet("")]
         public IEnumerable<Player> GetPlayers([FromRoute] int roomId)
         {
             return playerRepository.SelectAllFromRoom(roomId);
         }
         
+        /// <summary>
+        /// Присоединение игрока к комнате
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         [HttpPost("")]
         public JoinRoomDto JoinRoom([FromRoute] int roomId, [FromQuery] string userName)
         {

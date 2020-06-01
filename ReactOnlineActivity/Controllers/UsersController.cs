@@ -16,19 +16,36 @@ namespace ReactOnlineActivity.Controllers
             this.userRepository = userRepository;
         }
 
-        [Route("")]
+        /// <summary>
+        /// Получение до limit первых игроков по указанному параметру desiredStatistics
+        /// </summary>
+        /// <param name="desiredStatistics"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("")]
         public List<ApplicationUser> GetTopBy([FromQuery] string desiredStatistics, [FromQuery] int limit)
         {
             return userRepository.SelectTopByStatistics(desiredStatistics, limit);
         }
         
-        [Route("{userName}")]
+        /// <summary>
+        /// Получение пользователя по имени
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        [HttpGet("{userName}")]
         public ApplicationUser GetUserByName([FromRoute] string userName)
         {
             return userRepository.FindByName(userName);
         }
         
-        [Route("{userName}/position")]
+        /// <summary>
+        /// Получение места пользователя по указанному параметру desiredStatistics
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="desiredStatistics"></param>
+        /// <returns></returns>
+        [HttpGet("{userName}/position")]
         public int GetUserPositionInTop([FromRoute] string userName, [FromQuery] string desiredStatistics)
         {
             return userRepository.GetUserPositionInTop(desiredStatistics, userName);

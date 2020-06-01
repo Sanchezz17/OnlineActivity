@@ -16,7 +16,11 @@ namespace ReactOnlineActivity.Controllers
             this.roomRepository = roomRepository;
         }
 
-
+        /// <summary>
+        /// Получение поля по Id комнаты
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet("{roomId}")]
         public LineDto[] GetField([FromRoute] int roomId)
         {
