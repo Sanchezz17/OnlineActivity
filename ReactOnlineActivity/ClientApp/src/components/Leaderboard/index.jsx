@@ -61,7 +61,7 @@ export default class Leaderboard extends Component {
     renderUser = (user, position) => {
         const { currentUserInBestUsers, currentUser } = this.state;
         return (
-            <div className={styles.user} key={user.userName}>
+            <div className={styles.user} key={position}>
                 <div className={styles.user__info}>
                     <span className={styles.user__index}>{position}</span>
                     {user.photoUrl &&

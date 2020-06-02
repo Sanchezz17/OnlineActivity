@@ -48,7 +48,7 @@ namespace ReactOnlineActivity.Controllers
         [HttpGet("{userName}/position")]
         public int GetUserPositionInTop([FromRoute] string userName, [FromQuery] string desiredStatistics)
         {
-            return userRepository.GetUserPositionInTop(desiredStatistics, userName);
+            return userRepository.GetUserPositionInTop(desiredStatistics, userName) + 1;
         }
     }
 }

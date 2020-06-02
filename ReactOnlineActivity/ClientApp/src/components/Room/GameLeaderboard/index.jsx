@@ -55,10 +55,10 @@ export default class GameLeaderboard extends Component {
     };
 
     renderPlayers = () => {
-        return this.state.players
+        return [].concat(this.state.players)
             .sort(p => -p.score)
-            .map(player =>
-                <div className={styles.player} key={player.name}>
+            .map((player, index) =>
+                <div className={styles.player} key={index}>
                     <div>
                         {player.photoUrl && <img className={styles.player__image} src={player.photoUrl} alt={player.name}/>}
                         <span
