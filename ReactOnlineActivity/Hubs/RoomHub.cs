@@ -186,12 +186,7 @@ namespace ReactOnlineActivity.Hubs
             GameEntity gameEntity)
         {
             if (currentRoundNumber < gameEntity.RoundNumber)
-            {
-                var hiddenWordNotification = MessageFactory.CreateHiddenWordNotification(currentHiddenWord);
-                await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, hiddenWordNotification);
-                var newRoundNotification = MessageFactory.CreateNewRoundNotification(gameDto.RoundNumber + 1);
-                await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, newRoundNotification);
-            }
+                await SendNotificationAfterEndOfRound(roomId, currentHiddenWord, currentRoundNumber + 1);
 
             if (gameEntity.GameState == GameState.Finished)
             {
@@ -225,9 +220,20 @@ namespace ReactOnlineActivity.Hubs
             var gameEntity = mapper.Map<GameEntity>(room.Game);
             gameEntity.UpdateLevel();
             var gameDto = mapper.Map<GameDto>(gameEntity);
+            var currentHiddenWord = gameEntity.GetCurrentHiddenWord();
+            var currentRoundNumber = gameEntity.RoundNumber;
             roomRepository.UpdateGame(int.Parse(roomId), gameDto);
+            await SendNotificationAfterEndOfRound(roomId, currentHiddenWord, currentRoundNumber + 1);
             await Clients.Group(roomId).SendAsync(RoomHubEvents.RoundInfo, 
                 gameEntity.ExplainingPlayerName, gameEntity.GetSecondsLeft());
+        }
+
+        private async Task SendNotificationAfterEndOfRound(string roomId, string currentHiddenWords, int newRoundNumber)
+        {
+            var hiddenWordNotification = MessageFactory.CreateHiddenWordNotification(currentHiddenWords);
+            await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, hiddenWordNotification);
+            var newRoundNotification = MessageFactory.CreateNewRoundNotification(newRoundNumber);
+            await Clients.Group(roomId).SendAsync(RoomHubEvents.NewMessage, newRoundNotification);
         }
     }
 }
