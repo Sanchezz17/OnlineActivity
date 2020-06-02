@@ -16,5 +16,7 @@ namespace ReactOnlineActivity.Models
         public string ExplainingPlayerName { get; set; }
         public List<Line> Canvas { get; set; }
         public long CurrentRoundStartTime { get; set; }
+        
+        public List<Player> GuessingPlayers { get; set; }
     }
 }

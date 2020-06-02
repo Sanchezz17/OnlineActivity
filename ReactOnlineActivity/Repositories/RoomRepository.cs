@@ -58,6 +58,7 @@ namespace ReactOnlineActivity.Repositories
             room.Game.Canvas = game.Canvas;
             room.Game.ExplainingPlayerName = game.ExplainingPlayerName;
             room.Game.CurrentRoundStartTime = game.CurrentRoundStartTime;
+            room.Game.GuessingPlayers = game.GuessingPlayers;
             foreach (var player in game.Players)
                 room.Game.Players.Find(p => p.Id == player.Id).Score = player.Score;
             dbContext.SaveChanges();
@@ -72,6 +73,7 @@ namespace ReactOnlineActivity.Repositories
                 .Include(r => r.Game.HiddenWords)
                 .Include(r => r.Settings)
                 .Include(r => r.Settings.ThemeRoomSettings)
+                .Include(r => r.Game.GuessingPlayers)
                 .Include(r => r.Game.Canvas);
         }
     }
