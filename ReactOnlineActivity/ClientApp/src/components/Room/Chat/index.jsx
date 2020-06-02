@@ -9,7 +9,8 @@ export default class Chat extends Component {
         this.state = {
             messages: [],
             currentMessageText: '',
-            isActiveUser: false
+            isActiveUser: false,
+            isGuessed: false
         };
     }
 
@@ -17,7 +18,10 @@ export default class Chat extends Component {
         this.props.hubConnection.on(RoomHubEvents.NEW_MESSAGE, this.addMessage);
 
         this.props.hubConnection.on(RoomHubEvents.ROUND_INFO, (explainingPlayerName) => {
-            this.setState({ isActiveUser: explainingPlayerName === this.props.user.name });
+            this.setState({
+                isActiveUser: explainingPlayerName === this.props.user.name,
+                isGuessed: false
+            });
         });
         
         this.props.hubConnection.on(RoomHubEvents.MESSAGE_RATED, (message) => {
@@ -40,7 +44,9 @@ export default class Chat extends Component {
     }
     
     addMessage = (message) => {
+        const { user } = this.props;
         this.setState({
+            isGuessed: message.from.includes(user.name) && message.from.includes('угадал'),
             messages: [
                 message,
                 ...this.state.messages
@@ -124,7 +130,7 @@ export default class Chat extends Component {
                         placeholder="Отвечать тут..."
                         type='text'
                         onChange={this.onChangeCurrentMessageText}
-                        disabled={this.state.isActiveUser}
+                        disabled={this.state.isActiveUser || this.state.isGuessed}
                     />
                 </form>
             </section>
