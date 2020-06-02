@@ -291,6 +291,8 @@ class CreateRoom extends Component {
                         onChange={(event) =>
                             this.handleSettingsChange('pointsToWin', Number(event.target.value))}
                     >
+                        <option value="50">50</option>
+                        <option value="80">80</option>
                         <option selected value="100">100</option>
                         <option value="120">120</option>
                         <option value="150">150</option>
