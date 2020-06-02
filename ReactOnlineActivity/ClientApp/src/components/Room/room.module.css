@@ -1,14 +1,10 @@
-﻿html {
-    overflow: hidden;
-}
-
-.room {
+﻿.room {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(7, 1fr);
     margin: 10px;
-    height: 93vh;
+    height: 85vh;
 }
 
 .loading {

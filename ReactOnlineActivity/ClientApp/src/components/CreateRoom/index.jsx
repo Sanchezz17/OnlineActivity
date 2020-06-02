@@ -84,13 +84,18 @@ class CreateRoom extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
+        const roomSettingsDto = this.getRoomSettingsDto(this.state.settings);
+        if (roomSettingsDto.themesIds.length === 0) {
+            alert('Выберите хотя бы одну тему');
+            return;
+        }
         const newRoomId = await authorizeFetch('/api/rooms', {
             method: 'POST',
             redirect: 'manual',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(this.getRoomSettingsDto(this.state.settings))
+            body: JSON.stringify(roomSettingsDto)
         });
         this.props.history.push(`/rooms/${newRoomId}`);
     }
